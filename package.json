@@ -1,0 +1,52 @@
+{
+    "name": "haskellintegration",
+    "displayName": "HaskellIntegration",
+    "description": "",
+    "version": "0.0.1",
+    "publisher": "UCL",
+    "engines": {
+        "vscode": "^1.5.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:extension.runHaskell",
+        "onCommand:extension.runQuickCheck",
+        "onLanguage:haskell"
+    ],
+    "main": "./out/src/extension",
+    "contributes": {
+        "commands": [{
+            "command": "extension.runHaskell",
+            "title": "Run Haskell"
+        },
+        {
+            "command": "extension.runQuickCheck",
+            "title": "Run QuickCheck"
+        }],
+        "languages": [{
+            "id": "haskell",
+            "aliases": ["Haskell", "haskell"],
+            "extensions": [".hs"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "haskell",
+            "scopeName": "source.haskell",
+            "path": "./syntaxes/haskell.tmLanguage"
+        }]
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
+    }
+}
