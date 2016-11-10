@@ -59,6 +59,31 @@ function shell(command) {
     });
 }
 
+function removeMainFunction(data) {
+    const dataArray = data.toString().split('\n');
+
+    let start;
+    let end;
+    for (let i = 0; i < dataArray.length; i++) {
+        if (dataArray[i].slice(0, 6) === 'main =') {
+            start = i;
+            end = i;
+        } else {
+            if (start) {
+                if (dataArray[i] === '') {
+                    break;
+                } else {
+                    end++;
+                }
+            }
+        }
+    }
+
+    dataArray.splice(start, end - start + 1);
+
+    return dataArray.join('\n');
+}
+
 export function testHaskellFile(filePath) {
     return new Promise((resolve, reject) => {
         const tempName = guid();
@@ -67,7 +92,8 @@ export function testHaskellFile(filePath) {
         fs.createReadStream(filePath).pipe(fs.createWriteStream(newPath));
         fs.readFile(newPath, 'utf-8', (err, data) => {
             if (err) reject(err);
-            const newValue = '{-# LANGUAGE TemplateHaskell #-}\nimport Test.QuickCheck.All\n' + data
+
+            const newValue = '{-# LANGUAGE TemplateHaskell #-}\nimport Test.QuickCheck.All\n' + removeMainFunction(data)
                 + '\nreturn []\nrunTests = $quickCheckAll\nmain = runTests';
 
             fs.writeFile(newPath, newValue, 'utf-8', err => {
