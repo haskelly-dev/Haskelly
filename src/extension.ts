@@ -24,11 +24,39 @@ export function activate(context: vscode.ExtensionContext) {
     };
 
     const testHaskell = (src) => {
-        vscode.window.setStatusBarMessage('Running QuickCheck on the file...', 1000);
+        let counter = -1;
+        var done = false;
+        const loader = () => {
+            let sign;
+            counter = (counter + 1) % 4;
 
+            switch (counter) {
+                case 0:
+                    sign = '|';
+                    break;
+                case 1:
+                    sign = '/';
+                    break;
+                case 2:
+                    sign = '-';
+                    break;
+                case 3:
+                    sign = '\\';
+                    break;
+                default:
+                    break;
+            }
+
+            if (!done) setTimeout(loader, 200);
+            vscode.window.setStatusBarMessage(`${sign}  Running QuickCheck`, 200);
+        }
+
+        loader();
         testHaskellFile(src).then(testResults => {
+            done = true;
             const passed = testResults['passedTests'];
             const failed = testResults['failedTests'];
+
             if (failed.length > 0) {
                 if (failed.length === 1) {
                     vscode.window.showErrorMessage(`${failed[0].name} test failed!`);

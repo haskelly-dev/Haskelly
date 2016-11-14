@@ -16,9 +16,11 @@ function parseStdout(out) {
     const rawOut = out.split('\n');
     const passedTests = [];
     const failedTests = [];
+
     let i = 0;
     while (i < rawOut.length) {
         const splitLine = rawOut[i].split(' ');
+
         // Start of a test
         if (splitLine[0] === '===') {
             i++;
