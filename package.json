@@ -13,7 +13,8 @@
     "activationEvents": [
         "onCommand:extension.runHaskell",
         "onCommand:extension.runQuickCheck",
-        "onLanguage:haskell"
+        "onLanguage:haskell",
+        "onLanguage:labassignment"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -29,6 +30,12 @@
             "id": "haskell",
             "aliases": ["Haskell", "haskell"],
             "extensions": [".hs"],
+            "configuration": "./language-configuration.json"
+        },
+        {
+            "id": "labassignment",
+            "aliases": ["LabAssignment", "labassignment"],
+            "extensions": [".la"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{

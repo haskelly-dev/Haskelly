@@ -3,10 +3,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 const fs = require('fs');
-import { testHaskellFile } from './testHelper';
+import { testHaskellFile } from './helpers/testHelper';
+const path = require('path');
 
-export function activate(context: vscode.ExtensionContext) {
-    // Init button
+function createButtons(context) {
     const runButton = vscode.window.createStatusBarItem(1, 0);
     runButton.text = "Run Haskell";
     runButton.command = "editor.runHaskell";
@@ -16,16 +16,33 @@ export function activate(context: vscode.ExtensionContext) {
     terminalInput.text = "Run QuickCheck";
     terminalInput.command = "editor.runQuickCheck";
     terminalInput.show();
+}
+
+export function activate(context: vscode.ExtensionContext) {
+    createButtons(context);
+
+    vscode.window.onDidChangeActiveTextEditor((editor) => {
+        console.log(editor.document.languageId);
+        if (editor.document.languageId === 'labassignment') {
+            const docPath = `${path.dirname(editor.document.uri.path)}/test.hs`;
+            fs.writeFile(docPath, 'Hehey', 'utf-8', err => {
+                if (err) console.log(err);
+                vscode.workspace.openTextDocument(docPath).then(document => {
+                    vscode.window.showTextDocument(document);
+                });
+            });
+        }
+    });
 
     const runHaskell = (src) => {
-        const term = vscode.window.createTerminal('Haskell runner');
+        const term = vscode.window.createTerminal('Haskell Run');
         term.show();
-        term.sendText(`node ${context.extensionPath}/src/runHelper.js run ${src}`);
+        term.sendText(`node ${context.extensionPath}/src/helpers/runHelper.js run ${src}`);
     };
 
     const testHaskell = (src) => {
         let counter = -1;
-        var done = false;
+        var doneTesting = false;
         const loader = () => {
             let sign;
             counter = (counter + 1) % 4;
@@ -47,13 +64,13 @@ export function activate(context: vscode.ExtensionContext) {
                     break;
             }
 
-            if (!done) setTimeout(loader, 200);
+            if (!doneTesting) setTimeout(loader, 200);
             vscode.window.setStatusBarMessage(`${sign}  Running QuickCheck`, 200);
         }
 
         loader();
         testHaskellFile(src).then(testResults => {
-            done = true;
+            doneTesting = true;
             const passed = testResults['passedTests'];
             const failed = testResults['failedTests'];
 
@@ -64,17 +81,16 @@ export function activate(context: vscode.ExtensionContext) {
                 else {
                     vscode.window.showErrorMessage(`${failed.length} tests failed!`);
                 }
-            }
-            else if (passed.length > 0) {
+            } else if (passed.length > 0) {
                 vscode.window.showInformationMessage('All tests passed!');
-            }
-            else {
-                vscode.window.showInformationMessage('No tests were found!');
+            } else {
+                vscode.window.showErrorMessage('No tests were found!');
             }
         }).catch(error => {
             vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
+            doneTesting = true;
+
             const errorFilePath = `${context.extensionPath}/errorFile.txt`;
-            
             fs.writeFile(errorFilePath, error, 'utf-8', err => {
                 const term = vscode.window.createTerminal('Haskell Tests');
                 term.sendText(`cat ${errorFilePath}`);
