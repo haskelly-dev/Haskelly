@@ -20,6 +20,7 @@ function interactiveGHCi(src) {
     shell = spawn('ghci', []);
 
     shell.stdout.pipe(process.stdout);
+    shell.stderr.pipe(process.stderr);
 
     shell.stdout.on('data', (data) => {
         if (data.toString().slice(0, 4) === 'GHCi') {

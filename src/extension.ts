@@ -13,7 +13,7 @@ function createButtons(context) {
     ghciButton.show();
 
     const runButton = vscode.window.createStatusBarItem(1, 0);
-    runButton.text = "Run";
+    runButton.text = "Run file";
     runButton.command = "editor.runHaskell";
     runButton.show();
 
@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     const loadGHCi = (src) => {
-        const term = vscode.window.createTerminal('Haskell Run');
+        const term = vscode.window.createTerminal('Haskell GHCi');
         term.show();
         term.sendText(`node ${context.extensionPath}/src/helpers/runHelper.js ghci ${src}`);
     };
@@ -70,8 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
             if (failed.length > 0) {
                 if (failed.length === 1) {
                     vscode.window.showErrorMessage(`${failed[0].name} test failed!`);
-                }
-                else {
+                } else {
                     vscode.window.showErrorMessage(`${failed.length} tests failed!`);
                 }
             } else if (passed.length > 0) {
