@@ -22,7 +22,6 @@ export function activate(context: vscode.ExtensionContext) {
     createButtons(context);
 
     vscode.window.onDidChangeActiveTextEditor((editor) => {
-        console.log(editor.document.languageId);
         if (editor.document.languageId === 'labassignment') {
             const docPath = `${path.dirname(editor.document.uri.path)}/test.hs`;
             fs.writeFile(docPath, 'Hehey', 'utf-8', err => {
@@ -44,25 +43,8 @@ export function activate(context: vscode.ExtensionContext) {
         let counter = -1;
         var doneTesting = false;
         const loader = () => {
-            let sign;
             counter = (counter + 1) % 4;
-
-            switch (counter) {
-                case 0:
-                    sign = '|';
-                    break;
-                case 1:
-                    sign = '/';
-                    break;
-                case 2:
-                    sign = '-';
-                    break;
-                case 3:
-                    sign = '\\';
-                    break;
-                default:
-                    break;
-            }
+            const sign = ['|', '/', '-', '\\'][counter];        
 
             if (!doneTesting) setTimeout(loader, 200);
             vscode.window.setStatusBarMessage(`${sign}  Running QuickCheck`, 200);
