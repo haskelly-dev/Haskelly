@@ -7,8 +7,13 @@ import { testHaskellFile } from './helpers/testHelper';
 const path = require('path');
 
 function createButtons(context) {
+    const ghciButton = vscode.window.createStatusBarItem(1, 0);
+    ghciButton.text = "Load GHCi";
+    ghciButton.command = "editor.ghci";
+    ghciButton.show();
+
     const runButton = vscode.window.createStatusBarItem(1, 0);
-    runButton.text = "Run Haskell";
+    runButton.text = "Run";
     runButton.command = "editor.runHaskell";
     runButton.show();
 
@@ -32,6 +37,12 @@ export function activate(context: vscode.ExtensionContext) {
             });
         }
     });
+
+    const loadGHCi = (src) => {
+        const term = vscode.window.createTerminal('Haskell Run');
+        term.show();
+        term.sendText(`node ${context.extensionPath}/src/helpers/runHelper.js ghci ${src}`);
+    };
 
     const runHaskell = (src) => {
         const term = vscode.window.createTerminal('Haskell Run');
@@ -81,6 +92,11 @@ export function activate(context: vscode.ExtensionContext) {
             });
         });
     };
+
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
+        vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
+        loadGHCi(editor.document.uri.path);
+    }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runHaskell', editor => {
         vscode.window.setStatusBarMessage('Running your code...', 1000);

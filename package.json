@@ -11,21 +11,27 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.runHaskell",
-        "onCommand:extension.runQuickCheck",
+        "onCommand:editor.runHaskell",
+        "onCommand:editor.runQuickCheck",
+        "onCommand:editor.ghci",
         "onLanguage:haskell",
         "onLanguage:labassignment"
     ],
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
-            "command": "extension.runHaskell",
+            "command": "editor.runHaskell",
             "title": "Run Haskell"
         },
         {
-            "command": "extension.runQuickCheck",
+            "command": "editor.runQuickCheck",
             "title": "Run QuickCheck"
-        }],
+        },
+        {
+            "command": "editor.ghci",
+            "title": "Load GHCi"
+        }
+        ],
         "languages": [{
             "id": "haskell",
             "aliases": ["Haskell", "haskell"],
