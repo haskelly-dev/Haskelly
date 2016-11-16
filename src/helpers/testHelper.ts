@@ -91,10 +91,10 @@ export function testHaskellFile(filePath) {
                 console.log('QuickCheking...');
                 
                 shell(`runHaskell ${newPath}`).then(std => {
-                    //fs.unlinkSync(newPath);
+                    fs.unlinkSync(newPath);
                     resolve(parseStdout(std[0]));
                 }).catch(error => {
-                    //fs.unlinkSync(newPath);
+                    fs.unlinkSync(newPath);
                     reject(error);
                 });
             });
