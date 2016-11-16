@@ -1,37 +1,23 @@
 const spawn = require('child_process').spawn;
 const path = require('path');
+
 let shell;
+let loadedGHCi;
 
 function interactiveShell(command, args) {
     shell = spawn(command, args);
-
-    shell.stdout.pipe(process.stdout);
-
-    shell.stderr.on('data', (data) => {
-        console.log(data.toString());
-    });
-
-    shell.on('exit', (code) => {
-        process.stdin.pause();
-    });
+    return shell;
 }
 
 function interactiveGHCi(src) {
-    shell = spawn('ghci', []);
-
-    shell.stdout.pipe(process.stdout);
-    shell.stderr.pipe(process.stderr);
-
-    shell.stdout.on('data', (data) => {
-        if (data.toString().slice(0, 4) === 'GHCi') {
+    interactiveShell('ghci', [])
+    .stdout.on('data', (data) => {
+        if (!loadedGHCi && data.toString().slice(0, 4) === 'GHCi') {
+            loadedGHCi = true;
             setTimeout(() => {
                 shell.stdin.write(`:l ${src} \n`);
             }, 100);
         };
-    });
-
-    shell.on('exit', (code) => {
-        process.stdin.pause();
     });
 }
 
@@ -42,7 +28,15 @@ if (process.argv[2] === 'run') {
     interactiveGHCi(process.argv[3]);
 }
 
+// Shell output
+shell.stdout.pipe(process.stdout);
+shell.stderr.pipe(process.stderr);
+shell.on('exit', (code) => {
+    process.stdin.pause();
+});
+
 // Get user input
 process.stdin.on('data', (text) => {
     shell.stdin.write(text + '\n');    
 });
+

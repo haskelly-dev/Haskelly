@@ -14,8 +14,7 @@
         "onCommand:editor.runHaskell",
         "onCommand:editor.runQuickCheck",
         "onCommand:editor.ghci",
-        "onLanguage:haskell",
-        "onLanguage:labassignment"
+        "onLanguage:haskell"
     ],
     "main": "./out/src/extension",
     "contributes": {

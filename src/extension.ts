@@ -3,8 +3,9 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 const fs = require('fs');
-import { testHaskellFile } from './helpers/testHelper';
 const path = require('path');
+import { guid } from './helpers/utils';
+import { testHaskellFile } from './helpers/testHelper';
 
 function createButtons(context) {
     const ghciButton = vscode.window.createStatusBarItem(1, 0);
@@ -25,18 +26,6 @@ function createButtons(context) {
 
 export function activate(context: vscode.ExtensionContext) {
     createButtons(context);
-
-    vscode.window.onDidChangeActiveTextEditor((editor) => {
-        if (editor.document.languageId === 'labassignment') {
-            const docPath = `${path.dirname(editor.document.uri.path)}/test.hs`;
-            fs.writeFile(docPath, 'Hehey', 'utf-8', err => {
-                if (err) console.log(err);
-                vscode.workspace.openTextDocument(docPath).then(document => {
-                    vscode.window.showTextDocument(document);
-                });
-            });
-        }
-    });
 
     const loadGHCi = (src) => {
         const term = vscode.window.createTerminal('Haskell GHCi');
@@ -62,6 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         loader();
+
         testHaskellFile(src).then(testResults => {
             doneTesting = true;
             const passed = testResults['passedTests'];
@@ -82,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
             doneTesting = true;
 
-            const errorFilePath = `${context.extensionPath}/errorFile.txt`;
+            const errorFilePath = `${context.extensionPath}/${guid()}.txt`;
             fs.writeFile(errorFilePath, error, 'utf-8', err => {
                 const term = vscode.window.createTerminal('Haskell Tests');
                 term.sendText(`cat ${errorFilePath}`);

@@ -2,15 +2,7 @@
 const fs = require('fs');
 const exec = require('child_process').exec;
 const path = require('path');
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
+const utils_1 = require('./utils');
 function parseStdout(out) {
     const rawOut = out.split('\n');
     const passedTests = [];
@@ -79,7 +71,7 @@ function removeMainFunction(data) {
 }
 function testHaskellFile(filePath) {
     return new Promise((resolve, reject) => {
-        const tempName = guid();
+        const tempName = utils_1.guid();
         const newPath = `${path.dirname(filePath)}/${tempName}.hs`;
         fs.createReadStream(filePath).pipe(fs.createWriteStream(newPath));
         fs.readFile(newPath, 'utf-8', (err, data) => {

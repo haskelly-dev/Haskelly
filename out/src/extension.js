@@ -3,15 +3,16 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const fs = require('fs');
-const testHelper_1 = require('./helpers/testHelper');
 const path = require('path');
+const utils_1 = require('./helpers/utils');
+const testHelper_1 = require('./helpers/testHelper');
 function createButtons(context) {
     const ghciButton = vscode.window.createStatusBarItem(1, 0);
     ghciButton.text = "Load GHCi";
     ghciButton.command = "editor.ghci";
     ghciButton.show();
     const runButton = vscode.window.createStatusBarItem(1, 0);
-    runButton.text = "Run";
+    runButton.text = "Run file";
     runButton.command = "editor.runHaskell";
     runButton.show();
     const terminalInput = vscode.window.createStatusBarItem(1, 0);
@@ -21,20 +22,8 @@ function createButtons(context) {
 }
 function activate(context) {
     createButtons(context);
-    vscode.window.onDidChangeActiveTextEditor((editor) => {
-        if (editor.document.languageId === 'labassignment') {
-            const docPath = `${path.dirname(editor.document.uri.path)}/test.hs`;
-            fs.writeFile(docPath, 'Hehey', 'utf-8', err => {
-                if (err)
-                    console.log(err);
-                vscode.workspace.openTextDocument(docPath).then(document => {
-                    vscode.window.showTextDocument(document);
-                });
-            });
-        }
-    });
     const loadGHCi = (src) => {
-        const term = vscode.window.createTerminal('Haskell Run');
+        const term = vscode.window.createTerminal('Haskell GHCi');
         term.show();
         term.sendText(`node ${context.extensionPath}/src/helpers/runHelper.js ghci ${src}`);
     };
@@ -75,7 +64,7 @@ function activate(context) {
         }).catch(error => {
             vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
             doneTesting = true;
-            const errorFilePath = `${context.extensionPath}/errorFile.txt`;
+            const errorFilePath = `${context.extensionPath}/${utils_1.guid()}.txt`;
             fs.writeFile(errorFilePath, error, 'utf-8', err => {
                 const term = vscode.window.createTerminal('Haskell Tests');
                 term.sendText(`cat ${errorFilePath}`);
