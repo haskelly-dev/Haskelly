@@ -61,19 +61,16 @@ function removeMainFunction(data) {
         if (dataArray[i].slice(0, 6) === 'main =') {
             start = i;
             end = i;
-        } else {
-            if (start) {
-                if (dataArray[i] === '') {
-                    break;
-                } else {
-                    end++;
-                }
-            }
+        } else if (start !== undefined) {
+            if (dataArray[i] === '') {
+                break;
+            } else {
+                end++;
+            }   
         }
     }
 
     dataArray.splice(start, end - start + 1);
-
     return dataArray.join('\n');
 }
 
@@ -94,10 +91,10 @@ export function testHaskellFile(filePath) {
                 console.log('QuickCheking...');
                 
                 shell(`runHaskell ${newPath}`).then(std => {
-                    fs.unlinkSync(newPath);
+                    //fs.unlinkSync(newPath);
                     resolve(parseStdout(std[0]));
                 }).catch(error => {
-                    fs.unlinkSync(newPath);
+                    //fs.unlinkSync(newPath);
                     reject(error);
                 });
             });
