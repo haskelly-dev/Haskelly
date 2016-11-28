@@ -55,14 +55,12 @@ function removeMainFunction(data) {
             start = i;
             end = i;
         }
-        else {
-            if (start) {
-                if (dataArray[i] === '') {
-                    break;
-                }
-                else {
-                    end++;
-                }
+        else if (start !== undefined) {
+            if (dataArray[i] === '') {
+                break;
+            }
+            else {
+                end++;
             }
         }
     }
