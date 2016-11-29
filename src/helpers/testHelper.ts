@@ -90,7 +90,7 @@ export function testHaskellFile(filePath) {
                 if (err) reject(err);
                 console.log('QuickCheking...');
                 
-                shell(`runHaskell ${newPath}`).then(std => {
+                shell(`stack runhaskell ${newPath}`).then(std => {
                     fs.unlinkSync(newPath);
                     resolve(parseStdout(std[0]));
                 }).catch(error => {

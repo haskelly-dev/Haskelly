@@ -10,7 +10,7 @@ function interactiveShell(command, args) {
 }
 
 function interactiveGHCi(src) {
-    interactiveShell('ghci', [])
+    interactiveShell('stack', ['ghci'])
     .stdout.on('data', (data) => {
         if (!loadedGHCi && data.toString().slice(0, 4) === 'GHCi') {
             loadedGHCi = true;
@@ -23,7 +23,7 @@ function interactiveGHCi(src) {
 
 // Decide mode
 if (process.argv[2] === 'run') {
-    interactiveShell('runHaskell', [process.argv[3]]);
+    interactiveShell('stack', ['runhaskell', process.argv[3]]);
 } else if (process.argv[2] === 'ghci') {
     interactiveGHCi(process.argv[3]);
 }

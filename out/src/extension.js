@@ -4,83 +4,9 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
-const StreamSplitter = require('stream-splitter');
 const utils_1 = require('./helpers/utils');
 const testHelper_1 = require('./helpers/testHelper');
-const child_process_1 = require('child_process');
-class HaskellCompletionItemProvider {
-    constructor() {
-        this.suggestions = [];
-        this.shell = child_process_1.spawn('stack', ['ghci', '--with-ghc', 'intero']);
-        this.shellOutput();
-    }
-    shellOutput() {
-        const splitter = this.shell.stdout.pipe(StreamSplitter("\n"));
-        splitter.encoding = 'utf8';
-        splitter.on('token', (token) => {
-            console.log(token);
-            if (!this.ghciLoaded) {
-                if (token.substr(0, 4) === 'Type') {
-                    console.log('GHCi loaded');
-                    this.ghciLoaded = true;
-                }
-            }
-            if (!this.fileLoaded) {
-                if (token.substr(0, 2) === 'Ok') {
-                    console.log('Loaded file');
-                    this.fileLoaded = true;
-                }
-            }
-            if (this.completionsLoaded) {
-                if (this.newSuggestions && token.split(' ')[0] === '*Main>') {
-                    this.newSuggestions = false;
-                    this.suggestions = [];
-                    this.suggestions.push(new vscode.CompletionItem(token.split(' ')[1]));
-                }
-                else {
-                    this.suggestions.push(new vscode.CompletionItem(token));
-                }
-            }
-        });
-    }
-    getWord(position, text) {
-        const lines = text.split('\n');
-        const line = lines[position.line];
-        let word = '';
-        for (let i = position.character - 1; i >= 0; i--) {
-            if (line[i] === ' ') {
-                break;
-            }
-            word = `${line[i]}${word}`;
-        }
-        return word;
-    }
-    provideCompletionItems(document, position, token) {
-        return new Promise((resolve, reject) => {
-            console.log('Hello');
-            if (this.ghciLoaded && !this.fileLoaded) {
-                this.shell.stdin.write(`:l ${document.uri.path} \n`);
-                vscode.workspace.onDidSaveTextDocument((document) => {
-                    console.log('Did save');
-                    this.newSuggestions = true;
-                    this.fileLoaded = false;
-                    this.shell.stdin.write(`:l ${document.uri.path} \n`);
-                });
-                resolve([]);
-            }
-            else if (this.ghciLoaded && this.fileLoaded) {
-                console.log('Completions at:', position.line, position.character);
-                this.completionsLoaded = true;
-                this.newSuggestions = true;
-                const word = this.getWord(position, document.getText());
-                this.shell.stdin.write(`:complete-at "${document.uri.path}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
-                setTimeout(() => {
-                    resolve(this.suggestions);
-                }, 5);
-            }
-        });
-    }
-}
+const CompletionProvider_1 = require('./CompletionProvider');
 function createButtons(context, buttons) {
     for (let i = 0; i < buttons.length; i++) {
         const button = vscode.window.createStatusBarItem(1, 0);
@@ -159,7 +85,7 @@ function activate(context) {
         testHaskell(context.extensionPath, editor.document.uri.path);
     }));
     let sel = 'haskell';
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new HaskellCompletionItemProvider(), '.', '\"'));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new CompletionProvider_1.default(), '.', '\"'));
 }
 exports.activate = activate;
 function deactivate() {
