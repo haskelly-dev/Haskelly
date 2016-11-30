@@ -14,18 +14,16 @@ function interactiveGHCi(src) {
     .stdout.on('data', (data) => {
         if (!loadedGHCi && data.toString().slice(0, 4) === 'GHCi') {
             loadedGHCi = true;
-            setTimeout(() => {
-                shell.stdin.write(`:l ${src} \n`);
-            }, 100);
+            shell.stdin.write(`:l ${src} \n`);
         };
     });
 }
 
 // Decide mode
-if (process.argv[2] === 'run') {
-    interactiveShell('stack', ['runhaskell', process.argv[3]]);
-} else if (process.argv[2] === 'ghci') {
+if (process.argv[2] === 'ghci') {
     interactiveGHCi(process.argv[3]);
+} else if (process.argv[2] === 'build') {
+    interactiveShell('stack', ['build', process.argv[3]]);
 }
 
 // Shell output

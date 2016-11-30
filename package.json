@@ -1,7 +1,7 @@
 {
-  "name": "haskellintegration",
-  "displayName": "HaskellIntegration",
-  "description": "",
+  "name": "lambda",
+  "displayName": "Lambda",
+  "description": "Complete support for casual and expert Haskell development.",
   "version": "0.0.1",
   "publisher": "UCL",
   "engines": {
@@ -25,11 +25,15 @@
       },
       {
         "command": "editor.runQuickCheck",
-        "title": "Run QuickCheck"
+        "title": "QuickCheck"
       },
       {
         "command": "editor.ghci",
         "title": "Load GHCi"
+      },
+      {
+        "command": "editor.stackBuild",
+        "title": "Stack build"
       }
     ],
     "languages": [
@@ -41,17 +45,6 @@
         ],
         "extensions": [
           ".hs"
-        ],
-        "configuration": "./language-configuration.json"
-      },
-      {
-        "id": "labassignment",
-        "aliases": [
-          "LabAssignment",
-          "labassignment"
-        ],
-        "extensions": [
-          ".la"
         ],
         "configuration": "./language-configuration.json"
       }
@@ -68,8 +61,7 @@
     "completionProvider": {
       "resolveProvider": "true",
       "triggerCharacters": [
-        ".",
-        "="
+        "."
       ]
     }
   },

@@ -1,65 +1,63 @@
-# haskellintegration README
+# Haskelly
 
-This is the README for your extension "haskellintegration". After writing up a brief description, we recommend including the following sections.
+Haskelly is a VS Code extension that provides complete support for casual and expert Haskell 
+development. This includes:
+* Code highlight
+* Code completion
+* Running Haskell inside the editor using either GHCi, runHaskell or Stack build
+* Testing all the prop functions in a file with QuickCheck
+
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### Code highlight
+Proper code highlight for Haskell code. It just works.
 
-For example if there is an image subfolder under your extension project workspace:
+### Code completion
+Intelligent code completion using the Intero package. This takes into account functions and 
+constants defined in the opened file as well as the Haskell standard library and
+the imported modules.
 
-\!\[feature X\]\(images/feature-x.png\)
+### Running Haskell
+The extension allows three ways of executing Haskell in the integrated terminal inside VS Code:
+* GHCi: you can call all the functions declared in the file providing the arguments. The 
+extension calls `stack ghci` in the background.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+* Run file: looks for a main function and executes it. The extension uses `stack runhaskell` under the hood.
+
+* Stack build: runs the Stack project defined in the root folder. The extension runs `stack build`.
+
+### Testing Haskell
+Easily run QuickCheck on all the functions that start with the prefix `prop_` in the
+currently opened file. 
 
 ## Requirements
+* Node 6
+* Stack. If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack.
+After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
+    * Intero package for code completion. To install it: `$ stack install intero`.
+    * QuickCheck package for running `QuickCheck`. To install it: `$ stack install quickcheck`.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+Haskelly is fully customizable. Just add any of these properties in the preferences file (Code -> Preferences -> User Settings [CMD+,])
+* `haskell.enable`: enable/disable this extension
+* `haskell.codeCompletion`: set to `false` to disable code completion
+* `haskell.ghci`: set to `false` to hide the `GHCi` button in the bottom bar
+* `haskell.runhaskell`: set to `false` to hide the `Run file` button in the bottom bar
+* `haskell.stackbuild`: set to `false` to hide the `Stack build` button in the bottom bar
+* `haskell.quickcheck`: set to `false` to hide the `QuickCheck` button in the bottom bar
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+This extension is in beta, so some bugs/issues might be present. We would really appreciate if you
+could file a Github issue request in the extension public repository.
 
 ## Release Notes
 
 Users appreciate release notes as you update your extension.
 
-### 1.0.0
+### 0.1
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release of Haskell.

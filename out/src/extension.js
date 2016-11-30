@@ -5,25 +5,17 @@ const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
 const utils_1 = require('./helpers/utils');
-const testHelper_1 = require('./helpers/testHelper');
-const CompletionProvider_1 = require('./CompletionProvider');
-function createButtons(context, buttons) {
-    for (let i = 0; i < buttons.length; i++) {
-        const button = vscode.window.createStatusBarItem(1, 0);
-        button.text = buttons[i][0];
-        button.command = buttons[i][1];
-        button.show();
-    }
-}
+const testCode_1 = require('./helpers/testCode');
+const completionProvider_1 = require('./helpers/completionProvider');
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
     term.show();
-    term.sendText(`node ${extPath}/src/helpers/runHelper.js ghci ${src}`);
+    term.sendText(`node ${extPath}/src/helpers/runCode.js ghci ${src}`);
 }
 function runHaskell(extPath, src) {
     const term = vscode.window.createTerminal('Haskell Run');
     term.show();
-    term.sendText(`node ${extPath}/src/helpers/runHelper.js run ${src}`);
+    term.sendText(`stack runhaskell ${src}`);
 }
 function showTestOutput(passed, failed) {
     if (failed.length > 0) {
@@ -51,9 +43,14 @@ function showTestError(error, extPath) {
         setTimeout(() => fs.unlinkSync(errorFilePath), 1000);
     });
 }
+function stackBuild(extPath, src) {
+    const term = vscode.window.createTerminal('Haskell Run');
+    term.show();
+    term.sendText(`node ${extPath}/src/helpers/runCode.js build ${src}`);
+}
 function testHaskell(extPath, src) {
     let counter = -1;
-    var doneTesting = false;
+    let doneTesting = false;
     const loader = () => {
         counter = (counter + 1) % 4;
         const sign = ['|', '/', '-', '\\'][counter];
@@ -62,7 +59,7 @@ function testHaskell(extPath, src) {
         vscode.window.setStatusBarMessage(`${sign}  Running QuickCheck`, 200);
     };
     loader();
-    testHelper_1.testHaskellFile(src).then(testResults => {
+    testCode_1.testHaskellFile(src).then(testResults => {
         doneTesting = true;
         showTestOutput(testResults['passedTests'], testResults['failedTests']);
     }).catch(error => {
@@ -70,9 +67,17 @@ function testHaskell(extPath, src) {
         showTestError(error, extPath);
     });
 }
+function createButtons(context, buttons) {
+    for (let i = 0; i < buttons.length; i++) {
+        const button = vscode.window.createStatusBarItem(1, 0);
+        button.text = buttons[i][0];
+        button.command = buttons[i][1];
+        button.show();
+    }
+}
 function activate(context) {
     createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'],
-        ['Run QuickCheck', 'editor.runQuickCheck']]);
+        ['Stack build', 'editor.stackBuild'], ['QuickCheck', 'editor.runQuickCheck']]);
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
         loadGHCi(context.extensionPath, editor.document.uri.path);
@@ -81,11 +86,14 @@ function activate(context) {
         vscode.window.setStatusBarMessage('Running your code...', 1000);
         runHaskell(context.extensionPath, editor.document.uri.path);
     }));
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackBuild', editor => {
+        stackBuild(context.extensionPath, editor.document.uri.path);
+    }));
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runQuickCheck', editor => {
         testHaskell(context.extensionPath, editor.document.uri.path);
     }));
-    let sel = 'haskell';
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new CompletionProvider_1.default(), '.', '\"'));
+    const sel = 'haskell';
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new completionProvider_1.default(), '.', '\"'));
 }
 exports.activate = activate;
 function deactivate() {
