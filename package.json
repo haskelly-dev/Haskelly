@@ -4,6 +4,10 @@
   "description": "Complete support for casual and expert Haskell development.",
   "version": "0.0.1",
   "publisher": "UCL",
+  "repository": {
+		"type": "git",
+		"url": "https://gitlab.cs.ucl.ac.uk/VSCodeHaskell/HaskellIntegrationExtension.git"
+	},
   "engines": {
     "vscode": "^1.5.0"
   },
