@@ -37,7 +37,6 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                 console.log('Loaded GHCi');
                 sync.runCommand(`:l ${documentPath} \n`, 'Ok', 'Failed', (line, error) => {
                     if (error) {
-                        console.log('Error', line);
                         sync = null;
                         reject(line);
                     } else {
@@ -56,7 +55,8 @@ class CompletionProvider implements vscode.CompletionItemProvider {
 
     private listenChanges(documentPath) {
         vscode.workspace.onDidSaveTextDocument((document) => {
-            this.tryNewShell(document.uri.path);
+            this.tryNewShell(document.uri.path)
+            .catch(e => console.error(e));
         });
     }
 
