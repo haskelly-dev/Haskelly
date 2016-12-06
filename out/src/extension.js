@@ -76,8 +76,20 @@ function createButtons(context, buttons) {
     }
 }
 function activate(context) {
-    createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'],
-        ['QuickCheck', 'editor.runQuickCheck']]);
+    const config = vscode.workspace.getConfiguration('haskelly');
+    console.log(config);
+    const buttonsConfig = config['buttons'];
+    const buttons = [];
+    if (buttonsConfig['ghci'] === true || buttonsConfig['ghci'] === undefined) {
+        buttons.push(['Load GHCi', 'editor.ghci']);
+    }
+    if (buttonsConfig['runfile'] === true || buttonsConfig['runfile'] === undefined) {
+        buttons.push(['Run file', 'editor.runHaskell']);
+    }
+    if (buttonsConfig['quickcheck'] === true || buttonsConfig['quickcheck'] === undefined) {
+        buttons.push(['QuickCheck', 'editor.runQuickCheck']);
+    }
+    createButtons(context, buttons);
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
         loadGHCi(context.extensionPath, editor.document.uri.path);
@@ -92,8 +104,13 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runQuickCheck', editor => {
         testHaskell(context.extensionPath, editor.document.uri.path);
     }));
-    const sel = 'haskell';
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new completionProvider_1.default(), '.', '\"'));
+    if (config['codeCompletion'] === false) {
+        console.log('Disabled code completion');
+    }
+    else {
+        const sel = 'haskell';
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new completionProvider_1.default(), '.', '\"'));
+    }
 }
 exports.activate = activate;
 function deactivate() {

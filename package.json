@@ -2,7 +2,7 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
@@ -13,7 +13,7 @@
     "vscode": "^1.5.0"
   },
   "categories": [
-    "Other"
+    "Languages"
   ],
   "activationEvents": [
     "onCommand:editor.runHaskell",
@@ -26,7 +26,7 @@
     "commands": [
       {
         "command": "editor.runHaskell",
-        "title": "Run Haskell"
+        "title": "Run file"
       },
       {
         "command": "editor.runQuickCheck",

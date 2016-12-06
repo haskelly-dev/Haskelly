@@ -41,23 +41,24 @@ After installing Stack and adding it to your `PATH`, run `$ stack setup`. This w
 
 ## Extension Settings
 
-Haskelly is fully customizable. Just add any of these properties in the preferences file (Code -> Preferences -> User Settings [CMD+,])
-* `haskell.enable`: enable/disable this extension
-* `haskell.codeCompletion`: set to `false` to disable code completion
-* `haskell.ghci`: set to `false` to hide the `GHCi` button in the bottom bar
-* `haskell.runhaskell`: set to `false` to hide the `Run file` button in the bottom bar
-* `haskell.stackbuild`: set to `false` to hide the `Stack build` button in the bottom bar
-* `haskell.quickcheck`: set to `false` to hide the `QuickCheck` button in the bottom bar
+Haskelly is fully customizable. Just add any of these properties in the preferences file (Code -> Preferences -> Work Space Settings (settings.json))
+* `haskelly.codeCompletion`: set to `false` to disable code completion
+* `haskelly.buttons.ghci`: set to `false` to hide the `GHCi` button in the bottom bar
+* `haskelly.buttons.runfile`: set to `false` to hide the `Run file` button in the bottom bar
+* `haskelly.buttons.stackbuild`: set to `false` to hide the `Stack build` button in the bottom bar
+* `haskelly.buttons.quickcheck`: set to `false` to hide the `QuickCheck` button in the bottom bar
 
 ## Known Issues
 
 This extension is in beta, so some bugs/issues might be present. We would really appreciate if you
-could file a Github issue request in the extension public repository.
+could send us any feedback or bugs reports at: zcabmse@ucl.ac.uk .
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+This are our release notes.
 
-### 0.1
+### 0.0.8
 
-Initial release of Haskelly.
+Bugs fixed:
+* Crash when first writting on a file if it didn't compile.
+* Settings are now taken into account.
