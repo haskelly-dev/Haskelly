@@ -60,4 +60,4 @@ Users appreciate release notes as you update your extension.
 
 ### 0.1
 
-Initial release of Haskell.
+Initial release of Haskelly.

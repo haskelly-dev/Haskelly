@@ -22,8 +22,6 @@ function interactiveGHCi(src) {
 // Decide mode
 if (process.argv[2] === 'ghci') {
     interactiveGHCi(process.argv[3]);
-} else if (process.argv[2] === 'build') {
-    interactiveShell('stack', ['build', process.argv[3]]);
 }
 
 // Shell output
@@ -37,4 +35,6 @@ shell.on('exit', (code) => {
 process.stdin.on('data', (text) => {
     shell.stdin.write(text + '\n');    
 });
+
+export default {};
 

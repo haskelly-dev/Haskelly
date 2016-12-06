@@ -10,7 +10,7 @@ const completionProvider_1 = require('./helpers/completionProvider');
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
     term.show();
-    term.sendText(`node ${extPath}/src/helpers/runCode.js ghci ${src}`);
+    term.sendText(`node ${__dirname}/helpers/runCode.js ghci ${src}`);
 }
 function runHaskell(extPath, src) {
     const term = vscode.window.createTerminal('Haskell Run');
@@ -46,7 +46,7 @@ function showTestError(error, extPath) {
 function stackBuild(extPath, src) {
     const term = vscode.window.createTerminal('Haskell Run');
     term.show();
-    term.sendText(`node ${extPath}/src/helpers/runCode.js build ${src}`);
+    term.sendText(`stack build ${src}`);
 }
 function testHaskell(extPath, src) {
     let counter = -1;
@@ -77,7 +77,7 @@ function createButtons(context, buttons) {
 }
 function activate(context) {
     createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'],
-        ['Stack build', 'editor.stackBuild'], ['QuickCheck', 'editor.runQuickCheck']]);
+        ['QuickCheck', 'editor.runQuickCheck']]);
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
         loadGHCi(context.extensionPath, editor.document.uri.path);

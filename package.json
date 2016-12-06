@@ -1,8 +1,9 @@
 {
-  "name": "lambda",
-  "displayName": "Lambda",
+  "name": "haskelly",
+  "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.0.1",
+  "version": "0.0.6",
+  "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
 		"type": "git",

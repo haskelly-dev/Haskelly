@@ -19,15 +19,14 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         splitter.encoding = 'utf8';
 
         splitter.on('token', (token) => {
-            if (this.completionsLoaded) {
-                if (this.newSuggestions && token.split(' ')[0] === '*Main>') {
-                    this.newSuggestions = false;
-                    this.suggestions = [];
-                    const suggestion = token.split(' ');
-                    this.suggestions.push(new vscode.CompletionItem(suggestion[suggestion.length - 1]));
-                } else {
-                    this.suggestions.push(new vscode.CompletionItem(token));
-                }
+            if (this.newSuggestions && token.split(' ')[0] === '*Main>') {
+                console.log(token);
+                this.newSuggestions = false;
+                this.suggestions = [];
+                const suggestion = token.split(' ');
+                this.suggestions.push(new vscode.CompletionItem(suggestion[suggestion.length - 1]));
+            } else {
+                this.suggestions.push(new vscode.CompletionItem(token));
             }
         });
     }
@@ -38,12 +37,12 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                 console.log('Loaded GHCi');
                 sync.runCommand(`:l ${documentPath} \n`, 'Ok', 'Failed', (line, error) => {
                     if (error) {
-                        console.log('Error', error);
+                        console.log('Error', line);
                         sync = null;
-                        reject(error);
+                        reject(line);
                     } else {
-                        this.fileLoaded = true;
                         console.log('Loaded file');
+                        this.fileLoaded = true;
                         this.shell = sync.getShell();
                         this.shellOutput(); 
                         sync = null;
@@ -70,7 +69,6 @@ class CompletionProvider implements vscode.CompletionItemProvider {
             if (line[i] === ' ') {
                 break;
             }
-
             word = `${line[i]}${word}`;
         }
 
@@ -98,7 +96,7 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                     this.getCompletionsAtPosition(position, document).then((completions) => {
                         resolve(completions);
                     }).catch(e => console.error(e));
-                });
+                }).catch(e => console.error(e));
             } else {
                 console.log('Completions at:', position.line, position.character);
                 this.getCompletionsAtPosition(position, document).then((completions) => {
