@@ -4,7 +4,7 @@
 //
 "use strict";
 // The module 'assert' provides assertion methods from node
-const assert = require('assert');
+const assert = require("assert");
 // Defines a Mocha test suite to group tests of similar kind together
 suite("Extension Tests", () => {
     // Defines a Mocha unit test

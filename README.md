@@ -50,15 +50,16 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 
 ## Known Issues
 
-This extension is in beta, so some bugs/issues might be present. We would really appreciate if you
+Custom character in GHCi substituting the normal "Prelude" not supported yet.
+Windows is not yet supported. Both issues will be solved before new year.
+
+This extension is in alpha, so some bugs/issues might be present. We would really appreciate if you
 could send us any feedback or bugs reports at: zcabmse@ucl.ac.uk .
 
 ## Release Notes
 
 This are our release notes.
 
-### 0.0.8
+### 0.0.9
 
-Bugs fixed:
-* Crash when first writting on a file if it didn't compile.
-* Settings are now taken into account.
+Updated known issues.

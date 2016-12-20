@@ -89,21 +89,28 @@ export function activate(context: vscode.ExtensionContext) {
     console.log(config);
 
     const buttonsConfig = config['buttons'];
-    const buttons = [];
 
-    if (buttonsConfig['ghci'] === true ||  buttonsConfig['ghci'] === undefined) {
-        buttons.push(['Load GHCi', 'editor.ghci']);
+    if (buttonsConfig) {
+        const buttons = [];
+        if (buttonsConfig['ghci'] === true ||  buttonsConfig['ghci'] === undefined || buttonsConfig === undefined) {
+            buttons.push(['Load GHCi', 'editor.ghci']);
+        }
+
+        if (buttonsConfig['runfile'] === true ||  buttonsConfig['runfile'] === undefined || buttonsConfig === undefined) {
+            buttons.push(['Run file', 'editor.runHaskell']);
+        }
+
+        if (buttonsConfig['quickcheck'] === true ||  buttonsConfig['quickcheck'] === undefined || buttonsConfig === undefined) {
+            buttons.push(['QuickCheck', 'editor.runQuickCheck']);
+        }
+
+        createButtons(context, buttons);
+    } else {
+        createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'], ['QuickCheck', 'editor.runQuickCheck']]);
     }
 
-    if (buttonsConfig['runfile'] === true ||  buttonsConfig['runfile'] === undefined) {
-        buttons.push(['Run file', 'editor.runHaskell']);
-    }
-
-    if (buttonsConfig['quickcheck'] === true ||  buttonsConfig['quickcheck'] === undefined) {
-        buttons.push(['QuickCheck', 'editor.runQuickCheck']);
-    }
     
-    createButtons(context, buttons);
+    
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
