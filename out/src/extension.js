@@ -77,7 +77,6 @@ function createButtons(context, buttons) {
 }
 function activate(context) {
     const config = vscode.workspace.getConfiguration('haskelly');
-    console.log(config);
     const buttonsConfig = config['buttons'];
     if (buttonsConfig) {
         const buttons = [];

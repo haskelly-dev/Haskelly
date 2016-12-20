@@ -86,8 +86,6 @@ function createButtons(context, buttons) {
 
 export function activate(context: vscode.ExtensionContext) {
     const config = vscode.workspace.getConfiguration('haskelly');
-    console.log(config);
-
     const buttonsConfig = config['buttons'];
 
     if (buttonsConfig) {
@@ -107,10 +105,7 @@ export function activate(context: vscode.ExtensionContext) {
         createButtons(context, buttons);
     } else {
         createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'], ['QuickCheck', 'editor.runQuickCheck']]);
-    }
-
-    
-    
+    } 
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
