@@ -35,6 +35,13 @@ function showTestOutput(passed, failed) {
     }
 }
 
+function stackBuild(extPath, src) {
+    const term = vscode.window.createTerminal('Haskell Run');
+    term.show();
+    term.sendText(`stack build ${src}`);
+}
+
+/* QuickCheck */
 function showTestError(error, extPath) {
     vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
 
@@ -45,12 +52,6 @@ function showTestError(error, extPath) {
         term.show();
         setTimeout(() => fs.unlinkSync(errorFilePath), 1000);
     });
-}
-
-function stackBuild(extPath, src) {
-    const term = vscode.window.createTerminal('Haskell Run');
-    term.show();
-    term.sendText(`stack build ${src}`);
 }
 
 function testHaskell(extPath, src) {
