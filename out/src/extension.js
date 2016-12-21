@@ -7,15 +7,34 @@ const path = require('path');
 const utils_1 = require("./helpers/utils");
 const testCode_1 = require("./helpers/testCode");
 const completionProvider_1 = require("./helpers/completionProvider");
+/* GHCi */
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
     term.show();
     term.sendText(`node ${__dirname}/helpers/runCode.js ghci ${src}`);
 }
+/* Run Haskell */
 function runHaskell(extPath, src) {
     const term = vscode.window.createTerminal('Haskell Run');
     term.show();
     term.sendText(`stack runhaskell ${src}`);
+}
+/* Stack Build */
+function stackBuild(extPath, src) {
+    const term = vscode.window.createTerminal('Haskell Run');
+    term.show();
+    term.sendText(`stack build ${src}`);
+}
+/* QuickCheck */
+function showTestError(error, extPath) {
+    vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
+    const errorFilePath = `${extPath}/${utils_1.guid()}.txt`;
+    fs.writeFile(errorFilePath, error, 'utf-8', err => {
+        const term = vscode.window.createTerminal('Haskell Tests');
+        term.sendText(`cat ${errorFilePath}`);
+        term.show();
+        setTimeout(() => fs.unlinkSync(errorFilePath), 1000);
+    });
 }
 function showTestOutput(passed, failed) {
     if (failed.length > 0) {
@@ -32,22 +51,6 @@ function showTestOutput(passed, failed) {
     else {
         vscode.window.showErrorMessage('No tests were found!');
     }
-}
-function stackBuild(extPath, src) {
-    const term = vscode.window.createTerminal('Haskell Run');
-    term.show();
-    term.sendText(`stack build ${src}`);
-}
-/* QuickCheck */
-function showTestError(error, extPath) {
-    vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
-    const errorFilePath = `${extPath}/${utils_1.guid()}.txt`;
-    fs.writeFile(errorFilePath, error, 'utf-8', err => {
-        const term = vscode.window.createTerminal('Haskell Tests');
-        term.sendText(`cat ${errorFilePath}`);
-        term.show();
-        setTimeout(() => fs.unlinkSync(errorFilePath), 1000);
-    });
 }
 function testHaskell(extPath, src) {
     let counter = -1;
@@ -68,6 +71,7 @@ function testHaskell(extPath, src) {
         showTestError(error, extPath);
     });
 }
+/* UI */
 function createButtons(context, buttons) {
     for (let i = 0; i < buttons.length; i++) {
         const button = vscode.window.createStatusBarItem(1, 0);

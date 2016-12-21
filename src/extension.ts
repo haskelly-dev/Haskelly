@@ -9,32 +9,21 @@ import { testHaskellFile } from './helpers/testCode';
 import CompletionProvider from './helpers/completionProvider';
 import runCode from './helpers/runCode';
 
+/* GHCi */
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
     term.show();
     term.sendText(`node ${__dirname}/helpers/runCode.js ghci ${src}`);
 }
 
+/* Run Haskell */
 function runHaskell(extPath, src) {
     const term = vscode.window.createTerminal('Haskell Run');
     term.show();
     term.sendText(`stack runhaskell ${src}`);
 }
 
-function showTestOutput(passed, failed) {
-    if (failed.length > 0) {
-        if (failed.length === 1) {
-            vscode.window.showErrorMessage(`${failed[0].name} test failed!`);
-        } else {                
-            vscode.window.showErrorMessage(`${failed.length} tests failed!`);
-        }
-    } else if (passed.length > 0) {
-        vscode.window.showInformationMessage('All tests passed!');
-    } else {
-        vscode.window.showErrorMessage('No tests were found!');
-    }
-}
-
+/* Stack Build */
 function stackBuild(extPath, src) {
     const term = vscode.window.createTerminal('Haskell Run');
     term.show();
@@ -52,6 +41,20 @@ function showTestError(error, extPath) {
         term.show();
         setTimeout(() => fs.unlinkSync(errorFilePath), 1000);
     });
+}
+
+function showTestOutput(passed, failed) {
+    if (failed.length > 0) {
+        if (failed.length === 1) {
+            vscode.window.showErrorMessage(`${failed[0].name} test failed!`);
+        } else {                
+            vscode.window.showErrorMessage(`${failed.length} tests failed!`);
+        }
+    } else if (passed.length > 0) {
+        vscode.window.showInformationMessage('All tests passed!');
+    } else {
+        vscode.window.showErrorMessage('No tests were found!');
+    }
 }
 
 function testHaskell(extPath, src) {
@@ -76,6 +79,7 @@ function testHaskell(extPath, src) {
     });
 }
 
+/* UI */
 function createButtons(context, buttons) {
     for (let i = 0; i < buttons.length; i++) {
         const button = vscode.window.createStatusBarItem(1, 0);
