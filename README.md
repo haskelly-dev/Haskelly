@@ -32,7 +32,7 @@ Easily run QuickCheck on all the functions that start with the prefix `prop_` in
 currently opened file. 
 
 ## Requirements
-* Node 6
+* NodeJS 6 or higher
 * Stack. If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack.
 After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
     * Intero package for code completion. To install it: `$ stack install intero`.
@@ -58,7 +58,9 @@ could send us any feedback or bugs reports at: zcabmse@ucl.ac.uk .
 
 ## Release Notes
 
-This are our release notes.
+### 0.1.0
+
+Fixed issue with buttons not showing up when the configuration is not set.
 
 ### 0.0.9
 

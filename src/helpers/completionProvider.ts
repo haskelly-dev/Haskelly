@@ -55,7 +55,7 @@ class CompletionProvider implements vscode.CompletionItemProvider {
 
     private listenChanges(documentPath) {
         vscode.workspace.onDidSaveTextDocument((document) => {
-            this.tryNewShell(document.uri.path)
+            this.tryNewShell(document.uri.fsPath)
             .catch(e => console.error(e));
         });
     }
@@ -81,7 +81,7 @@ class CompletionProvider implements vscode.CompletionItemProvider {
             this.newSuggestions = true;
 
             const word = this.getWord(position, document.getText());
-            this.shell.stdin.write(`:complete-at "${document.uri.path}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
+            this.shell.stdin.write(`:complete-at "${document.uri.fsPath}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
             
             setTimeout(() => {
                 resolve(this.suggestions);
@@ -92,7 +92,7 @@ class CompletionProvider implements vscode.CompletionItemProvider {
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
         return new Promise((resolve, reject) => {
             if (!this.fileLoaded) {
-                this.tryNewShell(document.uri.path).then(() => {
+                this.tryNewShell(document.uri.fsPath).then(() => {
                     this.getCompletionsAtPosition(position, document).then((completions) => {
                         resolve(completions);
                     }).catch(e => console.error(e));

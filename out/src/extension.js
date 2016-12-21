@@ -96,17 +96,17 @@ function activate(context) {
     }
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
-        loadGHCi(context.extensionPath, editor.document.uri.path);
+        loadGHCi(context.extensionPath, editor.document.uri.fsPath);
     }));
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runHaskell', editor => {
         vscode.window.setStatusBarMessage('Running your code...', 1000);
-        runHaskell(context.extensionPath, editor.document.uri.path);
+        runHaskell(context.extensionPath, editor.document.uri.fsPath);
     }));
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackBuild', editor => {
-        stackBuild(context.extensionPath, editor.document.uri.path);
+        stackBuild(context.extensionPath, editor.document.uri.fsPath);
     }));
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runQuickCheck', editor => {
-        testHaskell(context.extensionPath, editor.document.uri.path);
+        testHaskell(context.extensionPath, editor.document.uri.fsPath);
     }));
     if (config['codeCompletion'] === false) {
         console.log('Disabled code completion');
