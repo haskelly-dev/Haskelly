@@ -1,7 +1,7 @@
 const fs = require('fs');
 const exec = require('child_process').exec;
 const path = require('path');
-import { guid } from './utils';
+import { guid } from '../utils/uuid';
 
 function parseStdout(out) {
     const rawOut = out.split('\n');

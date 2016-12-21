@@ -4,9 +4,9 @@
 const vscode = require("vscode");
 const fs = require('fs');
 const path = require('path');
-const utils_1 = require("./helpers/utils");
+const uuid_1 = require("./utils/uuid");
 const testCode_1 = require("./helpers/testCode");
-const completionProvider_1 = require("./helpers/completionProvider");
+const index_1 = require("./codeCompletion/index");
 /* GHCi */
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
@@ -28,10 +28,10 @@ function stackBuild(extPath, src) {
 /* QuickCheck */
 function showTestError(error, extPath) {
     vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
-    const errorFilePath = `${extPath}/${utils_1.guid()}.txt`;
-    fs.writeFile(errorFilePath, error, 'utf-8', err => {
+    const errorFilePath = `${extPath}/${uuid_1.guid()}.txt`;
+    fs.writeFile(errorFilePath, '-------- Error --------\n' + error + '------------------------', 'utf-8', err => {
         const term = vscode.window.createTerminal('Haskell Tests');
-        term.sendText(`cat ${errorFilePath}`);
+        term.sendText(`node ${__dirname}/utils/print.js ${errorFilePath}`);
         term.show();
         setTimeout(() => fs.unlinkSync(errorFilePath), 1000);
     });
@@ -118,7 +118,7 @@ function activate(context) {
     }
     else {
         const sel = 'haskell';
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new completionProvider_1.default(), '.', '\"'));
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new index_1.default(), '.', '\"'));
     }
 }
 exports.activate = activate;

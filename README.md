@@ -51,12 +51,16 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 ## Known Issues
 
 Custom character in GHCi substituting the normal "Prelude" not supported yet.
-Windows is not yet supported. Both issues will be solved before new year.
 
 This extension is in alpha, so some bugs/issues might be present. We would really appreciate if you
 could send us any feedback or bugs reports at: zcabmse@ucl.ac.uk .
 
 ## Release Notes
+
+### 0.2.0
+
+* Windows is now fully supported and enjoys the same features as macOS and Linux.
+* Fixed some bugs in code completion.
 
 ### 0.1.0
 

@@ -4,9 +4,9 @@
 import * as vscode from 'vscode';
 const fs = require('fs');
 const path = require('path');
-import { guid } from './helpers/utils';
+import { guid } from './utils/uuid';
 import { testHaskellFile } from './helpers/testCode';
-import CompletionProvider from './helpers/completionProvider';
+import CompletionProvider from './codeCompletion/index';
 import runCode from './helpers/runCode';
 
 /* GHCi */
@@ -35,9 +35,9 @@ function showTestError(error, extPath) {
     vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
 
     const errorFilePath = `${extPath}/${guid()}.txt`;
-    fs.writeFile(errorFilePath, error, 'utf-8', err => {
+    fs.writeFile(errorFilePath, '-------- Error --------\n' + error +'------------------------', 'utf-8', err => {
         const term = vscode.window.createTerminal('Haskell Tests');
-        term.sendText(`cat ${errorFilePath}`);
+        term.sendText(`node ${__dirname}/utils/print.js ${errorFilePath}`);
         term.show();
         setTimeout(() => fs.unlinkSync(errorFilePath), 1000);
     });
