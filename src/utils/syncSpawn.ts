@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import { getWorkDir } from './workDir'
 const StreamSplitter = require('stream-splitter');
 
 export default class SyncSpawn {
@@ -7,11 +8,11 @@ export default class SyncSpawn {
     private negativeOutput:string;
     private callback;
 
-    public constructor(commands:Array<string>, positiveOutput:string, callback) {
+    public constructor(commands:Array<string>, positiveOutput:string, options, callback) {
         this.positiveOutput = positiveOutput
-        this.shell = spawn(commands[0], commands.slice(1, commands.length));
+        console.log(options.cwd === "C:\\Users\\marco\\vscode\\")
+        this.shell = spawn(commands[0], commands.slice(1, commands.length), {cwd: "C:\\Users\\marco\\vscode\\"});
         this.callback = callback;
-
         this.readOutput();
     }
 
@@ -20,6 +21,7 @@ export default class SyncSpawn {
         splitter.encoding = 'utf8';
 
         splitter.on('token', (line) => {
+            console.log(line);
             if (line.indexOf(this.positiveOutput) !== -1) {
                 this.callback(line);
             } else if (line.indexOf(this.negativeOutput) !== -1) { 
@@ -28,6 +30,7 @@ export default class SyncSpawn {
         });
 
         splitter.on('error', (error) => {
+            console.log("ERRRRRRRRRRRRRRROR")
             this.callback(error, true);
         });
     }

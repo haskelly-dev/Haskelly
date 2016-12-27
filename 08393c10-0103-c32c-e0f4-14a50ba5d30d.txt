@@ -1,0 +1,2 @@
+-------- Error --------
+Error: ENOENT: no such file or directory, open 'c:\Users\marco\testvscode\app\fb17ab57-4c55-87e2-8666-a2d80d4af5a7.hs'------------------------

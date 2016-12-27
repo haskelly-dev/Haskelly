@@ -1,5 +1,6 @@
 const StreamSplitter = require('stream-splitter');
 import { spawn } from 'child_process';
+import {getWorkDir} from '../utils/workDir'
 import * as vscode from 'vscode';
 import SyncSpawn from '../utils/syncSpawn';
 
@@ -18,9 +19,10 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         const splitter = this.shell.stdout.pipe(StreamSplitter("\n"));
         splitter.encoding = 'utf8';
         splitter.on('token', (token) => {
-            console.log(token);
             // New completion
-            if (this.newSuggestions && token.split(' ')[0] === '*Main>') {
+            const re = /\*.*>.*/
+            console.log(re.test(token), this.newSuggestions)
+            if (this.newSuggestions && re.test(token)) {
                 this.newSuggestions = false;
                 this.suggestions = [];
                 const suggestion = token.split(' ');
@@ -29,15 +31,21 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                 this.suggestions.push(new vscode.CompletionItem(token));
             }
         });
+        splitter.on('done', () => {
+            console.log("DONE")
+        })
+        splitter.on('error', (e) => {
+            console.log("error: ", e)
+        })
     }
 
     private tryNewShell(documentPath) {
         return new Promise((resolve, reject) => {
             // Load GHCi in temp shell
-            let sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], 'Type', () => {
+            let sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], 'Type', getWorkDir(documentPath), () => {
                 console.log('Loaded GHCi');
                 // Try compiling file
-                sync.runCommand(`:l ${documentPath} \n`, 'Collecting', 'Failed', (line, error) => {
+                /*sync.runCommand(`:l ${documentPath} \n`, 'Collecting', 'Failed', (line, error) => {
                     if (error) {
                         sync = null;
                         reject(line);
@@ -49,7 +57,13 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                         sync = null; // Remove temp shell
                         resolve();
                     }
-                });
+                });*/
+                console.log('Loaded file');
+                this.fileLoaded = true;
+                this.shell = sync.getShell();
+                this.shellOutput(); 
+                sync = null; // Remove temp shell
+                resolve();
             });
         });
         
@@ -70,16 +84,22 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         return word;
     }
 
-    private getCompletionsAtPosition(position, document, timeout = 30) {
+    private getCompletionsAtPosition(position, document, timeout = 100) {
         return new Promise((resolve, reject) => {
             this.completionsLoaded = true;
             this.newSuggestions = true;
             const word = this.getWord(position, document.getText());
-
             // Request completions
-            this.shell.stdin.write(`:complete-at "${document.uri.fsPath}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
+            var filePathBeginning = document.uri.fsPath.slice(0,3)            
+            if (filePathBeginning === 'c:\\') {
+                filePathBeginning = 'C:\\';
+            }
+            const filepath = filePathBeginning + document.uri.fsPath.slice(3, document.uri.fsPath.length);
+            console.log(`:complete-at ${filepath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
+            this.shell.stdin.write(`:complete-at ${filepath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
             
             setTimeout(() => {
+                console.log("suggestions: ", this.suggestions)
                 resolve(this.suggestions);
             }, timeout);
         });
@@ -87,7 +107,12 @@ class CompletionProvider implements vscode.CompletionItemProvider {
 
      private listenChanges(documentPath) {
         vscode.workspace.onDidSaveTextDocument((document) => {
-            this.tryNewShell(document.uri.fsPath)
+            var filePathBeginning = document.uri.fsPath.slice(0,3)            
+            if (filePathBeginning === 'c:\\') {
+                filePathBeginning = 'C:\\';
+            }
+            const filepath = filePathBeginning + document.uri.fsPath.slice(3, document.uri.fsPath.length);
+            this.tryNewShell(filepath)
             .catch(e => console.error(e));
         });
     }
