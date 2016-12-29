@@ -50,10 +50,11 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 
 ## Known Issues
 
-Custom character in GHCi substituting the normal "Prelude" not supported yet.
+* Code completion not working in files inside a `stack` project (Windows only).
+* Custom character in GHCi substituting the normal "Prelude" not supported yet.
 
 This extension is in alpha, so some bugs/issues might be present. We would really appreciate if you
-could send us any feedback or bugs reports at: zcabmse@ucl.ac.uk .
+could send us any feedback or bug reports at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback) .
 
 ## Release Notes
 

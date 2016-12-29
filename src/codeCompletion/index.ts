@@ -21,7 +21,7 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         splitter.on('token', (token) => {
             // New completion
             const re = /\*.*>.*/
-            console.log(re.test(token), this.newSuggestions)
+            // console.log(re.test(token), this.newSuggestions)
             if (this.newSuggestions && re.test(token)) {
                 this.newSuggestions = false;
                 this.suggestions = [];
@@ -42,31 +42,34 @@ class CompletionProvider implements vscode.CompletionItemProvider {
     private tryNewShell(documentPath) {
         return new Promise((resolve, reject) => {
             // Load GHCi in temp shell
-            let sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], 'Type', getWorkDir(documentPath), () => {
+            const workDir = getWorkDir(documentPath);
+            let sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], 'Type', workDir, () => {
                 console.log('Loaded GHCi');
-                // Try compiling file
-                /*sync.runCommand(`:l ${documentPath} \n`, 'Collecting', 'Failed', (line, error) => {
-                    if (error) {
-                        sync = null;
-                        reject(line);
-                    } else {
-                        console.log('Loaded file');
-                        this.fileLoaded = true;
-                        this.shell = sync.getShell();
-                        this.shellOutput(); 
-                        sync = null; // Remove temp shell
-                        resolve();
-                    }
-                });*/
+                // No stack project
+                if (workDir["cwd"] === undefined) {
+                    sync.runCommand(`:l ${documentPath} \n`, 'Collecting', 'Failed', (line, error) => {
+                        if (error) {
+                            sync = null;
+                            reject(line);
+                        } else {
+                            console.log('Loaded file');
+                            this.fileLoaded = true;
+                            this.shell = sync.getShell();
+                            this.shellOutput(); 
+                            sync = null; // Remove temp shell
+                            resolve();
+                        }
+                    });
+                } else {
+                    this.fileLoaded = true;
+                    this.shell = sync.getShell();
+                    this.shellOutput(); 
+                    sync = null; // Remove temp shell
+                    resolve();
+                }       
                 console.log('Loaded file');
-                this.fileLoaded = true;
-                this.shell = sync.getShell();
-                this.shellOutput(); 
-                sync = null; // Remove temp shell
-                resolve();
             });
         });
-        
     }
 
     private getWord(position:vscode.Position, text:String) {
@@ -105,8 +108,8 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         });
     }
 
-     private listenChanges(documentPath) {
-        vscode.workspace.onDidSaveTextDocument((document) => {
+     private listenChanges() {
+        const reload = (document: vscode.TextDocument) => {
             var filePathBeginning = document.uri.fsPath.slice(0,3)            
             if (filePathBeginning === 'c:\\') {
                 filePathBeginning = 'C:\\';
@@ -114,6 +117,14 @@ class CompletionProvider implements vscode.CompletionItemProvider {
             const filepath = filePathBeginning + document.uri.fsPath.slice(3, document.uri.fsPath.length);
             this.tryNewShell(filepath)
             .catch(e => console.error(e));
+        }
+
+        vscode.workspace.onDidSaveTextDocument((document) => {
+            reload(document);
+        });
+
+        vscode.workspace.onDidOpenTextDocument((document) => {
+            reload(document);
         });
     }
 
@@ -126,6 +137,8 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                         resolve(completions);
                     }).catch(e => console.error(e));
                 }).catch(e => console.error(e));
+
+                this.listenChanges();
             } else {
                 console.log('Completions at:', position.line, position.character);
                 this.getCompletionsAtPosition(position, document).then((completions) => {
