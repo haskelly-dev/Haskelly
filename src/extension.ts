@@ -8,6 +8,7 @@ import { guid } from './utils/uuid';
 import { testHaskellFile } from './helpers/testCode';
 import CompletionProvider from './codeCompletion/index';
 import runCode from './helpers/runCode';
+import { getWorkDir } from './utils/workDir'
 
 /* GHCi */
 function loadGHCi(extPath, src) {
@@ -23,11 +24,12 @@ function runHaskell(extPath, src) {
     term.sendText(`stack runhaskell ${src}`);
 }
 
-/* Stack Build */
-function stackBuild(extPath, src) {
+/* Stack Run */
+function stackRun(stackWd) {
     const term = vscode.window.createTerminal('Haskell Run');
+    term.sendText(`cd ${stackWd}`);
+    term.sendText(`stack run`);
     term.show();
-    term.sendText(`stack build ${src}`);
 }
 
 /* QuickCheck */
@@ -57,7 +59,7 @@ function showTestOutput(passed, failed) {
     }
 }
 
-function testHaskell(extPath, src) {
+function testHaskell(extPath, src, stackWd) {
     let counter = -1;
     let doneTesting = false;
     const loader = () => {
@@ -65,12 +67,14 @@ function testHaskell(extPath, src) {
         const sign = ['|', '/', '-', '\\'][counter];
 
         if (!doneTesting) setTimeout(loader, 200);
-        vscode.window.setStatusBarMessage(`${sign}  Running QuickCheck`, 200);
+
+        const text = stackWd ? 'Stack test' : 'QuickCheck';
+        vscode.window.setStatusBarMessage(`${sign}  Running ${text}`, 200);
     }
 
     loader();
 
-    testHaskellFile(src).then(testResults => {
+    testHaskellFile(src, stackWd).then(testResults => {
         doneTesting = true;
         showTestOutput(testResults['passedTests'], testResults['failedTests']);
     }).catch(error => {
@@ -89,49 +93,90 @@ function createButtons(context, buttons) {
     }
 }
 
-export function activate(context: vscode.ExtensionContext) {
-    const config = vscode.workspace.getConfiguration('haskelly');
-    const buttonsConfig = config['buttons'];
-
+function loadButtons(context, buttonsConfig, isStack) {
     if (buttonsConfig) {
         const buttons = [];
-        if (buttonsConfig['ghci'] === true ||  buttonsConfig['ghci'] === undefined || buttonsConfig === undefined) {
+        if (buttonsConfig['ghci'] === true ||  buttonsConfig['ghci'] === undefined) {
             buttons.push(['Load GHCi', 'editor.ghci']);
         }
 
-        if (buttonsConfig['runfile'] === true ||  buttonsConfig['runfile'] === undefined || buttonsConfig === undefined) {
-            buttons.push(['Run file', 'editor.runHaskell']);
-        }
+        if (isStack) {
+            if (buttonsConfig['stackTest'] === true ||  buttonsConfig['stackTest'] === undefined) {
+                buttons.push(['Stack test', 'editor.stackTest']);
+            }
 
-        if (buttonsConfig['quickcheck'] === true ||  buttonsConfig['quickcheck'] === undefined || buttonsConfig === undefined) {
-            buttons.push(['QuickCheck', 'editor.runQuickCheck']);
+            if (buttonsConfig['stackRun'] === true ||  buttonsConfig['stackRun'] === undefined) {
+                buttons.push(['Stack test', 'editor.stackTest']);
+            }
+        } else {
+            if (buttonsConfig['runfile'] === true ||  buttonsConfig['runfile'] === undefined) {
+                buttons.push(['Run file', 'editor.runHaskell']);
+            }
+
+            if (buttonsConfig['quickcheck'] === true ||  buttonsConfig['quickcheck'] === undefined) {
+                buttons.push(['QuickCheck', 'editor.runQuickCheck']);
+            }
         }
 
         createButtons(context, buttons);
     } else {
-        createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'], ['QuickCheck', 'editor.runQuickCheck']]);
-    } 
+        if (isStack) {
+            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Stack run', 'editor.stackRun'], ['Stack test', 'editor.stackTest']]);
+        } else {
+            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'], ['QuickCheck', 'editor.runQuickCheck']]);
+        }
+    }
+}
 
+export function activate(context: vscode.ExtensionContext) {
+    const config = vscode.workspace.getConfiguration('haskelly');
+    const buttonsConfig = config['buttons'];
+    let stackWd = getWorkDir(vscode.workspace.textDocuments[0].uri.fsPath)["cwd"];
+    let isStack = stackWd !== undefined;
+
+    loadButtons(context, buttonsConfig, isStack);
+
+    /* Commands */
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
         loadGHCi(context.extensionPath, editor.document.uri.fsPath);
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runHaskell', editor => {
-        vscode.window.setStatusBarMessage('Running your code...', 1000);
-        runHaskell(context.extensionPath, editor.document.uri.fsPath);
-    }));
-
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackBuild', editor => {
-        stackBuild(context.extensionPath, editor.document.uri.fsPath);
+        if (!isStack) {
+            vscode.window.setStatusBarMessage('Running your code...', 1000);
+            runHaskell(context.extensionPath, editor.document.uri.fsPath);
+        } else {
+            vscode.window.showErrorMessage('Not supported inside a Stack project.');
+        }        
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runQuickCheck', editor => {
-        testHaskell(context.extensionPath, editor.document.uri.fsPath);
+        if (!isStack) {
+            testHaskell(context.extensionPath, editor.document.uri.fsPath, undefined);
+        } else {
+            vscode.window.showErrorMessage('Not supported inside a Stack project.');
+        }
     }));
 
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackRun', editor => {
+        if (isStack) {
+            stackRun(stackWd);
+        } else {
+            vscode.window.showErrorMessage('No Stack project was found.');
+        }
+    }));
+
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackTest', editor => {
+        if (isStack) {
+            testHaskell(context.extensionPath, editor.document.uri.fsPath, stackWd);
+        } else {
+            vscode.window.showErrorMessage('No Stack project was found.');
+        }
+    }));    
+
     if (config['codeCompletion'] === false) {
-        console.log('Disabled code completion')
+        console.log('Disabled code completion');
     } else {
         const sel:vscode.DocumentSelector = 'haskell';
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new CompletionProvider(), '.', '\"'));

@@ -25,18 +25,20 @@ extension calls `stack ghci` in the background.
 
 * Run file: looks for a main function and executes it. The extension uses `stack runhaskell` under the hood.
 
-* Stack build: runs the Stack project defined in the root folder. The extension runs `stack build`.
+* Stack run: runs the Stack project defined in the root folder. The extension runs `stack run` which uses the [stack-run](https://hackage.haskell.org/package/stack-run) package.
 
 ### Testing Haskell
 Easily run QuickCheck on all the functions that start with the prefix `prop_` in the
-currently opened file. 
+currently opened file. If working in a Stack project, Haskelly will run `stack test`.
 
 ## Requirements
 * NodeJS 6 or higher
 * Stack. If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack.
 After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
+* Stack packages (installed locally if working inside a Stack project):
     * Intero package for code completion. To install it: `$ stack install intero`.
     * QuickCheck package for running `QuickCheck`. To install it: `$ stack install quickcheck`.
+    * stack-run package for running `stack run`. To install it: `$ stack install stack-run`.
 
 
 ## Extension Settings
@@ -45,8 +47,9 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 * `haskelly.codeCompletion`: set to `false` to disable code completion
 * `haskelly.buttons.ghci`: set to `false` to hide the `GHCi` button in the bottom bar
 * `haskelly.buttons.runfile`: set to `false` to hide the `Run file` button in the bottom bar
-* `haskelly.buttons.stackbuild`: set to `false` to hide the `Stack build` button in the bottom bar
 * `haskelly.buttons.quickcheck`: set to `false` to hide the `QuickCheck` button in the bottom bar
+* `haskelly.buttons.stackRun`: set to `false` to hide the `Stack run` button in the bottom bar
+* `haskelly.buttons.stackTest`: set to `false` to hide the `Stack test` button in the bottom bar
 
 ## Known Issues
 
@@ -57,6 +60,10 @@ This extension is in alpha, so some bugs/issues might be present. We would reall
 could send us any feedback or bug reports at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback) .
 
 ## Release Notes
+
+### 0.2.1
+
+* Added `stack test`, which runs all the tests defined in a stack project.
 
 ### 0.2.0
 

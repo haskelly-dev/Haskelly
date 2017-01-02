@@ -3,7 +3,7 @@ const exec = require('child_process').exec;
 const path = require('path');
 import { guid } from '../utils/uuid';
 
-function parseStdout(out) {
+function parseStdout(out, isStack) {
     const rawOut = out.split('\n');
     const passedTests = [];
     const failedTests = [];
@@ -12,12 +12,18 @@ function parseStdout(out) {
     while (i < rawOut.length) {
         const splitLine = rawOut[i].split(' ');
 
+        // Ignore line
+        if (isStack && (rawOut[i] == '' || (rawOut[i] != '' && (rawOut[i + 1].slice(0, 3) !== '+++' && rawOut[i + 1].slice(0, 3) !== '***')))) {
+            i++;
+            continue;
+        }
+
         // Start of a test
-        if (splitLine[0] === '===') {
+        if (splitLine[0] === '===' || isStack) {
             i++;
             const passed = rawOut[i].slice(0, 3) === '+++';
             const test = {
-                name: splitLine[1],
+                name: isStack ? rawOut[i - 1] : splitLine[1],
             };
 
             if (passed) {
@@ -36,14 +42,15 @@ function parseStdout(out) {
                 failedTests.push(test);
             }
         }
-        i++;
+        
+        if (!isStack) i++;
     }
     return { passedTests, failedTests };
 }
 
-function shell(command) {
+function shell(command, options) {
     return new Promise((resolve, reject) => {
-        exec(command, (error, stdout, stderr) => {
+        exec(command, options, (error, stdout, stderr) => {
             if (error) {
                 reject(error);
             }
@@ -74,30 +81,39 @@ function removeMainFunction(data) {
     return dataArray.join('\n');
 }
 
-export function testHaskellFile(filePath) {
+export function testHaskellFile(filePath, stackWd) {
     return new Promise((resolve, reject) => {
         const tempName = guid();
         const newPath = `${path.dirname(filePath)}/${tempName}.hs`;
 
-        fs.createReadStream(filePath).pipe(fs.createWriteStream(newPath));
-        fs.readFile(newPath, 'utf-8', (err, data) => {
-            if (err) reject(err);
-
-            const newValue = '{-# LANGUAGE TemplateHaskell #-}\nimport Test.QuickCheck.All\n' + removeMainFunction(data)
-                + '\nreturn []\nrunTests = $quickCheckAll\nmain = runTests';
-
-            fs.writeFile(newPath, newValue, 'utf-8', err => {
+        if (stackWd === undefined) {
+            fs.createReadStream(filePath).pipe(fs.createWriteStream(newPath));
+            fs.readFile(newPath, 'utf-8', (err, data) => {
                 if (err) reject(err);
-                console.log('QuickCheking...');
-                
-                shell(`stack runhaskell ${newPath}`).then(std => {
-                    fs.unlinkSync(newPath);
-                    resolve(parseStdout(std[0]));
-                }).catch(error => {
-                    fs.unlinkSync(newPath);
-                    reject(error);
+
+                const newValue = '{-# LANGUAGE TemplateHaskell #-}\nimport Test.QuickCheck.All\n' + removeMainFunction(data)
+                    + '\nreturn []\nrunTests = $quickCheckAll\nmain = runTests';
+
+                fs.writeFile(newPath, newValue, 'utf-8', err => {
+                    if (err) reject(err);
+                    console.log('QuickCheking...');
+                    
+                    shell(`stack runhaskell ${newPath}`, {}).then(std => {
+                        console.log(std[0]);
+                        fs.unlinkSync(newPath);
+                        resolve(parseStdout(std[0], false));
+                    }).catch(error => {
+                        fs.unlinkSync(newPath);
+                        reject(error);
+                    });
                 });
             });
-        });
+        } else {
+            shell('stack test', { cwd: stackWd}).then(std => {
+                resolve(parseStdout(std[0], true));
+            }).catch(error => {
+                reject(error);
+            });
+        }        
     });
 }

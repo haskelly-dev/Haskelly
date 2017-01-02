@@ -37,8 +37,12 @@
         "title": "Load GHCi"
       },
       {
-        "command": "editor.stackBuild",
-        "title": "Stack build"
+        "command": "editor.stackTest",
+        "title": "Stack test"
+      },
+      {
+        "command": "editor.stackRun",
+        "title": "Stack run"
       }
     ],
     "languages": [

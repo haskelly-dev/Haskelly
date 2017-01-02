@@ -1,6 +1,6 @@
 const StreamSplitter = require('stream-splitter');
 import { spawn } from 'child_process';
-import {getWorkDir} from '../utils/workDir'
+import { getWorkDir } from '../utils/workDir'
 import * as vscode from 'vscode';
 import SyncSpawn from '../utils/syncSpawn';
 
