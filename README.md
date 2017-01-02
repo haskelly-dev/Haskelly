@@ -5,7 +5,7 @@ development. This includes:
 * Code highlight
 * Code completion
 * Running Haskell inside the editor using either GHCi, runHaskell or Stack build
-* Testing all the prop functions in a file with QuickCheck
+* Testing all the prop functions in a file with QuickCheck or Stack test
 
 
 ## Features
@@ -14,12 +14,12 @@ development. This includes:
 Proper code highlight for Haskell code. It just works.
 
 ### Code completion
-Intelligent code completion using the Intero package. This takes into account functions and 
+Intelligent code completion using the [Intero](https://github.com/commercialhaskell/intero) package. This takes into account functions and 
 constants defined in the opened file as well as the Haskell standard library and
 the imported modules.
 
 ### Running Haskell
-The extension allows three ways of executing Haskell in the integrated terminal inside VS Code:
+The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
 * GHCi: you can call all the functions declared in the file providing the arguments. The 
 extension calls `stack ghci` in the background.
 
@@ -63,7 +63,8 @@ could send us any feedback or bug reports at: [zcabmse@ucl.ac.uk](mailto:zcabmse
 
 ### 0.2.1
 
-* Added `stack test`, which runs all the tests defined in a stack project.
+* Added `Stack test`, which runs all the tests defined in a stack project.
+* Added `Stack run`, which runs the local Stack project.
 
 ### 0.2.0
 
