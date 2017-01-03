@@ -8,8 +8,9 @@ export default class SyncSpawn {
     private negativeOutput:string;
     private callback;
 
-    public constructor(commands:Array<string>, positiveOutput:string, options, callback) {
+    public constructor(commands:Array<string>, positiveOutput:string, negativeOutput:string, options, callback) {
         this.positiveOutput = positiveOutput
+        this.negativeOutput = negativeOutput;
 
         this.shell = spawn(commands[0], commands.slice(1, commands.length), options);
         this.callback = callback;
@@ -21,7 +22,7 @@ export default class SyncSpawn {
         splitter.encoding = 'utf8';
 
         splitter.on('token', (line) => {
-            console.log(line);
+            //console.log(line);
             if (line.indexOf(this.positiveOutput) !== -1) {
                 this.callback(line);
             } else if (line.indexOf(this.negativeOutput) !== -1) { 
@@ -42,6 +43,8 @@ export default class SyncSpawn {
 
         this.shell.stdin.write(command + '\n');
     }
+
+    public hello() {console.log("Hello")}
 
     public getShell() {
         return this.shell;

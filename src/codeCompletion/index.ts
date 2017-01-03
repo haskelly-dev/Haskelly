@@ -6,7 +6,7 @@ import SyncSpawn from '../utils/syncSpawn';
 
 class CompletionProvider implements vscode.CompletionItemProvider {
     shell;
-    fileLoaded;
+    firstLoaded;
     completionsLoaded;
     suggestions;
     newSuggestions;
@@ -19,15 +19,14 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         const splitter = this.shell.stdout.pipe(StreamSplitter("\n"));
         splitter.encoding = 'utf8';
         splitter.on('token', (token) => {
-            // New completion
+            // Check if first suggestion is valid
             const re = /\*.*>.*/
-            // console.log(re.test(token), this.newSuggestions)
             if (this.newSuggestions && re.test(token)) {
                 this.newSuggestions = false;
                 this.suggestions = [];
                 const suggestion = token.split(' ');
                 this.suggestions.push(new vscode.CompletionItem(suggestion[suggestion.length - 1]));
-            } else {
+            } else if (!this.newSuggestions) {
                 this.suggestions.push(new vscode.CompletionItem(token));
             }
         });
@@ -40,34 +39,41 @@ class CompletionProvider implements vscode.CompletionItemProvider {
     }
 
     private tryNewShell(documentPath) {
+        console.log("Trying new shell");
         return new Promise((resolve, reject) => {
             // Load GHCi in temp shell
             const workDir = getWorkDir(documentPath);
-            let sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], 'Type', workDir, () => {
-                console.log('Loaded GHCi');
+            const isStack = workDir["cwd"] !== undefined;
+            let loaded;
+
+            let sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], isStack ? 'Ok' : 'Type', 'Failed', workDir, (line, error) => {
                 // No stack project
-                if (workDir["cwd"] === undefined) {
-                    sync.runCommand(`:l ${documentPath} \n`, 'Collecting', 'Failed', (line, error) => {
-                        if (error) {
-                            sync = null;
-                            reject(line);
-                        } else {
-                            console.log('Loaded file');
-                            this.fileLoaded = true;
-                            this.shell = sync.getShell();
-                            this.shellOutput(); 
-                            sync = null; // Remove temp shell
-                            resolve();
-                        }
-                    });
-                } else {
-                    this.fileLoaded = true;
-                    this.shell = sync.getShell();
-                    this.shellOutput(); 
-                    sync = null; // Remove temp shell
-                    resolve();
-                }       
-                console.log('Loaded file');
+                if (!error && !loaded) {
+                    console.log('Loaded GHCi');
+                    loaded = true;
+                    if (!isStack) {
+                        sync.runCommand(`:l ${documentPath} \n`, 'Collecting', 'Failed', (line, error) => {
+                            if (error) {
+                                sync = null;
+                                reject(line);
+                            } else {
+                                console.log('Loaded file');
+                                this.shell = sync.getShell();
+                                this.shellOutput(); 
+                                sync = null; // Remove temp shell
+                                resolve();
+                            }
+                        });
+                    } else {
+                        this.shell = sync.getShell();
+                        this.shellOutput(); 
+                        sync = null; // Remove temp shell
+                        resolve();
+                    }
+                } else if (error) {
+                    console.error(line);
+                    reject(line);
+                }                       
             });
         });
     }
@@ -98,11 +104,16 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                 filePathBeginning = 'C:\\';
             }
             const filepath = filePathBeginning + document.uri.fsPath.slice(3, document.uri.fsPath.length);
-            console.log(`:complete-at ${filepath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
+            //console.log(`:complete-at ${filepath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
             this.shell.stdin.write(`:complete-at ${filepath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
             
             setTimeout(() => {
-                console.log("suggestions: ", this.suggestions)
+                console.log("suggestions: ");
+
+                for (let i = 0; i < this.suggestions.length; i++) {
+                    console.log(this.suggestions[i].label + "\n");
+                }
+
                 resolve(this.suggestions);
             }, timeout);
         });
@@ -131,9 +142,10 @@ class CompletionProvider implements vscode.CompletionItemProvider {
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
         return new Promise((resolve, reject) => {
             // New file
-            if (!this.fileLoaded) {
+            if (!this.firstLoaded) {
                 this.tryNewShell(document.uri.fsPath).then(() => {
                     this.getCompletionsAtPosition(position, document, 35).then((completions) => {
+                        this.firstLoaded = true;
                         resolve(completions);
                     }).catch(e => console.error(e));
                 }).catch(e => console.error(e));

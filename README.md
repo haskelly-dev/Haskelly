@@ -66,6 +66,7 @@ could send us any feedback or bug reports at: [zcabmse@ucl.ac.uk](mailto:zcabmse
 * Added `Stack test`, which runs all the tests defined in a stack project.
 * Added `Stack run`, which runs the local Stack project.
 * Running GHCi directly into the integrated terminal.
+* Improvements in Stack code completion.
 
 ### 0.2.0
 
