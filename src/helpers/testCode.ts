@@ -3,7 +3,7 @@ const exec = require('child_process').exec;
 const path = require('path');
 import { guid } from '../utils/uuid';
 
-function parseStdout(out, isStack) {
+function parseStdout(out) {
     const rawOut = out.split('\n');
     const passedTests = [];
     const failedTests = [];
@@ -12,18 +12,12 @@ function parseStdout(out, isStack) {
     while (i < rawOut.length) {
         const splitLine = rawOut[i].split(' ');
 
-        // Ignore line
-        if (isStack && (rawOut[i] == '' || (rawOut[i] != '' && (rawOut[i + 1].slice(0, 3) !== '+++' && rawOut[i + 1].slice(0, 3) !== '***')))) {
-            i++;
-            continue;
-        }
-
         // Start of a test
-        if (splitLine[0] === '===' || isStack) {
+        if (splitLine[0] === '===') {
             i++;
             const passed = rawOut[i].slice(0, 3) === '+++';
             const test = {
-                name: isStack ? rawOut[i - 1] : splitLine[1],
+                name: splitLine[1],
             };
 
             if (passed) {
@@ -43,7 +37,55 @@ function parseStdout(out, isStack) {
             }
         }
         
-        if (!isStack) i++;
+        i++;
+    }
+    return { passedTests, failedTests };
+}
+
+function parseStackStdout(out) {
+    const rawOut = out.split('\n');
+    const passedTests = [];
+    const failedTests = [];
+
+    const isTest = (line) => {
+        return line.slice(0, 3) === '+++' || line.slice(0, 3) === '***';
+    }
+
+    let i = 0;
+    while (i < rawOut.length) {
+        const splitLine = rawOut[i].split(' ');
+
+        // Ignore empty line or with next line not being a test
+        if (rawOut[i] == '' || (!isTest(rawOut[i]) && !isTest(rawOut[i + 1]))) {
+            i++;
+            continue;
+        }
+
+        // Start of test
+        else  {
+            i++;
+            const passed = rawOut[i].slice(0, 3) === '+++';
+            const name = isTest(rawOut[i - 1]) ? `Test ${passedTests.length + failedTests.length + 1}` : rawOut[i - 1];
+            const test = {
+                name: rawOut[i - 1],
+            };
+
+            if (passed) {
+                passedTests.push(test);
+                i++;
+            } else {
+                const failedInput = [];
+                i++;
+
+                while (rawOut[i] !== '') {
+                    failedInput.push(rawOut[i]);
+                    i++;
+                }
+
+                test['failedInput'] = failedInput;
+                failedTests.push(test);
+            }
+        }
     }
     return { passedTests, failedTests };
 }
@@ -101,7 +143,7 @@ export function testHaskellFile(filePath, stackWd) {
                     shell(`stack runhaskell ${newPath}`, {}).then(std => {
                         console.log(std[0]);
                         fs.unlinkSync(newPath);
-                        resolve(parseStdout(std[0], false));
+                        resolve(parseStdout(std[0]));
                     }).catch(error => {
                         fs.unlinkSync(newPath);
                         reject(error);
@@ -110,7 +152,7 @@ export function testHaskellFile(filePath, stackWd) {
             });
         } else {
             shell('stack test', { cwd: stackWd}).then(std => {
-                resolve(parseStdout(std[0], true));
+                resolve(parseStackStdout(std[0]));
             }).catch(error => {
                 reject(error);
             });
