@@ -53,7 +53,7 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 
 ## Known Issues
 
-* Code completion not working in files inside a `stack` project (Windows only).
+* Code completion not working in files inside a Stack project (Windows only).
 * Custom character in GHCi substituting the normal "Prelude" not supported yet.
 
 This extension is in alpha, so some bugs/issues might be present. We would really appreciate if you
