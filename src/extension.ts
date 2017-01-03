@@ -7,14 +7,14 @@ const path = require('path');
 import { guid } from './utils/uuid';
 import { testHaskellFile } from './helpers/testCode';
 import CompletionProvider from './codeCompletion/index';
-import runCode from './helpers/runCode';
 import { getWorkDir } from './utils/workDir'
 
 /* GHCi */
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
     term.show();
-    term.sendText(`node ${__dirname}/helpers/runCode.js ghci ${src}`);
+    term.sendText('stack ghci');
+    term.sendText(`:load ${src}`)
 }
 
 /* Run Haskell */

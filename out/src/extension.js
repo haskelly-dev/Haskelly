@@ -12,7 +12,8 @@ const workDir_1 = require("./utils/workDir");
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
     term.show();
-    term.sendText(`node ${__dirname}/helpers/runCode.js ghci ${src}`);
+    term.sendText('stack ghci');
+    term.sendText(`:load ${src}`);
 }
 /* Run Haskell */
 function runHaskell(extPath, src) {
