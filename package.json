@@ -7,7 +7,7 @@
   "publisher": "UCL",
   "repository": {
 		"type": "git",
-		"url": "https://github.com/martrik/Haskelly.gitt"
+		"url": "https://github.com/martrik/Haskelly.git"
 	},
   "engines": {
     "vscode": "^1.5.0"
