@@ -2,12 +2,12 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
 		"type": "git",
-		"url": "https://gitlab.cs.ucl.ac.uk/VSCodeHaskell/HaskellIntegrationExtension.git"
+		"url": "https://github.com/martrik/Haskelly.gitt"
 	},
   "engines": {
     "vscode": "^1.5.0"
@@ -19,6 +19,8 @@
     "onCommand:editor.runHaskell",
     "onCommand:editor.runQuickCheck",
     "onCommand:editor.ghci",
+    "onCommand:editor.stackTest",
+    "onCommand:editor.stackRun",
     "onLanguage:haskell"
   ],
   "main": "./out/src/extension",

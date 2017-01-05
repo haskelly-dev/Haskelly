@@ -1,6 +1,6 @@
 # Haskelly
 
-Haskelly is a VS Code extension that provides complete support for casual and expert Haskell 
+Haskelly is a VS Code extension that provides complete support for casual and expert Haskell
 development. This includes:
 * Code highlight
 * Code completion
@@ -14,13 +14,13 @@ development. This includes:
 Proper code highlight for Haskell code. It just works.
 
 ### Code completion
-Intelligent code completion using the [Intero](https://github.com/commercialhaskell/intero) package. This takes into account functions and 
+Intelligent code completion using the [Intero](https://github.com/commercialhaskell/intero) package. This takes into account functions and
 constants defined in the opened file as well as the Haskell standard library and
 the imported modules.
 
 ### Running Haskell
 The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
-* GHCi: you can call all the functions declared in the file providing the arguments. The 
+* GHCi: you can call all the functions declared in the file providing the arguments. The
 extension calls `stack ghci` in the background.
 
 * Run file: looks for a main function and executes it. The extension uses `stack runhaskell` under the hood.
@@ -56,27 +56,23 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 * Code completion not working in files inside a Stack project (Windows only).
 * Custom character in GHCi substituting the normal "Prelude" not supported yet.
 
-This extension is in alpha, so some bugs/issues might be present. We would really appreciate if you
-could send us any feedback or bug reports at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback) .
 
-## Release Notes
 
-### 0.2.1
+### Contributing
 
-* Added `Stack test`, which runs all the tests defined in a stack project.
-* Added `Stack run`, which runs the local Stack project.
-* Running GHCi directly into the integrated terminal.
-* Improvements in Stack code completion.
+If you'd like to contribute to Haskelly, this is what you can do:
 
-### 0.2.0
+* Bugs: This extension is in alpha, so some bugs might be present. We would really appreciate if you
+could post any issue on the Github repository [issues section](https://github.com/martrik/Haskelly/issues) or contact us at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback).
+* Ideas and feature requests: We want to get everyone's opinion on what we're building so feel free to use the two mentioned channels for any comment or suggestion.
+* Documentation: Found a typo or strangely worded sentences? Submit a PR!
+* Code: Contribute bug fixes, features or design changes.
 
-* Windows is now fully supported and enjoys the same features as macOS and Linux.
-* Fixed some bugs in code completion.
 
-### 0.1.0
+### Release notes
 
-Fixed issue with buttons not showing up when the configuration is not set.
+Check out the release notes [here](https://github.com/martrik/Haskelly/releases).
 
-### 0.0.9
+## License
 
-Updated known issues.
+[GNU 3](https://github.com/martrik/Haskelly/blob/master/License.txt)
