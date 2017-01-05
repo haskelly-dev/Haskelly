@@ -28,13 +28,11 @@ extension calls `stack ghci` in the background.
 * Stack run: runs the Stack project defined in the root folder. The extension runs `stack run` which uses the [stack-run](https://hackage.haskell.org/package/stack-run) package.
 
 ### Testing Haskell
-Easily run QuickCheck on all the functions that start with the prefix `prop_` in the
-currently opened file. If working in a Stack project, Haskelly will run `stack test`.
+Easily run [QuickCheck](https://hackage.haskell.org/package/QuickCheck) on all the functions that start with the prefix `prop_` in the currently opened file. If working in a Stack project, Haskelly will run `stack test`.
 
 ## Requirements
-* NodeJS 6 or higher
-* Stack. If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack.
-After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
+* [NodeJS](https://nodejs.org/en/) 6 or higher.
+* [Stack](https://www.haskellstack.org). If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack. After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
 * Stack packages (installed locally if working inside a Stack project):
     * Intero package for code completion. To install it: `$ stack install intero`.
     * QuickCheck package for running `QuickCheck`. To install it: `$ stack install quickcheck`.
@@ -55,8 +53,6 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 
 * Code completion not working in files inside a Stack project (Windows only).
 * Custom character in GHCi substituting the normal "Prelude" not supported yet.
-
-
 
 ### Contributing
 
