@@ -41,7 +41,7 @@ function showTestError(error, extPath) {
         const term = vscode.window.createTerminal('Haskell Tests');
         term.sendText(`node ${__dirname}/utils/print.js ${errorFilePath}`);
         term.show();
-        setTimeout(() => fs.unlinkSync(errorFilePath), 1000);
+        setTimeout(() => fs.unlinkSync(errorFilePath), 3000);
     });
 }
 
