@@ -138,43 +138,60 @@ export function activate(context: vscode.ExtensionContext) {
 
     /* Commands */
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
-        vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
-        loadGHCi(context.extensionPath, editor.document.uri.fsPath);
+        editor.document.save()
+        .then(() => {
+            vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
+            loadGHCi(context.extensionPath, editor.document.uri.fsPath);     
+        });
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runHaskell', editor => {
-        if (!isStack) {
-            vscode.window.setStatusBarMessage('Running your code...', 1000);
-            runHaskell(context.extensionPath, editor.document.uri.fsPath);
-        } else {
-            vscode.window.showErrorMessage('Not supported inside a Stack project.');
-        }        
+        editor.document.save()
+        .then(() => {
+            if (isStack) {
+            vscode.window.showErrorMessage('Not supported inside a Stack project.');           
+            } else {
+                vscode.window.setStatusBarMessage('Running your code...', 1000);
+                runHaskell(context.extensionPath, editor.document.uri.fsPath);
+            } 
+        });        
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runQuickCheck', editor => {
-        if (!isStack) {
-            testHaskell(context.extensionPath, editor.document.uri.fsPath, undefined);
-        } else {
-            vscode.window.showErrorMessage('Not supported inside a Stack project.');
-        }
+        editor.document.save()
+        .then(() => {
+            if (isStack) {
+                vscode.window.showErrorMessage('Not supported inside a Stack project.');
+            } else {
+                testHaskell(context.extensionPath, editor.document.uri.fsPath, undefined);
+            }
+        }); 
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackRun', editor => {
-        if (isStack) {
-            stackRun(stackWd);
-        } else {
-            vscode.window.showErrorMessage('No Stack project was found.');
-        }
+        editor.document.save()
+        editor.document.save()
+        .then(() => {
+            if (isStack) {
+                stackRun(stackWd);
+            } else {
+                vscode.window.showErrorMessage('No Stack project was found.');
+            }
+        });        
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackTest', editor => {
-        if (isStack) {
-            testHaskell(context.extensionPath, editor.document.uri.fsPath, stackWd);
-        } else {
-            vscode.window.showErrorMessage('No Stack project was found.');
-        }
+        editor.document.save()
+        .then(() => {
+            if (isStack) {
+                testHaskell(context.extensionPath, editor.document.uri.fsPath, stackWd);
+            } else {
+                vscode.window.showErrorMessage('No Stack project was found.');
+            }
+        });
     }));    
 
+    /* Code completion */
     if (config['codeCompletion'] === false) {
         console.log('Disabled code completion');
     } else {
