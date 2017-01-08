@@ -9,6 +9,9 @@ import { testHaskellFile } from './helpers/testCode';
 import CompletionProvider from './codeCompletion/index';
 import { getWorkDir } from './utils/workDir'
 
+let shownButtons : Array<vscode.StatusBarItem> = [];
+let openDocumentPath : String;
+
 /* GHCi */
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
@@ -90,10 +93,23 @@ function createButtons(context, buttons) {
         button.text = buttons[i][0];
         button.command = buttons[i][1];
         button.show();
+
+        shownButtons.push(button);
     }
 }
 
-function loadButtons(context, buttonsConfig, isStack) {
+function removeAllButtons() {
+    return new Promise((resolve, reject) => {
+        for (let i = 0; i < shownButtons.length; i++) {
+            shownButtons[i].hide();
+        }
+
+        shownButtons = [];
+        resolve();
+    });    
+}
+
+function showButtons(context, buttonsConfig, isStack) {
     if (buttonsConfig) {
         const buttons = [];
         if (buttonsConfig['ghci'] === true ||  buttonsConfig['ghci'] === undefined) {
@@ -133,8 +149,26 @@ export function activate(context: vscode.ExtensionContext) {
     const buttonsConfig = config['buttons'];
     let stackWd = getWorkDir(vscode.workspace.textDocuments[0].uri.fsPath)["cwd"];
     let isStack = stackWd !== undefined;
+    
+    const loadButtons = (document) => {
+        stackWd = getWorkDir(document ? document.uri.fsPath : vscode.workspace.textDocuments[0].uri.fsPath)["cwd"];
+        isStack = stackWd !== undefined;
+        showButtons(context, buttonsConfig, isStack);
+    };
 
-    loadButtons(context, buttonsConfig, isStack);
+    loadButtons(null);
+    console.log('Loaded');
+    
+    vscode.workspace.onDidOpenTextDocument((document) => {
+        if (document.uri.fsPath != openDocumentPath) { // Avoid the double callback when opening a new file
+            openDocumentPath = document.uri.fsPath;
+            removeAllButtons()
+            .then(() => {
+                loadButtons(document);
+                console.log('New file');
+            });
+        }
+    });
 
     /* Commands */
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {

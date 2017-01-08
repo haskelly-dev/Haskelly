@@ -8,6 +8,8 @@ const uuid_1 = require("./utils/uuid");
 const testCode_1 = require("./helpers/testCode");
 const index_1 = require("./codeCompletion/index");
 const workDir_1 = require("./utils/workDir");
+let shownButtons = [];
+let openDocumentPath;
 /* GHCi */
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
@@ -82,9 +84,19 @@ function createButtons(context, buttons) {
         button.text = buttons[i][0];
         button.command = buttons[i][1];
         button.show();
+        shownButtons.push(button);
     }
 }
-function loadButtons(context, buttonsConfig, isStack) {
+function removeAllButtons() {
+    return new Promise((resolve, reject) => {
+        for (let i = 0; i < shownButtons.length; i++) {
+            shownButtons[i].hide();
+        }
+        shownButtons = [];
+        resolve();
+    });
+}
+function showButtons(context, buttonsConfig, isStack) {
     if (buttonsConfig) {
         const buttons = [];
         if (buttonsConfig['ghci'] === true || buttonsConfig['ghci'] === undefined) {
@@ -122,7 +134,23 @@ function activate(context) {
     const buttonsConfig = config['buttons'];
     let stackWd = workDir_1.getWorkDir(vscode.workspace.textDocuments[0].uri.fsPath)["cwd"];
     let isStack = stackWd !== undefined;
-    loadButtons(context, buttonsConfig, isStack);
+    const loadButtons = (document) => {
+        stackWd = workDir_1.getWorkDir(document ? document.uri.fsPath : vscode.workspace.textDocuments[0].uri.fsPath)["cwd"];
+        isStack = stackWd !== undefined;
+        showButtons(context, buttonsConfig, isStack);
+    };
+    loadButtons(null);
+    console.log('Loaded');
+    vscode.workspace.onDidOpenTextDocument((document) => {
+        if (document.uri.fsPath != openDocumentPath) {
+            openDocumentPath = document.uri.fsPath;
+            removeAllButtons()
+                .then(() => {
+                loadButtons(document);
+                console.log('New file');
+            });
+        }
+    });
     /* Commands */
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         editor.document.save()
