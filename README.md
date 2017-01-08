@@ -51,10 +51,10 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 * `haskelly.buttons.stackRun`: set to `false` to hide the `Stack run` button in the bottom bar
 * `haskelly.buttons.stackTest`: set to `false` to hide the `Stack test` button in the bottom bar
 
-## Known Issues
+## Road map
 
-* Code completion not working in files inside a Stack project (Windows only).
-* Custom character in GHCi substituting the normal "Prelude" not supported yet.
+ Check out the next features and development of Haskelly in this [public board](https://trello.com/b/vsMlLU4h/haskelly-features).
+
 
 ### Contributing
 
@@ -65,7 +65,6 @@ could post any issue on the Github repository [issues section](https://github.co
 * Ideas and feature requests: We want to get everyone's opinion on what we're building so feel free to use the two mentioned channels for any comment or suggestion.
 * Documentation: Found a typo or strangely worded sentences? Submit a PR!
 * Code: Contribute bug fixes, features or design changes.
-
 
 ### Release notes
 
