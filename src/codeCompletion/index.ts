@@ -21,7 +21,6 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         splitter.on('token', (token) => {
             // Check if first suggestion is valid
             const re = /.*>.*/;
-            
             if (this.newSuggestions && re.test(token)) {
                 this.newSuggestions = false;
                 this.suggestions = [];
@@ -51,9 +50,13 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                 // No stack project
                 if (!error && !loaded) {
                     console.log('Loaded GHCi');
+
+                    // Change prompt
+                    sync.runSyncCommand(":set prompt  \"\x03BB> \"");
                     loaded = true;
+
                     if (!isStack) {
-                        sync.runCommand(`:l ${documentPath} \n`, 'Collecting', 'Failed', (line, error) => {
+                        sync.runCommand(`:l ${documentPath}`, 'Collecting', 'Failed', (line, error) => {
                             if (error) {
                                 sync = null;
                                 reject(line);

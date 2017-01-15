@@ -22,7 +22,7 @@ export default class SyncSpawn {
         splitter.encoding = 'utf8';
 
         splitter.on('token', (line) => {
-            //console.log(line);
+            console.log(line);
             if (line.indexOf(this.positiveOutput) !== -1) {
                 this.callback(line);
             } else if (line.indexOf(this.negativeOutput) !== -1) { 
@@ -44,7 +44,9 @@ export default class SyncSpawn {
         this.shell.stdin.write(command + '\n');
     }
 
-    public hello() {console.log("Hello")}
+    public runSyncCommand(command) {
+        this.shell.stdin.write(command + '\n');
+    }
 
     public getShell() {
         return this.shell;
