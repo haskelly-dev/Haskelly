@@ -20,7 +20,8 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         splitter.encoding = 'utf8';
         splitter.on('token', (token) => {
             // Check if first suggestion is valid
-            const re = /\*.*>.*/
+            const re = /.*>.*/;
+            
             if (this.newSuggestions && re.test(token)) {
                 this.newSuggestions = false;
                 this.suggestions = [];
