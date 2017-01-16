@@ -57,14 +57,30 @@
         "extensions": [
           ".hs"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./languages/configurations/haskell.json"
+      },
+      {
+        "id": "cabal",
+        "aliases": [
+          "Cabal",
+          "cabal"
+        ],
+        "extensions": [
+          ".cabal"
+        ],
+        "configuration": "./languages/configurations/cabal.json"
       }
     ],
     "grammars": [
       {
         "language": "haskell",
         "scopeName": "source.haskell",
-        "path": "./syntaxes/haskell.tmLanguage"
+        "path": "./languages/syntaxes/haskell.tmLanguage"
+      },
+      {
+        "language": "cabal",
+        "scopeName": "source.cabal",
+        "path": "./languages/syntaxes/cabal.tmLanguage"
       }
     ]
   },

@@ -102,22 +102,16 @@ class CompletionProvider implements vscode.CompletionItemProvider {
             this.completionsLoaded = true;
             this.newSuggestions = true;
             const word = this.getWord(position, document.getText());
+
             // Request completions
-            var filePathBeginning = document.uri.fsPath.slice(0,3)            
+            let filePathBeginning = document.uri.fsPath.slice(0,3)            
             if (filePathBeginning === 'c:\\') {
                 filePathBeginning = 'C:\\';
             }
             const filepath = filePathBeginning + document.uri.fsPath.slice(3, document.uri.fsPath.length);
-            //console.log(`:complete-at ${filepath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
             this.shell.stdin.write(`:complete-at ${filepath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`)
             
             setTimeout(() => {
-                console.log("suggestions: ");
-
-                for (let i = 0; i < this.suggestions.length; i++) {
-                    console.log(this.suggestions[i].label + "\n");
-                }
-
                 resolve(this.suggestions);
             }, timeout);
         });

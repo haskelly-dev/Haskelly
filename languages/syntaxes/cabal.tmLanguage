@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>fileTypes</key>
+    <array>
+        <string>cabal</string>
+    </array>
+    <key>name</key>
+    <string>Cabal</string>
+    <key>patterns</key>
+    <array>
+        <dict>
+            <key>name</key>
+            <string>keyword.other.cabal</string>
+            <key>match</key>
+            <string>(?ix)(\n|^)
+                ( name
+                | version
+                | cabal-version
+                | build-type
+                | license(-file)?
+                | copyright
+                | author
+                | maintainer
+                | stability
+                | homepage
+                | bug-reports
+                | package-url
+                | synopsis
+                | data-(files|dir)
+                | description
+                | category
+                | extra-(source|doc|tmp)-files
+                ):
+            </string>
+        </dict>
+        <dict>
+            <key>name</key>
+            <string>keyword.other.cabal</string>
+            <key>match</key>
+            <string>(?ix)^[ \t]+
+                ( build-depends
+                | other-modules
+                | hs-source-dirs
+                | ((other|default)-)?extensions
+                | build-tools
+                | buildable
+                | ghc(-(prof|shared))?-options
+                | (install-)?includes
+                | include-dirs
+                | (c|js)-sources
+                | extra(-ghci)?-libraries
+                | extra-lib-dirs
+                | (cc|cpp|ld)-options
+                | pkgconfig-depends
+                | default-language
+                | frameworks
+                | default
+                | manual
+                | location
+                | branch
+                | tag
+                | subdir
+                | tested-with
+                | exposed(-modules)?
+                | reexported-modules
+                | main-is
+                | type
+                | test-module
+                | description
+                ):
+            </string>
+        </dict>
+        <dict>
+            <key>name</key>
+            <string>keyword.operator.cabal</string>
+            <key>match</key>
+            <string>(==|>=|<=|<|>|\|\||&amp;&amp;|!)</string>
+        </dict>
+        <dict>
+            <key>name</key>
+            <string>constant.numeric.cabal</string>
+            <key>match</key>
+            <string>(?<=[^\w])\d+(\.\d+)*(\.\*)?</string>
+        </dict>
+        <dict>
+            <key>name</key>
+            <string>markup.underline.link.cabal</string>
+            <key>match</key>
+            <string>\w+:/(/[\w._\-\d%])+(\?[\w.+_\-\d%]+)(&amp;[\w._+\-\d%]+)*</string>
+        </dict>
+        <dict>
+            <key>name</key>
+            <string>entity.name.section.cabal</string>
+            <key>match</key>
+            <string>^(?i)library$</string>
+        </dict>
+        <dict>
+            <key>match</key>
+            <string>^(?ix:
+                ( executable
+                | flag
+                | test-suite
+                | source-repository
+                ))( |\t)+([\w\-_]+)$</string>
+            <key>captures</key>
+            <dict>
+                <key>1</key>
+                <dict>
+                    <key>name</key>
+                    <string>entity.name.section.cabal</string>
+                </dict>
+                <key>3</key>
+                <dict>
+                    <key>name</key>
+                    <string>entity.name.function.cabal</string>
+                </dict>
+            </dict>
+        </dict>
+        <dict>
+            <key>name</key>
+            <string>keyword.control.cabal</string>
+            <key>match</key>
+            <string>^[ \t]*(if|else)</string>
+        </dict>
+    </array>
+    <key>scopeName</key>
+    <string>source.cabal</string>
+    <key>uuid</key>
+    <string>5eb56f02-df11-40b2-b6d5-fa444522416c</string>
+</dict>
+</plist>
