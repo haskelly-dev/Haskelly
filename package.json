@@ -106,32 +106,32 @@
             "haskelly.buttons.runFile": {
                 "type": "boolean",
                 "default": true,
-                "description": "Show the Run File button."
+                "description": "Show the Run file button."
             },
             "haskelly.buttons.quickcheck": {
                 "type": "boolean",
                 "default": true,
-                "description": "Show the Quickcheck button."
+                "description": "Show the QuickCheck button."
             },
             "haskelly.buttons.stackRun": {
                 "type": "boolean",
                 "default": true,
-                "description": "Show the Stack Run button."
+                "description": "Show the Stack run button."
             },
             "haskelly.buttons.stackTest": {
                 "type": "boolean",
                 "default": true,
-                "description": "Show the Stack Test button."
+                "description": "Show the Stack test button."
             },
             "haskelly.snippets.important": {
                 "type": "boolean",
                 "default": false,
-                "description": "Hide code completion for which there's a snippet."
+                "description": "Hide code completion suggestion if there's a snippet."
             },
             "haskelly.snippets.custom": {
                 "type": "object",
                 "default": {},
-                "description": "Add your custom snippets here following the appropiate syntax."
+                "description": "Add your custom snippets following the appropiate syntax."
             }
         }
     }
