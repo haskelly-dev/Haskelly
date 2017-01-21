@@ -3,6 +3,7 @@ import { spawn } from 'child_process';
 import { getWorkDir } from '../utils/workDir'
 import * as vscode from 'vscode';
 import SyncSpawn from '../utils/syncSpawn';
+const fs = require('fs');
 
 class CompletionProvider implements vscode.CompletionItemProvider {
     shell;
@@ -10,9 +11,20 @@ class CompletionProvider implements vscode.CompletionItemProvider {
     completionsLoaded;
     suggestions;
     newSuggestions;
+    snippets:Array<String>;
 
-    constructor() {
-        this.suggestions = [];        
+    constructor(context:vscode.ExtensionContext) {
+        this.suggestions = [];
+
+        const snippetsConf = vscode.workspace.getConfiguration('haskelly')['snippets'];
+        if (snippetsConf && snippetsConf['important']) {
+            fs.readFile(`${context.extensionPath}/languages/snippets/haskell.json`, 'utf8', (err, data) => {
+                if (err) console.log(err);
+                else this.snippets = JSON.parse(data);
+            });
+        } else {
+            this.snippets = [];
+        }
     }
 
     private shellOutput() {
@@ -21,14 +33,18 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         splitter.on('token', (token) => {
             // Check if first suggestion is valid
             const re = /.*>.*/;
-            if (this.newSuggestions && re.test(token)) {
-                this.newSuggestions = false;
-                this.suggestions = [];
-                const suggestion = token.split(' ');
-                this.suggestions.push(new vscode.CompletionItem(suggestion[suggestion.length - 1]));
-            } else if (!this.newSuggestions) {
-                this.suggestions.push(new vscode.CompletionItem(token));
-            }
+
+            // Ignore if is snippet
+            if (this.snippets.length == 0 || !this.snippets[token]) {
+                if (this.newSuggestions && re.test(token) && !this.snippets[token]) {
+                    this.newSuggestions = false;
+                    this.suggestions = [];
+                    const suggestion = token.split(' ');
+                    this.suggestions.push(new vscode.CompletionItem(suggestion[suggestion.length - 1]));
+                } else if (!this.newSuggestions) {
+                    this.suggestions.push(new vscode.CompletionItem(token));
+                }            
+            }    
         });
         splitter.on('done', () => {
             console.log("DONE")

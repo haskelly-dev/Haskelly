@@ -2,7 +2,7 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
@@ -13,8 +13,10 @@
     "vscode": "^1.5.0"
   },
   "categories": [
-    "Languages"
+    "Languages",
+    "Snippets"
   ],
+  "keywords": ["language", "haskell", "highlight", "syntax", "snippets", "stack", "run", "support"],
   "activationEvents": [
     "onCommand:editor.runHaskell",
     "onCommand:editor.runQuickCheck",
@@ -82,8 +84,58 @@
         "scopeName": "source.cabal",
         "path": "./languages/syntaxes/cabal.tmLanguage"
       }
-    ]
-  },
+    ],
+    "snippets": [{
+      "language": "haskell",
+      "path": "./languages/snippets/haskell.json"
+    }],
+    "configuration": {
+        "type": "object",
+        "title": "Haskelly configuration",
+        "properties": {
+            "haskelly.codeCompletion": {
+                "type": "boolean",
+                "default": true,
+                "description": "Provide code completion."
+            },
+            "haskelly.buttons.ghci": {
+                "type": "boolean",
+                "default": true,
+                "description": "Show the GHCi button."
+            },
+            "haskelly.buttons.runFile": {
+                "type": "boolean",
+                "default": true,
+                "description": "Show the Run File button."
+            },
+            "haskelly.buttons.quickcheck": {
+                "type": "boolean",
+                "default": true,
+                "description": "Show the Quickcheck button."
+            },
+            "haskelly.buttons.stackRun": {
+                "type": "boolean",
+                "default": true,
+                "description": "Show the Stack Run button."
+            },
+            "haskelly.buttons.stackTest": {
+                "type": "boolean",
+                "default": true,
+                "description": "Show the Stack Test button."
+            },
+            "haskelly.snippets.important": {
+                "type": "boolean",
+                "default": false,
+                "description": "Hide code completion for which there's a snippet."
+            },
+            "haskelly.snippets.custom": {
+                "type": "object",
+                "default": {},
+                "description": "Add your custom snippets here following the appropiate syntax."
+            }
+        }
+    }
+  }, 
   "capabilities": {
     "completionProvider": {
       "resolveProvider": "true",

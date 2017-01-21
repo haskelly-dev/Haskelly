@@ -1,4 +1,12 @@
 'use strict';
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
@@ -6,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const uuid_1 = require("./utils/uuid");
 const testCode_1 = require("./helpers/testCode");
-const index_1 = require("./codeCompletion/index");
+const index_1 = require("./CodeCompletion/index");
 const workDir_1 = require("./utils/workDir");
 let shownButtons = [];
 let openDocumentPath;
@@ -140,7 +148,6 @@ function activate(context) {
         showButtons(context, buttonsConfig, isStack);
     };
     loadButtons(null);
-    console.log('Loaded');
     vscode.workspace.onDidOpenTextDocument((document) => {
         if (document.uri.fsPath != openDocumentPath) {
             openDocumentPath = document.uri.fsPath;
@@ -211,8 +218,24 @@ function activate(context) {
     }
     else {
         const sel = 'haskell';
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new index_1.default(), '.', '\"'));
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new index_1.default(context), '.', '\"'));
     }
+    /* Custom snippets */
+    const snippetsFilePath = `${context.extensionPath}/languages/snippets/haskell.json`;
+    fs.readFile(snippetsFilePath, 'utf8', (err, data) => {
+        if (err)
+            console.log(err);
+        else {
+            const snippets = JSON.parse(data);
+            const mergedSnippets = __assign({}, snippets, config['snippets']['custom']);
+            // Modify the snippets file
+            fs.writeFile(snippetsFilePath, JSON.stringify(mergedSnippets), function (err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
+    });
 }
 exports.activate = activate;
 function deactivate() {

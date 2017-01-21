@@ -3,6 +3,7 @@
 Haskelly is a VS Code extension that provides complete support for casual and expert Haskell
 development. This includes:
 * Code highlight
+* Snippets
 * Code completion
 * Running Haskell inside the editor using either GHCi, runHaskell or Stack build
 * Testing all the prop functions in a file with QuickCheck or Stack test
@@ -13,10 +14,15 @@ development. This includes:
 ### Code highlight
 Proper code highlight for Haskell code. It just works.
 
+### Code snippets
+Snippets for the most popular functions in Haskell such as `map` or `fold` and other structures like `data` or `newtype`. 
+For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and 
+force Haskelly to only provide the snippet set the configuration `haskelly.snippets.important` to `true`. Go to [Extension Settings](## Extension Settings)
+section to learn how to add your own snippets.
+
 ### Code completion
 Intelligent code completion using the [Intero](https://github.com/commercialhaskell/intero) package. This takes into account functions and
-constants defined in the opened file as well as the Haskell standard library and
-the imported modules.
+constants defined in the opened file as well as the Haskell standard library and the imported modules.
 
 ### Running Haskell
 The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
@@ -43,20 +49,23 @@ Watch a demo [here](https://www.youtube.com/watch?v=r3x64iz5xDk).
 
 ## Extension Settings
 
-Haskelly is fully customizable. Just add any of these properties in the preferences file (Code -> Preferences -> Work Space Settings (settings.json))
+Haskelly is fully customizable. Just add any of these properties in the preferences file (Code -> Preferences -> Workspace Settings (settings.json))
 * `haskelly.codeCompletion`: set to `false` to disable code completion
 * `haskelly.buttons.ghci`: set to `false` to hide the `GHCi` button in the bottom bar
 * `haskelly.buttons.runfile`: set to `false` to hide the `Run file` button in the bottom bar
 * `haskelly.buttons.quickcheck`: set to `false` to hide the `QuickCheck` button in the bottom bar
 * `haskelly.buttons.stackRun`: set to `false` to hide the `Stack run` button in the bottom bar
 * `haskelly.buttons.stackTest`: set to `false` to hide the `Stack test` button in the bottom bar
+* `haskelly.snippets.important` set to `true` to hide code completion for which there's a snippet.
+* `haskelly.snippets.custom` add your custom snippets following the structure of this [file](https://github.com/martrik/Haskelly/tree/master/languages/snippets/haskell.json).
+
 
 ## Road map
 
  Check out the next features and development of Haskelly in this [public board](https://trello.com/b/vsMlLU4h/haskelly-features).
 
 
-### Contributing
+## Contributing
 
 If you'd like to contribute to Haskelly, this is what you can do:
 
@@ -66,7 +75,7 @@ could post any issue on the Github repository [issues section](https://github.co
 * Documentation: Found a typo or strangely worded sentences? Submit a PR!
 * Code: Contribute bug fixes, features or design changes.
 
-### Release notes
+## Release notes
 
 Check out the release notes [here](https://github.com/martrik/Haskelly/releases).
 

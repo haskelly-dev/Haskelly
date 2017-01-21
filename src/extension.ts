@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 import { guid } from './utils/uuid';
 import { testHaskellFile } from './helpers/testCode';
-import CompletionProvider from './codeCompletion/index';
+import CompletionProvider from './CodeCompletion/index';
 import { getWorkDir } from './utils/workDir'
 
 let shownButtons : Array<vscode.StatusBarItem> = [];
@@ -157,7 +157,6 @@ export function activate(context: vscode.ExtensionContext) {
     };
 
     loadButtons(null);
-    console.log('Loaded');
     
     vscode.workspace.onDidOpenTextDocument((document) => {
         if (document.uri.fsPath != openDocumentPath) { // Avoid the double callback when opening a new file
@@ -230,8 +229,28 @@ export function activate(context: vscode.ExtensionContext) {
         console.log('Disabled code completion');
     } else {
         const sel:vscode.DocumentSelector = 'haskell';
-        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new CompletionProvider(), '.', '\"'));
+        context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new CompletionProvider(context), '.', '\"'));
     }
+
+    /* Custom snippets */
+    const snippetsFilePath = `${context.extensionPath}/languages/snippets/haskell.json`;
+    fs.readFile(snippetsFilePath, 'utf8', (err, data) => {
+        if (err) console.log(err);
+        else {
+            const snippets = JSON.parse(data);
+            const mergedSnippets = {
+                ...snippets,
+                ...config['snippets']['custom'],
+            };
+
+            // Modify the snippets file
+            fs.writeFile(snippetsFilePath, JSON.stringify(mergedSnippets), function(err) {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
+    });
 }
 
 export function deactivate() {
