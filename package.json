@@ -2,7 +2,7 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
@@ -16,7 +16,7 @@
     "Languages",
     "Snippets"
   ],
-  "keywords": ["language", "haskell", "highlight", "syntax", "snippets", "stack", "run", "support"],
+  "keywords": ["language", "haskell", "highlight", "snippets", "stack"],
   "activationEvents": [
     "onCommand:editor.runHaskell",
     "onCommand:editor.runQuickCheck",
