@@ -3,7 +3,7 @@
 Haskelly is a VS Code extension that provides complete support for casual and expert Haskell
 development. This includes:
 * Code highlight
-* Snippets
+* Code snippets
 * Code completion
 * Running Haskell inside the editor using either GHCi, runHaskell or Stack build
 * Testing all the prop functions in a file with QuickCheck or Stack test
