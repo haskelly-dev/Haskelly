@@ -29,7 +29,7 @@
 			<key>comment</key>
 			<string>In case this regex seems unusual for an infix operator, note that Haskell allows any ordinary function application (elem 4 [1..10]) to be rewritten as an infix expression (4 `elem` [1..10]).</string>
 			<key>match</key>
-			<string>(`)[a-zA-Z_']*?(`)</string>
+			<string>(`)[\p{Ll}_][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*(`)</string>
 			<key>name</key>
 			<string>keyword.operator.function.infix.haskell</string>
 		</dict>
@@ -47,7 +47,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(module)</string>
+			<string>\b(module)\b</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -57,7 +57,7 @@
 				</dict>
 			</dict>
 			<key>end</key>
-			<string>(where)</string>
+			<string>\b(where)\b</string>
 			<key>endCaptures</key>
 			<dict>
 				<key>1</key>
@@ -119,13 +119,13 @@
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>[A-Z][A-Za-z_']*</string>
+					<string>[\p{Lu}\p{Lt}][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
 					<key>name</key>
 					<string>entity.other.inherited-class.haskell</string>
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>\b[a-z][a-zA-Z0-9_']*\b</string>
+					<string>\b[\p{Ll}_][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
 					<key>name</key>
 					<string>variable.other.generic-type.haskell</string>
 				</dict>
@@ -164,7 +164,7 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(import)</string>
+			<string>\b(import)\b</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -174,7 +174,7 @@
 				</dict>
 			</dict>
 			<key>end</key>
-			<string>($|;)</string>
+			<string>($|;|(?=--))</string>
 			<key>name</key>
 			<string>meta.import.haskell</string>
 			<key>patterns</key>
@@ -214,7 +214,7 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>\b[A-Z][a-zA-Z_']*</string>
+					<string>\b[\p{Lu}\p{Lt}][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
 					<key>name</key>
 					<string>entity.other.inherited-class.haskell</string>
 				</dict>
@@ -222,7 +222,19 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(deriving|where|data|type|case|of|let|in|newtype|default)\b</string>
+			<string>(?x)\b
+			( deriving
+			| where
+			| data
+			| type([\t ]+(family|role))?
+			| case
+			| of
+			| let
+			| in
+			| newtype
+			| default
+			)\b
+			</string>
 			<key>name</key>
 			<string>keyword.other.haskell</string>
 		</dict>
@@ -315,6 +327,37 @@
 					<key>name</key>
 					<string>constant.character.escape.control.haskell</string>
 				</dict>
+				<dict>
+					<key>begin</key>
+					<string>\\\s</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>constant.character.escape.begin.haskell</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>\\</string>
+					<key>endCaptures</key>
+					<dict>
+						<key>0</key>
+						<dict>
+							<key>name</key>
+							<string>constant.character.escape.end.haskell</string>
+						</dict>
+					</dict>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>\S+</string>
+							<key>name</key>
+							<string>invalid.illegal.character-not-allowed-here.haskell</string>
+						</dict>
+					</array>
+				</dict>
 			</array>
 		</dict>
 		<dict>
@@ -370,22 +413,44 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>^\s*([a-z_][a-zA-Z0-9_']*|\([|!%$+\-.,=&lt;/&gt;]+\))\s*(::)</string>
+			<string>(?x)^(\s*)
+                (?&lt;fn&gt;
+                  (?:
+                    [\p{Ll}_][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']* |
+                    \(
+                      (?!--+\))
+                      (?:
+                        (?![(),;\[\]`{}_"'])[\p{S}\p{P}]
+                      )+
+                    \)
+                  )
+                  (?:\s*,\s*\g&lt;fn&gt;)?
+                )
+                \s*(::)</string>
 			<key>beginCaptures</key>
 			<dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>entity.name.function.haskell</string>
-				</dict>
 				<key>2</key>
+				<dict>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>[\p{Ll}_][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
+							<key>name</key>
+							<string>entity.name.function.haskell</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#infix_op</string>
+						</dict>
+					</array>
+				</dict>
+				<key>3</key>
 				<dict>
 					<key>name</key>
 					<string>keyword.other.double-colon.haskell</string>
 				</dict>
 			</dict>
-			<key>end</key>
-			<string>$\n?</string>
 			<key>name</key>
 			<string>meta.function.type-declaration.haskell</string>
 			<key>patterns</key>
@@ -395,6 +460,8 @@
 					<string>#type_signature</string>
 				</dict>
 			</array>
+			<key>end</key>
+			<string>(?=^(\1)?[^\s])</string>
 		</dict>
 		<dict>
 			<key>match</key>
@@ -404,7 +471,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b[A-Z]\w*\b</string>
+			<string>\b[\p{Lu}\p{Lt}][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
 			<key>name</key>
 			<string>constant.other.haskell</string>
 		</dict>
@@ -414,7 +481,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(abs|acos|acosh|all|and|any|appendFile|applyM|asTypeOf|asin|asinh|atan|atan2|atanh|break|catch|ceiling|compare|concat|concatMap|const|cos|cosh|curry|cycle|decodeFloat|div|divMod|drop|dropWhile|elem|encodeFloat|enumFrom|enumFromThen|enumFromThenTo|enumFromTo|error|even|exp|exponent|fail|filter|flip|floatDigits|floatRadix|floatRange|floor|fmap|foldl|foldl1|foldr|foldr1|fromEnum|fromInteger|fromIntegral|fromRational|fst|gcd|getChar|getContents|getLine|head|id|init|interact|ioError|isDenormalized|isIEEE|isInfinite|isNaN|isNegativeZero|iterate|last|lcm|length|lex|lines|log|logBase|lookup|map|mapM|mapM_|max|maxBound|maximum|maybe|min|minBound|minimum|mod|negate|not|notElem|null|odd|or|otherwise|pi|pred|print|product|properFraction|putChar|putStr|putStrLn|quot|quotRem|read|readFile|readIO|readList|readLn|readParen|reads|readsPrec|realToFrac|recip|rem|repeat|replicate|return|reverse|round|scaleFloat|scanl|scanl1|scanr|scanr1|seq|sequence|sequence_|show|showChar|showList|showParen|showString|shows|showsPrec|significand|signum|sin|sinh|snd|span|splitAt|sqrt|subtract|succ|sum|tail|take|takeWhile|tan|tanh|toEnum|toInteger|toRational|truncate|uncurry|undefined|unlines|until|unwords|unzip|unzip3|userError|words|writeFile|zip|zip3|zipWith|zipWith3)\b</string>
+			<string>\b(abs|acos|acosh|all|and|any|appendFile|applyM|asTypeOf|asin|asinh|atan|atan2|atanh|break|catch|ceiling|compare|concat|concatMap|const|cos|cosh|curry|cycle|decodeFloat|div|divMod|drop|dropWhile|elem|encodeFloat|enumFrom|enumFromThen|enumFromThenTo|enumFromTo|error|even|exp|exponent|fail|filter|flip|floatDigits|floatRadix|floatRange|floor|fmap|foldl|foldl1|foldr|foldr1|fromEnum|fromInteger|fromIntegral|fromRational|fst|gcd|getChar|getContents|getLine|head|id|init|interact|ioError|isDenormalized|isIEEE|isInfinite|isNaN|isNegativeZero|iterate|last|lcm|length|lex|lines|log|logBase|lookup|map|mapM|mapM_|max|maxBound|maximum|maybe|min|minBound|minimum|mod|negate|not|notElem|null|odd|or|otherwise|pi|pred|print|product|properFraction|putChar|putStr|putStrLn|quot|quotRem|read|readFile|readIO|readList|readLn|readParen|reads|readsPrec|realToFrac|recip|rem|repeat|replicate|return|reverse|round|scaleFloat|scanl|scanl1|scanr|scanr1|seq|sequence|sequence_|show|showChar|showList|showParen|showString|shows|showsPrec|significand|signum|sin|sinh|snd|span|splitAt|sqrt|subtract|succ|sum|tail|take|takeWhile|tan|tanh|toEnum|toInteger|toRational|truncate|uncurry|undefined|unlines|until|unwords|unzip|unzip3|userError|words|writeFile|zip|zip3|zipWith|zipWith3)\b(?!')</string>
 			<key>name</key>
 			<string>support.function.prelude.haskell</string>
 		</dict>
@@ -426,7 +493,7 @@
 			<key>comment</key>
 			<string>In case this regex seems overly general, note that Haskell permits the definition of new operators which can be nearly any string of punctuation characters, such as $%^&amp;*.</string>
 			<key>match</key>
-			<string>[|!%$?~+:\-.=&lt;/&gt;\\]+</string>
+			<string>[\p{S}\p{P}&amp;&amp;[^(),;\[\]`{}_"']]+</string>
 			<key>name</key>
 			<string>keyword.operator.haskell</string>
 		</dict>
@@ -470,18 +537,39 @@
 			<key>patterns</key>
 			<array>
 				<dict>
-					<key>captures</key>
+					<key>begin</key>
+					<string>(^[ \t]+)?(?=--+(?![\p{S}\p{P}&amp;&amp;[^(),;\[\]`{}_"']]))</string>
+					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.comment.haskell</string>
+							<string>punctuation.whitespace.comment.leading.haskell</string>
 						</dict>
 					</dict>
-					<key>match</key>
-					<string>(--).*$\n?</string>
-					<key>name</key>
-					<string>comment.line.double-dash.haskell</string>
+					<key>comment</key>
+					<string>Operators may begin with '--' as long as they are not entirely composed of '-' characters. This means comments can't be immediately followed by an allowable operator character.</string>
+					<key>end</key>
+					<string>(?!\G)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>begin</key>
+							<string>--</string>
+							<key>beginCaptures</key>
+							<dict>
+								<key>0</key>
+								<dict>
+									<key>name</key>
+									<string>punctuation.definition.comment.haskell</string>
+								</dict>
+							</dict>
+							<key>end</key>
+							<string>\n</string>
+							<key>name</key>
+							<string>comment.line.double-dash.haskell</string>
+						</dict>
+					</array>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -491,8 +579,10 @@
 		</dict>
 		<key>infix_op</key>
 		<dict>
+			<key>comment</key>
+			<string>An operator cannot be composed entirely of '-' characters; instead, it should be matched as a comment.</string>
 			<key>match</key>
-			<string>(\([|!%$+:\-.=&lt;/&gt;]+\)|\(,+\))</string>
+			<string>(\((?!--+\))[\p{S}\p{P}&amp;&amp;[^(),;\[\]`{}_"']]+\)|\(,+\))</string>
 			<key>name</key>
 			<string>entity.name.function.infix.haskell</string>
 		</dict>
@@ -508,13 +598,13 @@
 			<array>
 				<dict>
 					<key>match</key>
-					<string>\b[a-z][a-zA-Z_'0-9]*</string>
+					<string>\b[\p{Ll}_][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
 					<key>name</key>
 					<string>entity.name.function.haskell</string>
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>\b[A-Z][A-Za-z_'0-9]*</string>
+					<string>\b[\p{Lu}\p{Lt}][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
 					<key>name</key>
 					<string>storage.type.haskell</string>
 				</dict>
@@ -536,12 +626,16 @@
 					<key>name</key>
 					<string>meta.other.unknown.haskell</string>
 				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
 			</array>
 		</dict>
 		<key>module_name</key>
 		<dict>
 			<key>match</key>
-			<string>[A-Z][A-Za-z._']*</string>
+			<string>(?&lt;conid&gt;[\p{Lu}\p{Lt}][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*(\.\g&lt;conid&gt;)?)</string>
 			<key>name</key>
 			<string>support.other.module.haskell</string>
 		</dict>
@@ -587,7 +681,7 @@
 						</dict>
 					</dict>
 					<key>match</key>
-					<string>\(\s*([A-Z][A-Za-z]*)\s+([a-z][A-Za-z_']*)\)\s*(=&gt;)</string>
+					<string>\(\s*([\p{Lu}\p{Lt}][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*)\s+([\p{Ll}_][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*)\)\s*(=&gt;)</string>
 					<key>name</key>
 					<string>meta.class-constraint.haskell</string>
 				</dict>
@@ -615,13 +709,13 @@
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>\b[a-z][a-zA-Z0-9_']*\b</string>
+					<string>\b[\p{Ll}_][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
 					<key>name</key>
 					<string>variable.other.generic-type.haskell</string>
 				</dict>
 				<dict>
 					<key>match</key>
-					<string>\b[A-Z][a-zA-Z0-9_']*\b</string>
+					<string>\b[\p{Lu}\p{Lt}][\p{Ll}_\p{Lu}\p{Lt}\p{Nd}']*</string>
 					<key>name</key>
 					<string>storage.type.haskell</string>
 				</dict>

@@ -12,7 +12,8 @@ development. This includes:
 ## Features
 
 ### Code highlight
-Proper code highlight for Haskell code. It just works.
+Proper code highlight for Haskell code based on [Haskell TextMate](https://github.com/textmate/haskell.tmbundle) 
+and for Cabal files thanks to [Justus Adam](https://github.com/JustusAdam/language-haskell/blob/master/syntaxes/cabal.tmLanguage).
 
 ### Code snippets
 Snippets for the most popular functions such as `map` or `fold` and other structures like `data` or `newtype`. 
