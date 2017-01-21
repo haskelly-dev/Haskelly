@@ -3,7 +3,7 @@
 Haskelly is a VS Code extension that provides complete support for casual and expert Haskell
 development. This includes:
 * Code highlight
-* Snippets
+* Code snippets
 * Code completion
 * Running Haskell inside the editor using either GHCi, runHaskell or Stack build
 * Testing all the prop functions in a file with QuickCheck or Stack test
@@ -17,7 +17,7 @@ Proper code highlight for Haskell code. It just works.
 ### Code snippets
 Snippets for the most popular functions such as `map` or `fold` and other structures like `data` or `newtype`. 
 For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and 
-force Haskelly to only provide the snippet set the configuration `haskelly.snippets.important` to `true`. Go to [Extension Settings](## Extension Settings)
+force Haskelly to only provide the snippet set the configuration `haskelly.snippets.important` to `true`. Go to the [Extension Settings](## Extension Settings)
 section to learn how to add your own snippets.
 
 ### Code completion
