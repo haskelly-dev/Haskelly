@@ -122,7 +122,7 @@ function showButtons(context, buttonsConfig, isStack) {
             }
 
             if (buttonsConfig['stackRun'] === true ||  buttonsConfig['stackRun'] === undefined) {
-                buttons.push(['Stack test', 'editor.stackTest']);
+                buttons.push(['Stack run', 'editor.stackRun']);
             }
         } else {
             if (buttonsConfig['runfile'] === true ||  buttonsConfig['runfile'] === undefined) {
