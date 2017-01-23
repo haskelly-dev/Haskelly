@@ -50,11 +50,11 @@ class CompletionProvider implements vscode.CompletionItemProvider {
             }    
         });
         splitter.on('done', () => {
-            console.log("DONE")
-        })
+            console.log("Provider shell terminated.")
+        });
         splitter.on('error', (e) => {
             console.log("error: ", e)
-        })
+        });
     }
 
     private tryNewShell(documentPath) {
@@ -77,6 +77,10 @@ class CompletionProvider implements vscode.CompletionItemProvider {
 
                     // File is inside a Stack project
                     if (isStack) {
+                        if (this.shell) {
+                            this.shell.stdin.pause();
+                            this.shell.kill();                        
+                        }
                         this.shell = sync.getShell();
                         this.shellOutput(); 
                         resolve();
@@ -86,6 +90,10 @@ class CompletionProvider implements vscode.CompletionItemProvider {
                                 reject(line);
                             } else {
                                 console.log('Loaded file');
+                                if (this.shell) {
+                                    this.shell.stdin.pause();
+                                    this.shell.kill();                        
+                                }
                                 this.shell = sync.getShell();
                                 this.shellOutput(); 
                                 resolve();
@@ -148,13 +156,15 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         }
 
         vscode.workspace.onDidSaveTextDocument((document) => {
-            console.log(document);
-            reload(document);
+            if (document.languageId == 'haskell') {
+                reload(document);
+            }
         });
 
         vscode.workspace.onDidOpenTextDocument((document) => {
-            console.log('opened');
-            reload(document);
+            if (document.languageId == 'haskell') {
+                reload(document);
+            }
         });
     }
 

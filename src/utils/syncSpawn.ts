@@ -31,6 +31,10 @@ export default class SyncSpawn {
             }
         });
 
+        splitter.on('done', () => {
+            console.log("Sync shell terminated.")
+        });
+
         splitter.on('error', (error) => {
             console.log("Error: ", error);
             this.killProcess();
