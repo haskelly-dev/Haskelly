@@ -1,8 +1,9 @@
 const fs = require('fs');
 const exec = require('child_process').exec;
 const path = require('path');
-import { guid } from '../utils/uuid';
+const uuidV4 = require('uuid/v4');
 
+/* Parsing */
 function parseStdout(out) {
     const rawOut = out.split('\n');
     const passedTests = [];
@@ -27,6 +28,7 @@ function parseStdout(out) {
                 const failedInput = [];
                 i++;
 
+                // Find test name
                 while (rawOut[i] !== '') {
                     failedInput.push(rawOut[i]);
                     i++;
@@ -47,6 +49,7 @@ function parseStackStdout(out) {
     const passedTests = [];
     const failedTests = [];
 
+    // Checks if line is a QuickCheck test
     const isTest = (line) => {
         return line.slice(0, 3) === '+++' || line.slice(0, 3) === '***';
     }
@@ -90,6 +93,7 @@ function parseStackStdout(out) {
     return { passedTests, failedTests };
 }
 
+/* Testing */
 function shell(command, options) {
     return new Promise((resolve, reject) => {
         exec(command, options, (error, stdout, stderr) => {
@@ -125,9 +129,9 @@ function removeMainFunction(data) {
 
 export function testHaskellFile(filePath, stackWd) {
     return new Promise((resolve, reject) => {
-        const tempName = guid();
-        const newPath = `${path.dirname(filePath)}/${tempName}.hs`;
+        const newPath = `${path.dirname(filePath)}/${uuidV4()}.hs`;
 
+        // Not Stack project
         if (stackWd === undefined) {
             fs.createReadStream(filePath).pipe(fs.createWriteStream(newPath));
             fs.readFile(newPath, 'utf-8', (err, data) => {

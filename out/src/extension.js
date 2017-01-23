@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 const vscode = require("vscode");
 const fs = require('fs');
 const path = require('path');
-const uuid_1 = require("./utils/uuid");
+const uuidV4 = require('uuid/v4');
 const testCode_1 = require("./helpers/testCode");
 const index_1 = require("./CodeCompletion/index");
 const workDir_1 = require("./utils/workDir");
@@ -41,7 +41,7 @@ function stackRun(stackWd) {
 /* QuickCheck */
 function showTestError(error, extPath) {
     vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
-    const errorFilePath = `${extPath}/${uuid_1.guid()}.txt`;
+    const errorFilePath = `${extPath}/${uuidV4()}.txt`;
     fs.writeFile(errorFilePath, '-------- Error --------\n' + error + '------------------------', 'utf-8', err => {
         const term = vscode.window.createTerminal('Haskell Tests');
         term.sendText(`node ${__dirname}/utils/print.js ${errorFilePath}`);

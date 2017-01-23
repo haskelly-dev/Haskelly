@@ -6,9 +6,9 @@
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
-		"type": "git",
-		"url": "https://github.com/martrik/Haskelly.git"
-	},
+    "type": "git",
+    "url": "https://github.com/martrik/Haskelly.git"
+  },
   "engines": {
     "vscode": "^1.5.0"
   },
@@ -16,7 +16,13 @@
     "Languages",
     "Snippets"
   ],
-  "keywords": ["language", "haskell", "highlight", "snippets", "stack"],
+  "keywords": [
+    "language",
+    "haskell",
+    "highlight",
+    "snippets",
+    "stack"
+  ],
   "activationEvents": [
     "onCommand:editor.runHaskell",
     "onCommand:editor.runQuickCheck",
@@ -85,57 +91,59 @@
         "path": "./languages/syntaxes/cabal.tmLanguage"
       }
     ],
-    "snippets": [{
-      "language": "haskell",
-      "path": "./languages/snippets/haskell.json"
-    }],
+    "snippets": [
+      {
+        "language": "haskell",
+        "path": "./languages/snippets/haskell.json"
+      }
+    ],
     "configuration": {
-        "type": "object",
-        "title": "Haskelly configuration",
-        "properties": {
-            "haskelly.codeCompletion": {
-                "type": "boolean",
-                "default": true,
-                "description": "Provide code completion."
-            },
-            "haskelly.buttons.ghci": {
-                "type": "boolean",
-                "default": true,
-                "description": "Show the GHCi button."
-            },
-            "haskelly.buttons.runFile": {
-                "type": "boolean",
-                "default": true,
-                "description": "Show the Run file button."
-            },
-            "haskelly.buttons.quickcheck": {
-                "type": "boolean",
-                "default": true,
-                "description": "Show the QuickCheck button."
-            },
-            "haskelly.buttons.stackRun": {
-                "type": "boolean",
-                "default": true,
-                "description": "Show the Stack run button."
-            },
-            "haskelly.buttons.stackTest": {
-                "type": "boolean",
-                "default": true,
-                "description": "Show the Stack test button."
-            },
-            "haskelly.snippets.important": {
-                "type": "boolean",
-                "default": false,
-                "description": "Hide code completion suggestion if there's a snippet."
-            },
-            "haskelly.snippets.custom": {
-                "type": "object",
-                "default": {},
-                "description": "Add your custom snippets following the appropiate syntax."
-            }
+      "type": "object",
+      "title": "Haskelly configuration",
+      "properties": {
+        "haskelly.codeCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Provide code completion."
+        },
+        "haskelly.buttons.ghci": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the GHCi button."
+        },
+        "haskelly.buttons.runFile": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the Run file button."
+        },
+        "haskelly.buttons.quickcheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the QuickCheck button."
+        },
+        "haskelly.buttons.stackRun": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the Stack run button."
+        },
+        "haskelly.buttons.stackTest": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the Stack test button."
+        },
+        "haskelly.snippets.important": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide code completion suggestion if there's a snippet."
+        },
+        "haskelly.snippets.custom": {
+          "type": "object",
+          "default": {},
+          "description": "Add your custom snippets following the appropiate syntax."
         }
+      }
     }
-  }, 
+  },
   "capabilities": {
     "completionProvider": {
       "resolveProvider": "true",
@@ -157,6 +165,7 @@
     "@types/mocha": "^2.2.32"
   },
   "dependencies": {
-    "stream-splitter": "^0.3.2"
+    "stream-splitter": "^0.3.2",
+    "uuid": "^3.0.1"
   }
 }

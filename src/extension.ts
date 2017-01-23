@@ -4,7 +4,7 @@
 import * as vscode from 'vscode';
 const fs = require('fs');
 const path = require('path');
-import { guid } from './utils/uuid';
+const uuidV4 = require('uuid/v4');
 import { testHaskellFile } from './helpers/testCode';
 import CompletionProvider from './CodeCompletion/index';
 import { getWorkDir } from './utils/workDir'
@@ -39,7 +39,7 @@ function stackRun(stackWd) {
 function showTestError(error, extPath) {
     vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
 
-    const errorFilePath = `${extPath}/${guid()}.txt`;
+    const errorFilePath = `${extPath}/${uuidV4()}.txt`;
     fs.writeFile(errorFilePath, '-------- Error --------\n' + error +'------------------------', 'utf-8', err => {
         const term = vscode.window.createTerminal('Haskell Tests');
         term.sendText(`node ${__dirname}/utils/print.js ${errorFilePath}`);
