@@ -25,13 +25,15 @@ export default class SyncSpawn {
             // console.log(line);
             if (line.indexOf(this.positiveOutput) !== -1) {
                 this.callback(line);
-            } else if (line.indexOf(this.negativeOutput) !== -1) { 
+            } else if (line.indexOf(this.negativeOutput) !== -1) {  // Error
+                this.killProcess();
                 this.callback(line, true);
             }
         });
 
         splitter.on('error', (error) => {
             console.log("Error: ", error);
+            this.killProcess();
             this.callback(error, true);
         });
     }
@@ -50,5 +52,10 @@ export default class SyncSpawn {
 
     public getShell() {
         return this.shell;
+    }
+
+    private killProcess() {
+        this.shell.stdin.pause();
+        this.shell.kill();
     }
 }

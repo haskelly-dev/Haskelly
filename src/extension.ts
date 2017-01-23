@@ -137,6 +137,7 @@ function showButtons(context, buttonsConfig, isStack) {
         createButtons(context, buttons);
     } else {
         if (isStack) {
+            console.log('Stack');
             createButtons(context, [['Load GHCi', 'editor.ghci'], ['Stack run', 'editor.stackRun'], ['Stack test', 'editor.stackTest']]);
         } else {
             createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'], ['QuickCheck', 'editor.runQuickCheck']]);

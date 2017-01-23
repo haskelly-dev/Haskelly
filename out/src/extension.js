@@ -115,7 +115,7 @@ function showButtons(context, buttonsConfig, isStack) {
                 buttons.push(['Stack test', 'editor.stackTest']);
             }
             if (buttonsConfig['stackRun'] === true || buttonsConfig['stackRun'] === undefined) {
-                buttons.push(['Stack test', 'editor.stackTest']);
+                buttons.push(['Stack run', 'editor.stackRun']);
             }
         }
         else {
@@ -130,6 +130,7 @@ function showButtons(context, buttonsConfig, isStack) {
     }
     else {
         if (isStack) {
+            console.log('Stack');
             createButtons(context, [['Load GHCi', 'editor.ghci'], ['Stack run', 'editor.stackRun'], ['Stack test', 'editor.stackTest']]);
         }
         else {
