@@ -2,7 +2,7 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
@@ -49,6 +49,10 @@
       {
         "command": "editor.stackTest",
         "title": "Stack test"
+      },
+       {
+        "command": "editor.stackBuild",
+        "title": "Stack build"
       },
       {
         "command": "editor.stackRun",
@@ -125,6 +129,11 @@
           "type": "boolean",
           "default": true,
           "description": "Show the Stack run button."
+        },
+        "haskelly.buttons.stackBuild": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the Stack build button."
         },
         "haskelly.buttons.stackTest": {
           "type": "boolean",

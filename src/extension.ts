@@ -27,9 +27,17 @@ function runHaskell(extPath, src) {
     term.sendText(`stack runhaskell ${src}`);
 }
 
+/* Stack Build */
+function stackBuild(stackWd) {
+    const term = vscode.window.createTerminal('Stack Build');
+    term.sendText(`cd ${stackWd}`);
+    term.sendText(`stack build --fast`);
+    term.show();
+}
+
 /* Stack Run */
 function stackRun(stackWd) {
-    const term = vscode.window.createTerminal('Haskell Run');
+    const term = vscode.window.createTerminal('Stack Run');
     term.sendText(`cd ${stackWd}`);
     term.sendText(`stack run`);
     term.show();
@@ -121,6 +129,10 @@ function showButtons(context, buttonsConfig, isStack) {
                 buttons.push(['Stack test', 'editor.stackTest']);
             }
 
+            if (buttonsConfig['stackBuild'] === true ||  buttonsConfig['stackBuild'] === undefined) {
+                buttons.push(['Stack build', 'editor.stackBuild']);
+            }
+
             if (buttonsConfig['stackRun'] === true ||  buttonsConfig['stackRun'] === undefined) {
                 buttons.push(['Stack run', 'editor.stackRun']);
             }
@@ -137,8 +149,8 @@ function showButtons(context, buttonsConfig, isStack) {
         createButtons(context, buttons);
     } else {
         if (isStack) {
-            console.log('Stack');
-            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Stack run', 'editor.stackRun'], ['Stack test', 'editor.stackTest']]);
+            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Stack build', 'editor.stackBuild'],
+            ['Stack run', 'editor.stackRun'], ['Stack test', 'editor.stackTest']]);
         } else {
             createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'], ['QuickCheck', 'editor.runQuickCheck']]);
         }
@@ -202,8 +214,18 @@ export function activate(context: vscode.ExtensionContext) {
         }); 
     }));
 
-    context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackRun', editor => {
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackBuild', editor => {
         editor.document.save()
+        .then(() => {
+            if (isStack) {
+                stackBuild(stackWd);
+            } else {
+                vscode.window.showErrorMessage('No Stack project was found.');
+            }
+        });        
+    }));
+
+    context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackRun', editor => {
         editor.document.save()
         .then(() => {
             if (isStack) {
