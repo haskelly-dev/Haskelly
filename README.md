@@ -44,7 +44,7 @@ Watch a demo [here](https://www.youtube.com/watch?v=r3x64iz5xDk).
 * [Stack](https://www.haskellstack.org). If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack. After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
 * Stack packages (installed locally if working inside a Stack project):
     * Intero package for code completion. To install it globally: `$ stack install intero` or `$ stack build intero` if working on a Stack project.
-    * QuickCheck package for running `QuickCheck`. To install it: `$ stack install quickcheck`.
+    * QuickCheck package for running `QuickCheck`. To install it: `$ stack install QuickCheck`.
     * stack-run package for running `stack run`. To install it: `$ stack install stack-run`.
 
 
