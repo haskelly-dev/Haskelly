@@ -21,9 +21,12 @@ let openDocumentPath;
 /* GHCi */
 function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
+    const folder = path.dirname(src);
+    const file = path.basename(src);
+    term.sendText(`cd ${folder}`);
     term.show();
-    term.sendText('stack ghci');
-    term.sendText(`:load ${src}`);
+    term.sendText(`stack ghci`);
+    term.sendText(`:load ${file}`);
 }
 /* Run Haskell */
 function runHaskell(extPath, src) {
