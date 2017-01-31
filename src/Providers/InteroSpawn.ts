@@ -148,8 +148,11 @@ export default class InteroSpawn {
                 this.shell.stdin.write(`:type-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
 
                 setTimeout(() => {
-                    console.log(this.type);
-                    resolve(new vscode.Hover(this.type));
+                    if (this.type) {
+                        resolve(new vscode.Hover(this.type));
+                    } else {
+                        resolve(new vscode.Hover('Loading...'));
+                    }
                 }, 30);
             }
         });
@@ -163,11 +166,11 @@ export default class InteroSpawn {
         splitter.encoding = 'utf8';
 
         splitter.on('token', (token) => {
-            // Check if first suggestion is valid
             const re = /.*>.*/;
             //console.log(token);
 
             if (this.requestingCompletion) {
+                // Check if first suggestion is valid
                 if (this.newSuggestions && re.test(token)) {
                     this.newSuggestions = false;
                     this.suggestions = [];
@@ -177,10 +180,7 @@ export default class InteroSpawn {
                     this.suggestions.push(new vscode.CompletionItem(token));
                 } 
             } else if (this.requestingType) {
-                console.log('type:');
-                console.log(token);
                 this.type = token.replace(/.*>/, "");
-                console.log('Hover', token);
             }                         
         });
 
