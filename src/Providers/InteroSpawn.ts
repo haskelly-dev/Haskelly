@@ -37,7 +37,7 @@ export default class InteroSpawn {
             let loaded;
             let errored;
        
-            console.log("Trying new Intero");
+            console.log("Trying new Intero from document", documentPath);
             this.loadIntero(isStack, workDir, documentPath)
             .then(result => {
                 console.log('Intero loaded correctly')
@@ -135,7 +135,7 @@ export default class InteroSpawn {
                 setTimeout(() => {
                     this.requestingCompletion = false;
                     resolve(this.suggestions);
-                }, 30);
+                }, 50);
             }
         });
     }
@@ -144,16 +144,19 @@ export default class InteroSpawn {
         return new Promise((resolve, reject) => {
             if (this.shell) {
                 this.requestingType = true;
+                this.type = '';
+
+                console.log(`:type-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
 
                 this.shell.stdin.write(`:type-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
 
                 setTimeout(() => {
                     if (this.type) {
-                        resolve(new vscode.Hover(this.type));
+                        resolve(new vscode.Hover({ language: 'haskell', value: this.type }));
                     } else {
-                        resolve(new vscode.Hover('Loading...'));
+                        resolve(new vscode.Hover('Type not available.'));
                     }
-                }, 30);
+                }, 50);
             }
         });
     }
@@ -167,7 +170,7 @@ export default class InteroSpawn {
 
         splitter.on('token', (token) => {
             const re = /.*>.*/;
-            //console.log(token);
+            console.log(token);
 
             if (this.requestingCompletion) {
                 // Check if first suggestion is valid
@@ -180,7 +183,7 @@ export default class InteroSpawn {
                     this.suggestions.push(new vscode.CompletionItem(token));
                 } 
             } else if (this.requestingType) {
-                this.type = token.replace(/.*>/, "");
+                this.type += token.replace(/λ> /g, '');
             }                         
         });
 

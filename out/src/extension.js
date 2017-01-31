@@ -156,11 +156,13 @@ function showButtons(context, buttonsConfig, isStack) {
 function activate(context) {
     const config = vscode.workspace.getConfiguration('haskelly');
     const buttonsConfig = config['buttons'];
-    let stackWd = workDir_1.getWorkDir(vscode.window.activeTextEditor.document.uri.fsPath)["cwd"];
+    const documentPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath
+        : vscode.workspace.textDocuments[0].uri.fsPath;
+    let stackWd = workDir_1.getWorkDir(documentPath)["cwd"];
     let isStack = stackWd !== undefined;
     /* Set up Stack buttons */
     const loadButtons = (document) => {
-        stackWd = workDir_1.getWorkDir(document ? document.uri.fsPath : vscode.window.activeTextEditor.document.uri.fsPath)["cwd"];
+        stackWd = workDir_1.getWorkDir(documentPath)["cwd"];
         isStack = stackWd !== undefined;
         showButtons(context, buttonsConfig, isStack);
     };
@@ -240,7 +242,8 @@ function activate(context) {
     }));
     const sel = 'haskell';
     /* Init Intero process */
-    InteroSpawn_1.default.getInstance().tryNewIntero(vscode.window.activeTextEditor.document.uri.fsPath);
+    InteroSpawn_1.default.getInstance().tryNewIntero(documentPath)
+        .catch(error => console.log(error));
     /* Type hover */
     context.subscriptions.push(vscode.languages.registerHoverProvider(sel, new index_2.default()));
     /* Code completion */

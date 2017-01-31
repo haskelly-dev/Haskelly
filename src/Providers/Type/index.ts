@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import InteroSpawn from '../InteroSpawn';
-import { getWord } from '../../utils/other';
+import { getNearWord } from '../../utils/other';
 
 class TypeProvider implements vscode.HoverProvider {
     constructor() {
@@ -9,7 +9,9 @@ class TypeProvider implements vscode.HoverProvider {
 
     public provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.Hover> {
         return new Promise((resolve, reject) => {
-            const word = getWord(position, document.getText());
+            const word = getNearWord(position, document.getText());
+
+            console.log('Type for word ', word, position.line, position.character);
 
             let filePathBeginning = document.uri.fsPath.slice(0,3)            
             if (filePathBeginning === 'c:\\') {
