@@ -1,9 +1,9 @@
 # Haskelly
 
-Haskelly is a VS Code extension that provides complete support for casual and expert Haskell
-development. This includes:
+Haskelly is a VS Code extension that provides complete support for casual and expert Haskell development. This includes:
 * Code highlight
 * Code snippets
+* Type hovers
 * Code completion
 * Running Haskell inside the editor using either GHCi, runHaskell or Stack build
 * Testing all the prop functions in a file with QuickCheck or Stack test
@@ -18,8 +18,11 @@ Proper code highlight for Haskell code based on [Haskell TextMate](https://githu
 Snippets for the most popular functions such as `map` or `fold` and other structures like `data` or `newtype`. 
 For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and force Haskelly to only provide the snippet set the configuration `haskelly.snippets.important` to `true`. Go to the [Extension Settings](## Extension Settings) section to learn how to add your own snippets.
 
+### Type hovers
+Hover on top of an identifier and Haskelly will tell you what's its type. 
+
 ### Code completion
-Intelligent code completion using the [Intero](https://github.com/commercialhaskell/intero) package. This takes into account functions and constants defined in the opened file as well as the Haskell standard library and the imported modules.
+Intelligent code completion which takes into account functions and constants defined in the opened file as well as the Haskell standard library and any imported modules.
 
 ### Running Haskell
 The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
@@ -76,6 +79,10 @@ could post any issue on the Github repository [issues section](https://github.co
 ## Release notes
 
 Check out the release notes [here](https://github.com/martrik/Haskelly/releases).
+
+## Intero
+
+Haskelly uses the [Intero](https://github.com/commercialhaskell/intero) package in order to provide code completion and type hovers.
 
 ## License
 
