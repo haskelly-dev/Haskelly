@@ -14,7 +14,9 @@ const fs = require('fs');
 const path = require('path');
 const uuidV4 = require('uuid/v4');
 const testCode_1 = require("./helpers/testCode");
-const index_1 = require("./CodeCompletion/index");
+const InteroSpawn_1 = require("./Providers/InteroSpawn");
+const index_1 = require("./Providers/Completion/index");
+const index_2 = require("./Providers/Type/index");
 const workDir_1 = require("./utils/workDir");
 let shownButtons = [];
 let openDocumentPath;
@@ -151,10 +153,11 @@ function showButtons(context, buttonsConfig, isStack) {
 function activate(context) {
     const config = vscode.workspace.getConfiguration('haskelly');
     const buttonsConfig = config['buttons'];
-    let stackWd = workDir_1.getWorkDir(vscode.workspace.textDocuments[0].uri.fsPath)["cwd"];
+    let stackWd = workDir_1.getWorkDir(vscode.window.activeTextEditor.document.uri.fsPath)["cwd"];
     let isStack = stackWd !== undefined;
+    /* Set up Stack buttons */
     const loadButtons = (document) => {
-        stackWd = workDir_1.getWorkDir(document ? document.uri.fsPath : vscode.workspace.textDocuments[0].uri.fsPath)["cwd"];
+        stackWd = workDir_1.getWorkDir(document ? document.uri.fsPath : vscode.window.activeTextEditor.document.uri.fsPath)["cwd"];
         isStack = stackWd !== undefined;
         showButtons(context, buttonsConfig, isStack);
     };
@@ -165,11 +168,10 @@ function activate(context) {
             removeAllButtons()
                 .then(() => {
                 loadButtons(document);
-                console.log('New file');
             });
         }
     });
-    /* Commands */
+    /* Register Commands */
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         editor.document.save()
             .then(() => {
@@ -233,12 +235,16 @@ function activate(context) {
             }
         });
     }));
+    const sel = 'haskell';
+    /* Init Intero process */
+    InteroSpawn_1.default.getInstance().tryNewIntero(vscode.window.activeTextEditor.document.uri.fsPath);
+    /* Type hover */
+    context.subscriptions.push(vscode.languages.registerHoverProvider(sel, new index_2.default()));
     /* Code completion */
     if (config['codeCompletion'] === false) {
         console.log('Disabled code completion');
     }
     else {
-        const sel = 'haskell';
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new index_1.default(context), '.', '\"'));
     }
     /* Custom snippets */
@@ -260,6 +266,8 @@ function activate(context) {
 }
 exports.activate = activate;
 function deactivate() {
+    // Cleanup of Spawn process
+    InteroSpawn_1.default.getInstance().killCurrentShell();
 }
 exports.deactivate = deactivate;
 //# sourceMappingURL=extension.js.map

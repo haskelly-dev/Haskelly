@@ -2,13 +2,20 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
     "type": "git",
     "url": "https://github.com/martrik/Haskelly.git"
   },
+  "bugs": {
+        "url": "https://github.com/martrik/Haskelly.git/issues"
+  },
+  "galleryBanner": {
+        "color": "#8F4D8B",
+        "theme": "light"
+    },
   "engines": {
     "vscode": "^1.5.0"
   },
@@ -153,18 +160,11 @@
       }
     }
   },
-  "capabilities": {
-    "completionProvider": {
-      "resolveProvider": "true",
-      "triggerCharacters": [
-        "."
-      ]
-    }
-  },
   "scripts": {
-    "vscode:prepublish": "",
+    "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
     "typescript": "^2.0.3",
