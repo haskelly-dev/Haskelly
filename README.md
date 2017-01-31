@@ -12,23 +12,18 @@ development. This includes:
 ## Features
 
 ### Code highlight
-Proper code highlight for Haskell code based on [Haskell TextMate](https://github.com/textmate/haskell.tmbundle)  
-and for Cabal files thanks to [Justus Adam](https://github.com/JustusAdam/language-haskell/blob/master/syntaxes/cabal.tmLanguage).
+Proper code highlight for Haskell code based on [Haskell TextMate](https://github.com/textmate/haskell.tmbundle) and for Cabal files thanks to [Justus Adam](https://github.com/JustusAdam/language-haskell/blob/master/syntaxes/cabal.tmLanguage).
 
 ### Code snippets
 Snippets for the most popular functions such as `map` or `fold` and other structures like `data` or `newtype`. 
-For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and  
-force Haskelly to only provide the snippet set the configuration `haskelly.snippets.important` to `true`. Go to the [Extension Settings](## Extension Settings)  
-section to learn how to add your own snippets.
+For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and force Haskelly to only provide the snippet set the configuration `haskelly.snippets.important` to `true`. Go to the [Extension Settings](## Extension Settings) section to learn how to add your own snippets.
 
 ### Code completion
-Intelligent code completion using the [Intero](https://github.com/commercialhaskell/intero) package. This takes into account functions and
-constants defined in the opened file as well as the Haskell standard library and the imported modules.
+Intelligent code completion using the [Intero](https://github.com/commercialhaskell/intero) package. This takes into account functions and constants defined in the opened file as well as the Haskell standard library and the imported modules.
 
 ### Running Haskell
 The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
-* GHCi: you can call all the functions declared in the file providing the arguments. The
-extension calls `stack ghci` in the background.
+* GHCi: you can call all the functions declared in the file providing the arguments. The extension calls `stack ghci` in the background.
 
 * Run file: looks for a main function and executes it. The extension uses `stack runhaskell` under the hood.
 
@@ -41,7 +36,9 @@ Watch a demo [here](https://www.youtube.com/watch?v=r3x64iz5xDk).
 
 ## Requirements
 * [NodeJS](https://nodejs.org/en/) 6 or higher.
+
 * [Stack](https://www.haskellstack.org). If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack. After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
+
 * Stack packages (installed locally if working inside a Stack project):
     * Intero package for code completion. To install it globally: `$ stack install intero` or `$ stack build intero` if working on a Stack project.
     * QuickCheck package for running `QuickCheck`. To install it: `$ stack install QuickCheck`.
