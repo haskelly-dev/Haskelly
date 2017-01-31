@@ -11,14 +11,11 @@ class TypeProvider implements vscode.HoverProvider {
         return new Promise((resolve, reject) => {
             const word = getWord(position, document.getText());
 
-            // Request completions
             let filePathBeginning = document.uri.fsPath.slice(0,3)            
             if (filePathBeginning === 'c:\\') {
                 filePathBeginning = 'C:\\';
             }
             const filepath = filePathBeginning + document.uri.fsPath.slice(3, document.uri.fsPath.length);
-
-            console.log('type at ', position.line);
 
             InteroSpawn.getInstance().requestType(filepath, position, word)
             .then(hover => {
