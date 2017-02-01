@@ -38,8 +38,6 @@ Easily run [QuickCheck](https://hackage.haskell.org/package/QuickCheck) on all t
 Watch a demo [here](https://www.youtube.com/watch?v=r3x64iz5xDk).
 
 ## Requirements
-* [NodeJS](https://nodejs.org/en/) 6 or higher.
-
 * [Stack](https://www.haskellstack.org). If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack. After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
 
 * Stack packages (installed locally if working inside a Stack project):

@@ -12,6 +12,7 @@ export default class InteroSpawn {
     private newSuggestions:boolean;
     private suggestions:Array<vscode.CompletionItem>;
     private type:string;
+    private openedDocument:string;
 
     private constructor() {
         if (InteroSpawn._instance) {
@@ -67,6 +68,7 @@ export default class InteroSpawn {
                     // File is inside a Stack project
                     if (isStack) {
                         this.killCurrentShell();
+                        this.openedDocument = workDir["cwd"];
                         this.shell = sync.getShell();
                         this.shellOutput();
                         resolve();
@@ -77,6 +79,7 @@ export default class InteroSpawn {
                             } else {
                                 console.log('Loaded file');
                                 this.killCurrentShell();
+                                this.openedDocument = documentPath;
                                 this.shell = sync.getShell();
                                 this.shellOutput();
                                 resolve();
@@ -105,15 +108,18 @@ export default class InteroSpawn {
             }
         });
 
-        vscode.workspace.onDidOpenTextDocument((document) => {
-            if (document.languageId == 'haskell') {
-                reload(document);
-            }
-        });
+        vscode.window.onDidChangeActiveTextEditor((editor:vscode.TextEditor) => {
+            if (editor && editor.document.languageId === 'haskell') {
+                const stackDir = getWorkDir(editor.document.uri.fsPath)["cwd"];
 
-        vscode.workspace.onDidChangeTextDocument((documentEvent:vscode.TextDocumentChangeEvent) => {
-            if (documentEvent.document.languageId == 'haskell') {
-                reload(documentEvent.document);
+                // Avoid reload if opened document from same Stack project
+                if (stackDir && (this.openedDocument !== stackDir)) {
+                    this.openedDocument = stackDir;
+                    reload(editor.document);
+                } else if (!stackDir && (this.openedDocument !== editor.document.uri.fsPath)) {
+                    this.openedDocument = editor.document.uri.fsPath;
+                    reload(editor.document);
+                }
             }
         });
     }
@@ -172,7 +178,7 @@ export default class InteroSpawn {
 
         splitter.on('token', (token) => {
             const re = /.*>.*/;
-            console.log(token);
+            //console.log(token);
 
             if (this.requestingCompletion) {
                 // Check if first suggestion is valid
