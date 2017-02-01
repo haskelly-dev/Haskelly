@@ -162,11 +162,14 @@ function activate(context) {
     let isStack = stackWd !== undefined;
     /* Set up Stack buttons */
     const loadButtons = (document) => {
-        stackWd = workDir_1.getWorkDir(documentPath)["cwd"];
-        isStack = stackWd !== undefined;
+        const stackWd = workDir_1.getWorkDir(document.uri.fsPath)["cwd"];
+        const isStack = stackWd !== undefined;
         showButtons(context, buttonsConfig, isStack);
     };
-    loadButtons(null);
+    /* Load initial buttons */
+    loadButtons(vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document
+        : vscode.workspace.textDocuments[0]);
+    /* Listen for document change to update buttons */
     vscode.workspace.onDidOpenTextDocument((document) => {
         if (document.uri.fsPath != openDocumentPath) {
             openDocumentPath = document.uri.fsPath;

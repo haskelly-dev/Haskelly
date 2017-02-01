@@ -89,7 +89,6 @@ export default class InteroSpawn {
     }
 
     private listenChanges() {
-        console.log('Listen for change');
         const reload = (document: vscode.TextDocument) => {
             var filePathBeginning = document.uri.fsPath.slice(0,3)            
             if (filePathBeginning === 'c:\\') {
@@ -111,6 +110,12 @@ export default class InteroSpawn {
                 reload(document);
             }
         });
+
+        vscode.workspace.onDidChangeTextDocument((documentEvent:vscode.TextDocumentChangeEvent) => {
+            if (documentEvent.document.languageId == 'haskell') {
+                reload(documentEvent.document);
+            }
+        });
     }
 
     public killCurrentShell() {
@@ -123,7 +128,6 @@ export default class InteroSpawn {
     /**
      * Intero requests
      */
-
     public requestCompletions(filePath:string, position:vscode.Position, word:String) {
         return new Promise((resolve, reject) => {
             if (this.shell) {
@@ -145,8 +149,6 @@ export default class InteroSpawn {
             if (this.shell) {
                 this.requestingType = true;
                 this.type = '';
-
-                console.log(`:type-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
 
                 this.shell.stdin.write(`:type-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
 
