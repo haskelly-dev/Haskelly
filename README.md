@@ -16,7 +16,7 @@ Proper code highlight for Haskell code based on [Haskell TextMate](https://githu
 
 ### Code snippets
 Snippets for the most popular functions such as `map` or `fold` and other structures like `data` or `newtype`. 
-For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and force Haskelly to only provide the snippet set the configuration `haskelly.snippets.important` to `true`. Go to the [Extension Settings](## Extension Settings) section to learn how to add your own snippets.
+For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and force Haskelly to only provide the snippet, set the configuration `haskelly.snippets.important` to `true`. Go to the [Extension Settings](## Extension Settings) section to learn how to add your own snippets.
 
 ### Type hovers
 Hover on top of an identifier and Haskelly will tell you what's its type. 
