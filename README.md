@@ -35,6 +35,8 @@ The extension allows three ways of executing Haskell using the integrated termin
 ### Testing Haskell
 Easily run [QuickCheck](https://hackage.haskell.org/package/QuickCheck) on all the functions that start with the prefix `prop_` in the currently opened file. If working in a Stack project, Haskelly will run `stack test`.
 
+## Demo 
+
 Watch a demo [here](https://www.youtube.com/watch?v=r3x64iz5xDk).
 
 ## Requirements
