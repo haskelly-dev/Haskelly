@@ -26,7 +26,7 @@ Hover on top of an identifier and Haskelly will tell you what's its type.
 ### Code completion
 Intelligent code completion which takes into account functions and constants defined in the opened file as well as the Haskell standard library and any imported modules.
 
-![Demo](https://cl.ly/3N3i3E2P1k2v)
+![Demo](https://d17oy1vhnax1f7.cloudfront.net/items/0r3z0K2n0F0g2k2b1j3V/Screen%20Recording%202017-02-02%20at%2002.35%20pm.gif?v=61754b94)
 
 ### Running Haskell
 The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
