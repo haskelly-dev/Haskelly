@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import SyncSpawn from '../utils/syncSpawn';
-import InitIntero from './InitIntero';
+// import InitIntero from './InitIntero';
 
 import { getWorkDir } from '../utils/workDir'
 const StreamSplitter = require('stream-splitter');
