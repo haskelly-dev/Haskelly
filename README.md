@@ -19,10 +19,14 @@ Snippets for the most popular functions such as `map` or `fold` and other struct
 For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and force Haskelly to only provide the snippet, set the configuration `haskelly.snippets.important` to `true`. Go to the [Extension Settings](## Extension Settings) section to learn how to add your own snippets.
 
 ### Type hovers
-Hover on top of an identifier and Haskelly will tell you what's its type. 
+Hover on top of an identifier and Haskelly will tell you what's its type.
+
+![Demo](https://d17oy1vhnax1f7.cloudfront.net/items/1C3G14183k0k3B3S3x1m/Screen%20Recording%202017-02-02%20at%2002.25%20pm.gif) 
 
 ### Code completion
 Intelligent code completion which takes into account functions and constants defined in the opened file as well as the Haskell standard library and any imported modules.
+
+![Demo](https://cl.ly/3N3i3E2P1k2v)
 
 ### Running Haskell
 The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
@@ -31,6 +35,8 @@ The extension allows three ways of executing Haskell using the integrated termin
 * Run file: looks for a main function and executes it. The extension uses `stack runhaskell` under the hood.
 
 * Stack run: runs the Stack project defined in the root folder. The extension runs `stack run` which uses the [stack-run](https://hackage.haskell.org/package/stack-run) package.
+
+![Demo](https://d17oy1vhnax1f7.cloudfront.net/items/2G0d2T0J022h3e1n3J0X/Screen%20Recording%202017-02-02%20at%2002.38%20pm.gif?v=61754b94)
 
 ### Testing Haskell
 Easily run [QuickCheck](https://hackage.haskell.org/package/QuickCheck) on all the functions that start with the prefix `prop_` in the currently opened file. If working in a Stack project, Haskelly will run `stack test`.

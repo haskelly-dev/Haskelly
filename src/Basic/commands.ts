@@ -54,12 +54,13 @@ function stackTest(stackWd) {
 function showTestError(error, extPath) {
     vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
 
-    const errorFilePath = `${extPath}/${uuidV4()}.txt`;
-    fs.writeFile(errorFilePath, '-------- Error --------\n' + error +'------------------------', 'utf-8', err => {
+    let errorFilePath = `${extPath}/${uuidV4()}.txt`;
+    fs.writeFile(errorFilePath, '-------- Error --------\n' + error + '------------------------', 'utf-8', err => {
         const term = vscode.window.createTerminal('Haskell Tests');
-        
+
         // Windows
         if (/^win/.test(process.platform)) {
+            errorFilePath = errorFilePath.replace(/\//g, "\\");
             term.sendText(`type ${errorFilePath}`);
         } else {
             term.sendText(`cat ${errorFilePath}`);
@@ -74,7 +75,7 @@ function showTestOutput(passed, failed) {
     if (failed.length > 0) {
         if (failed.length === 1) {
             vscode.window.showErrorMessage(`${failed[0].name} test failed!`);
-        } else {                
+        } else {
             vscode.window.showErrorMessage(`${failed.length} tests failed!`);
         }
     } else if (passed.length > 0) {
@@ -108,13 +109,13 @@ function testHaskell(extPath, src, stackWd) {
     });
 }
 
-export default function initCommands(context:vscode.ExtensionContext) {
-    const documentPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath 
-                        : vscode.workspace.textDocuments[0].uri.fsPath;
+export default function initCommands(context: vscode.ExtensionContext) {
+    const documentPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath
+        : vscode.workspace.textDocuments[0].uri.fsPath;
     let stackWd = getWorkDir(documentPath)["cwd"];
     let isStack = stackWd !== undefined;
 
-    vscode.window.onDidChangeActiveTextEditor((editor:vscode.TextEditor) => {
+    vscode.window.onDidChangeActiveTextEditor((editor: vscode.TextEditor) => {
         if (editor) {
             stackWd = getWorkDir(editor.document.uri.fsPath)["cwd"];
             isStack = stackWd !== undefined;
@@ -124,65 +125,65 @@ export default function initCommands(context:vscode.ExtensionContext) {
     /* Register Commands */
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.ghci', editor => {
         editor.document.save()
-        .then(() => {
-            vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
-            loadGHCi(context.extensionPath, editor.document.uri.fsPath);     
-        });
+            .then(() => {
+                vscode.window.setStatusBarMessage('Loading module in GHCi...', 1000);
+                loadGHCi(context.extensionPath, editor.document.uri.fsPath);
+            });
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runHaskell', editor => {
         editor.document.save()
-        .then(() => {
-            if (isStack) {
-                vscode.window.showErrorMessage('Not supported inside a Stack project.');           
-            } else {
-                vscode.window.setStatusBarMessage('Running your code...', 1000);
-                runHaskell(context.extensionPath, editor.document.uri.fsPath);
-            } 
-        });        
+            .then(() => {
+                if (isStack) {
+                    vscode.window.showErrorMessage('Not supported inside a Stack project.');
+                } else {
+                    vscode.window.setStatusBarMessage('Running your code...', 1000);
+                    runHaskell(context.extensionPath, editor.document.uri.fsPath);
+                }
+            });
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.runQuickCheck', editor => {
         editor.document.save()
-        .then(() => {
-            if (isStack) {
-                vscode.window.showErrorMessage('Not supported inside a Stack project.');
-            } else {
-                testHaskell(context.extensionPath, editor.document.uri.fsPath, undefined);
-            }
-        }); 
+            .then(() => {
+                if (isStack) {
+                    vscode.window.showErrorMessage('Not supported inside a Stack project.');
+                } else {
+                    testHaskell(context.extensionPath, editor.document.uri.fsPath, undefined);
+                }
+            });
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackBuild', editor => {
         editor.document.save()
-        .then(() => {
-            if (isStack) {
-                stackBuild(stackWd);
-            } else {
-                vscode.window.showErrorMessage('No Stack project was found.');
-            }
-        });        
+            .then(() => {
+                if (isStack) {
+                    stackBuild(stackWd);
+                } else {
+                    vscode.window.showErrorMessage('No Stack project was found.');
+                }
+            });
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackRun', editor => {
         editor.document.save()
-        .then(() => {
-            if (isStack) {
-                stackRun(stackWd);
-            } else {
-                vscode.window.showErrorMessage('No Stack project was found.');
-            }
-        });        
+            .then(() => {
+                if (isStack) {
+                    stackRun(stackWd);
+                } else {
+                    vscode.window.showErrorMessage('No Stack project was found.');
+                }
+            });
     }));
 
     context.subscriptions.push(vscode.commands.registerTextEditorCommand('editor.stackTest', editor => {
         editor.document.save()
-        .then(() => {
-            if (isStack) {
-                stackTest(stackWd);
-            } else {
-                vscode.window.showErrorMessage('No Stack project was found.');
-            }
-        });
+            .then(() => {
+                if (isStack) {
+                    stackTest(stackWd);
+                } else {
+                    vscode.window.showErrorMessage('No Stack project was found.');
+                }
+            });
     }));
 }
