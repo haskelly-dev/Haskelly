@@ -24,14 +24,13 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         return new Promise((resolve, reject) => {
             const word = getWord(position, document.getText());
 
-            let filePathBeginning = document.uri.fsPath.slice(0,3)            
-            if (filePathBeginning === 'c:\\') {
-                filePathBeginning = 'C:\\';
+            let filePath = document.uri.fsPath;
+            if (process.platform === 'win32') {
+                filePath = filePath.charAt(0).toUpperCase() + filePath.substr(1);
             }
-            const filepath = filePathBeginning + document.uri.fsPath.slice(3, document.uri.fsPath.length);
 
             // Request completions
-            InteroSpawn.getInstance().requestCompletions(filepath, position, word)
+            InteroSpawn.getInstance().requestCompletions(filePath, position, word)
             .then((suggestions:Array<vscode.CompletionItem>) => {
                 let filteredSuggestions = [];
                 // No snippets

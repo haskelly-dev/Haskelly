@@ -7,13 +7,12 @@ class TypeProvider implements vscode.HoverProvider {
         return new Promise((resolve, reject) => {
             const word = getNearWord(position, document.getText());
 
-            let filePathBeginning = document.uri.fsPath.slice(0,3)            
-            if (filePathBeginning === 'c:\\') {
-                filePathBeginning = 'C:\\';
+            let filePath = document.uri.fsPath;
+            if (process.platform === 'win32') {
+                filePath = filePath.charAt(0).toUpperCase() + filePath.substr(1);
             }
-            const filepath = filePathBeginning + document.uri.fsPath.slice(3, document.uri.fsPath.length);
 
-            InteroSpawn.getInstance().requestType(filepath, position, word)
+            InteroSpawn.getInstance().requestType(filePath, position, word)
             .then(hover => {
                 resolve(hover);  
             });

@@ -42,6 +42,14 @@ function stackRun(stackWd) {
     term.show();
 }
 
+/* Stack test */
+function stackTest(stackWd) {
+    const term = vscode.window.createTerminal('Stack Run');
+    term.sendText(`cd ${stackWd}`);
+    term.sendText(`stack test`);
+    term.show();
+}
+
 /* QuickCheck */
 function showTestError(error, extPath) {
     vscode.window.showErrorMessage('VS Code can\'t execute this file. Check the terminal.');
@@ -171,7 +179,7 @@ export default function initCommands(context:vscode.ExtensionContext) {
         editor.document.save()
         .then(() => {
             if (isStack) {
-                testHaskell(context.extensionPath, editor.document.uri.fsPath, stackWd);
+                stackTest(stackWd);
             } else {
                 vscode.window.showErrorMessage('No Stack project was found.');
             }
