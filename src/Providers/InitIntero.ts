@@ -5,11 +5,12 @@ const StreamSplitter = require('stream-splitter');
 export default class SyncSpawn {
     private shell;
     private callback;
+    private spawnCallback;
 
     public constructor(commands:Array<string>, options, callback) {
-        this.callback = callback;
+        this.spawnCallback = callback;
+        console.log("callback: " + typeof(this.spawnCallback))
         this.shell = spawn(commands[0], commands.slice(1, commands.length), options);
-        console.log('hello', callback);
 
         this.runCommand(":set prompt  \"lambda> \"", null);
         this.runCommand(":type []", null);
@@ -52,14 +53,12 @@ export default class SyncSpawn {
         //console.log(matchErrors, matchWarnings);
 
         // console.log(output);
-
-        console.log(this);
-
         if (output.indexOf('Failed') > 0) {
-            console.log(this.callback);
-             this.callback(true);
+             console.log(output);
+             this.spawnCallback(true);
         } else {
-            this.callback(false);
+            console.log("success")
+            this.spawnCallback(false);
         }
     }
 

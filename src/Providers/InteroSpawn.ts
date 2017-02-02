@@ -52,29 +52,9 @@ export default class InteroSpawn {
         });
     }
 
-    /*private callback(isStack, workDir, documentPath) {
-        if (isStack) {
-            this.killCurrentShell();
-            this.openedDocument = workDir["cwd"];
-            this.shell = sync.getShell();
-            this.shellOutput();
-            this.loading = false;
-            resolve();
-        } else {
-            sync.runCommand(`:l ${documentPath}`, (error) => {
-                if (error) {
-                    reject();
-                } else {
-                    console.log('Loaded file');
-                    this.killCurrentShell();
-                    this.openedDocument = documentPath;
-                    this.shell = sync.getShell();
-                    this.shellOutput();
-                    resolve();
-                }
-            });
-        } 
-    }*/
+    private callback(isStack, workDir, documentPath) {
+        
+    }
 
 
     public loadIntero(isStack:boolean, workDir:Object, documentPath:string) {
@@ -82,11 +62,31 @@ export default class InteroSpawn {
             let hasLoaded;
 
             const sync = new InitIntero(['stack', 'ghci', '--with-ghc', 'intero'], workDir, (failed) => {
-                console.log('hello')
+                if (failed) {
+                    console.log("failed")
+                    reject();
+                } else if (isStack) {
+                    this.killCurrentShell();
+                    this.openedDocument = workDir["cwd"];
+                    this.shell = sync.getShell();
+                    this.shellOutput();
+                    this.loading = false;
+                    resolve();
+                } else {
+                    sync.runCommand(`:l ${documentPath}`, (error) => {
+                        if (error) {
+                            reject();
+                        } else {
+                            console.log('Loaded file');
+                            this.killCurrentShell();
+                            this.openedDocument = documentPath;
+                            this.shell = sync.getShell();
+                            this.shellOutput();
+                            resolve();
+                        }
+                    });
+                } 
             });
-
-
-            this.loading = true;
             
             /*if (!this.loading) {
                 this.loading = true;
@@ -179,19 +179,15 @@ export default class InteroSpawn {
                 this.requestingCompletion = true;
 
                 this.shell.stdin.write(`:complete-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
-
                 if (this.interoOutput) {
-                    const suggestions = this.interoOutput.split('\n');
-                    const completionItems:Array<vscode.CompletionItem> = [];
-
-                    suggestions.forEach(suggestion => {
-                        if (suggestion) {
-                            completionItems.push(new vscode.CompletionItem(suggestion));
-                        }
-                    });
-
                     setTimeout(() => {
-                        this.requestingCompletion = false;
+                        const suggestions = this.interoOutput.split('\n');
+                        const completionItems:Array<vscode.CompletionItem> = [];
+                        suggestions.forEach(suggestion => {
+                            if (suggestion) {
+                                completionItems.push(new vscode.CompletionItem(suggestion));
+                            }
+                        });
                         resolve(completionItems);
                     }, 35);
                 } else {
@@ -216,7 +212,7 @@ export default class InteroSpawn {
                     } else {
                         resolve(new vscode.Hover('Type not available.'));
                     }
-                }, 35);
+                }, 50);
             }
         });
     }
@@ -225,19 +221,14 @@ export default class InteroSpawn {
      *  Intero output parser
      */
     private shellOutput() {
-        const splitter = this.shell.stdout.pipe(StreamSplitter("λ>"));
+        const splitter = this.shell.stdout.pipe(StreamSplitter("lambda>"));
         splitter.encoding = 'utf8';
 
         splitter.on('token', (token) => {
             const re = /.*>.*/;
-            // console.log(token);
+            console.log(token);
 
-            if (this.requestingCompletion) {
-                console.log(token);
-                this.interoOutput = token;            
-            } else if (this.requestingType) {
-                this.interoOutput = token;
-            }                         
+            this.interoOutput = token;                       
         });
 
         splitter.on('done', () => {
