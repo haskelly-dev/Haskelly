@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import SyncSpawn from '../utils/syncSpawn';
-// import InitIntero from './InitIntero';
+import InitIntero from './InitIntero';
 
 import { getWorkDir } from '../utils/workDir'
 const StreamSplitter = require('stream-splitter');
@@ -52,20 +52,43 @@ export default class InteroSpawn {
         });
     }
 
+    /*private callback(isStack, workDir, documentPath) {
+        if (isStack) {
+            this.killCurrentShell();
+            this.openedDocument = workDir["cwd"];
+            this.shell = sync.getShell();
+            this.shellOutput();
+            this.loading = false;
+            resolve();
+        } else {
+            sync.runCommand(`:l ${documentPath}`, (error) => {
+                if (error) {
+                    reject();
+                } else {
+                    console.log('Loaded file');
+                    this.killCurrentShell();
+                    this.openedDocument = documentPath;
+                    this.shell = sync.getShell();
+                    this.shellOutput();
+                    resolve();
+                }
+            });
+        } 
+    }*/
+
 
     public loadIntero(isStack:boolean, workDir:Object, documentPath:string) {
         return new Promise((resolve, reject) => {
             let hasLoaded;
 
+            const sync = new InitIntero(['stack', 'ghci', '--with-ghc', 'intero'], workDir, (failed) => {
+                console.log('hello')
+            });
+
+
+            this.loading = true;
+            
             /*if (!this.loading) {
-                this.loading = true;
-                const hello = new InitIntero(['stack', 'ghci', '--with-ghc', 'intero'], workDir, () => {
-
-                });
-            }*/
-
-        
-            if (!this.loading) {
                 this.loading = true;
 
                 const sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], isStack ? 'Ok' : 'Type', 'Failed', workDir, (line, error) => {  
@@ -103,7 +126,7 @@ export default class InteroSpawn {
                     } 
                 }            
             });
-            }
+            }*/
         });
     }
 
