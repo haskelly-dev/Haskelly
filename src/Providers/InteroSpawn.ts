@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import SyncSpawn from '../utils/syncSpawn';
+import InitIntero from './InitIntero';
+
 import { getWorkDir } from '../utils/workDir'
 const StreamSplitter = require('stream-splitter');
 
@@ -9,10 +11,10 @@ export default class InteroSpawn {
     private shell;
     private requestingCompletion;
     private requestingType;
-    private newSuggestions:boolean;
-    private suggestions:Array<vscode.CompletionItem>;
-    private type:string;
+    private interoOutput:string;
     private openedDocument:string;
+    private loading:boolean;
+
 
     private constructor() {
         if (InteroSpawn._instance) {
@@ -50,11 +52,23 @@ export default class InteroSpawn {
         });
     }
 
+
     public loadIntero(isStack:boolean, workDir:Object, documentPath:string) {
         return new Promise((resolve, reject) => {
             let hasLoaded;
 
-            const sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], isStack ? 'Ok' : 'Type', 'Failed', workDir, (line, error) => {  
+            /*if (!this.loading) {
+                this.loading = true;
+                const hello = new InitIntero(['stack', 'ghci', '--with-ghc', 'intero'], workDir, () => {
+
+                });
+            }*/
+
+        
+            if (!this.loading) {
+                this.loading = true;
+
+                const sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], isStack ? 'Ok' : 'Type', 'Failed', workDir, (line, error) => {  
                 // File doens't compile
                 if (error) {
                     reject(error);
@@ -71,6 +85,7 @@ export default class InteroSpawn {
                         this.openedDocument = workDir["cwd"];
                         this.shell = sync.getShell();
                         this.shellOutput();
+                        this.loading = false;
                         resolve();
                     } else {
                         sync.runCommand(`:l ${documentPath}`, 'Collecting', 'Failed', (line, error) => {
@@ -88,6 +103,7 @@ export default class InteroSpawn {
                     } 
                 }            
             });
+            }
         });
     }
 
@@ -137,15 +153,28 @@ export default class InteroSpawn {
     public requestCompletions(filePath:string, position:vscode.Position, word:String) {
         return new Promise((resolve, reject) => {
             if (this.shell) {
-                this.newSuggestions = true;
                 this.requestingCompletion = true;
 
                 this.shell.stdin.write(`:complete-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
 
-                setTimeout(() => {
-                    this.requestingCompletion = false;
-                    resolve(this.suggestions);
-                }, 50);
+                if (this.interoOutput) {
+                    const suggestions = this.interoOutput.split('\n');
+                    const completionItems:Array<vscode.CompletionItem> = [];
+
+                    suggestions.forEach(suggestion => {
+                        if (suggestion) {
+                            completionItems.push(new vscode.CompletionItem(suggestion));
+                        }
+                    });
+
+                    setTimeout(() => {
+                        this.requestingCompletion = false;
+                        resolve(completionItems);
+                    }, 35);
+                } else {
+                    resolve([]);
+                }
+                
             }
         });
     }
@@ -154,17 +183,17 @@ export default class InteroSpawn {
         return new Promise((resolve, reject) => {
             if (this.shell) {
                 this.requestingType = true;
-                this.type = '';
+                this.interoOutput = undefined;
 
                 this.shell.stdin.write(`:type-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
 
                 setTimeout(() => {
-                    if (this.type) {
-                        resolve(new vscode.Hover({ language: 'haskell', value: this.type }));
+                    if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
+                        resolve(new vscode.Hover({ language: 'haskell', value: this.interoOutput.trim() }));
                     } else {
                         resolve(new vscode.Hover('Type not available.'));
                     }
-                }, 50);
+                }, 35);
             }
         });
     }
@@ -173,25 +202,18 @@ export default class InteroSpawn {
      *  Intero output parser
      */
     private shellOutput() {
-        const splitter = this.shell.stdout.pipe(StreamSplitter("\n"));
+        const splitter = this.shell.stdout.pipe(StreamSplitter("λ>"));
         splitter.encoding = 'utf8';
 
         splitter.on('token', (token) => {
             const re = /.*>.*/;
-            //console.log(token);
+            // console.log(token);
 
             if (this.requestingCompletion) {
-                // Check if first suggestion is valid
-                if (this.newSuggestions && re.test(token)) {
-                    this.newSuggestions = false;
-                    this.suggestions = [];
-                    const suggestion = token.split(' ');
-                    this.suggestions.push(new vscode.CompletionItem(suggestion[suggestion.length - 1]));
-                } else if (!this.newSuggestions) {
-                    this.suggestions.push(new vscode.CompletionItem(token));
-                } 
+                console.log(token);
+                this.interoOutput = token;            
             } else if (this.requestingType) {
-                this.type += token.replace(/λ> /g, '');
+                this.interoOutput = token;
             }                         
         });
 
