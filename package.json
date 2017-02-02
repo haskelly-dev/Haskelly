@@ -7,10 +7,10 @@
   "publisher": "UCL",
   "repository": {
     "type": "git",
-    "url": "https://github.com/martrik/Haskelly.git"
+    "url": "https://github.com/haskelly-dev/Haskelly"
   },
   "bugs": {
-        "url": "https://github.com/martrik/Haskelly.git/issues"
+        "url": "https://github.com/haskelly-dev/Haskelly/issues"
   },
   "galleryBanner": {
     "color": "#8F4D8B",
