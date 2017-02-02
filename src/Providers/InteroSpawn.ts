@@ -3,6 +3,7 @@ import SyncSpawn from '../utils/syncSpawn';
 import InitIntero from './InitIntero';
 
 import { getWorkDir } from '../utils/workDir'
+import { normalizePath } from '../utils/document'; 
 const StreamSplitter = require('stream-splitter');
 
 export default class InteroSpawn {
@@ -35,13 +36,12 @@ export default class InteroSpawn {
     public tryNewIntero(documentPath) {
         return new Promise((resolve, reject) => {
             // Load GHCi in temp shell
-            const workDir = getWorkDir(documentPath);
+            const filePath = normalizePath(documentPath);
+            const workDir = getWorkDir(filePath);
             const isStack = workDir["cwd"] !== undefined;
-            let loaded;
-            let errored;
        
-            console.log("Trying new Intero from document", documentPath);
-            this.loadIntero(isStack, workDir, documentPath)
+            console.log("Trying new Intero from document", filePath);
+            this.loadIntero(isStack, workDir, filePath)
             .then(result => {
                 console.log('Intero loaded correctly');
                 this.loading = false;
@@ -103,12 +103,7 @@ export default class InteroSpawn {
 
     private listenChanges() {
         const reload = (document: vscode.TextDocument) => {
-            let filePath = document.uri.fsPath;
-            if (process.platform === 'win32') {
-                filePath = filePath.charAt(0).toUpperCase() + filePath.substr(1);
-            }
-
-            this.tryNewIntero(filePath)
+            this.tryNewIntero(document.uri.fsPath)
             .catch(e => console.error(e));
         }
 

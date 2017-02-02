@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { spawn } from 'child_process';
 import InteroSpawn from '../InteroSpawn';
 import { getWord } from '../../utils/other';
+import { normalizePath } from '../../utils/document'; 
 const fs = require('fs');
-const StreamSplitter = require('stream-splitter');
 
 class CompletionProvider implements vscode.CompletionItemProvider {
     snippets:Array<String>;
@@ -23,12 +23,8 @@ class CompletionProvider implements vscode.CompletionItemProvider {
     private getCompletionsAtPosition(position, document) {
         return new Promise((resolve, reject) => {
             const word = getWord(position, document.getText());
-
-            let filePath = document.uri.fsPath;
-            if (process.platform === 'win32') {
-                filePath = filePath.charAt(0).toUpperCase() + filePath.substr(1);
-            }
-
+            let filePath = normalizePath(document.uri.fsPath);
+       
             // Request completions
             InteroSpawn.getInstance().requestCompletions(filePath, position, word)
             .then((suggestions:Array<vscode.CompletionItem>) => {
