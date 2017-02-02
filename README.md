@@ -21,7 +21,7 @@ For the tokens which have a snippets, Haskelly will show both the suggestion and
 ### Type hovers
 Hover on top of an identifier and Haskelly will tell you what's its type.
 
-![hover](resources/build.gif) 
+![hover](resources/hover.gif) 
 
 ### Code completion
 Intelligent code completion which takes into account functions and constants defined in the opened file as well as the Haskell standard library and any imported modules.
