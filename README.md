@@ -21,12 +21,12 @@ For the tokens which have a snippets, Haskelly will show both the suggestion and
 ### Type hovers
 Hover on top of an identifier and Haskelly will tell you what's its type.
 
-![Demo](https://d17oy1vhnax1f7.cloudfront.net/items/1C3G14183k0k3B3S3x1m/Screen%20Recording%202017-02-02%20at%2002.25%20pm.gif) 
+![hover](resources/build.gif) 
 
 ### Code completion
 Intelligent code completion which takes into account functions and constants defined in the opened file as well as the Haskell standard library and any imported modules.
 
-![Demo](https://d17oy1vhnax1f7.cloudfront.net/items/0r3z0K2n0F0g2k2b1j3V/Screen%20Recording%202017-02-02%20at%2002.35%20pm.gif?v=61754b94)
+![completion](resources/completion.gif)
 
 ### Running Haskell
 The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
@@ -36,7 +36,7 @@ The extension allows three ways of executing Haskell using the integrated termin
 
 * Stack run: runs the Stack project defined in the root folder. The extension runs `stack run` which uses the [stack-run](https://hackage.haskell.org/package/stack-run) package.
 
-![Demo](https://d17oy1vhnax1f7.cloudfront.net/items/2G0d2T0J022h3e1n3J0X/Screen%20Recording%202017-02-02%20at%2002.38%20pm.gif?v=61754b94)
+![bulding](resources/build.gif)
 
 ### Testing Haskell
 Easily run [QuickCheck](https://hackage.haskell.org/package/QuickCheck) on all the functions that start with the prefix `prop_` in the currently opened file. If working in a Stack project, Haskelly will run `stack test`.
