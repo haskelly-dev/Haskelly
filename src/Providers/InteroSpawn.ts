@@ -43,90 +43,61 @@ export default class InteroSpawn {
             console.log("Trying new Intero from document", documentPath);
             this.loadIntero(isStack, workDir, documentPath)
             .then(result => {
-                console.log('Intero loaded correctly')
+                console.log('Intero loaded correctly');
+                this.loading = false;
                 resolve();
             })
             .catch(error => {
+                console.log('Intero failed to load');
                 reject(error);                
             });
         });
     }
 
-    private callback(isStack, workDir, documentPath) {
-        
-    }
-
-
     public loadIntero(isStack:boolean, workDir:Object, documentPath:string) {
         return new Promise((resolve, reject) => {
-            let hasLoaded;
+            let stackLoaded;
 
-            const sync = new InitIntero(['stack', 'ghci', '--with-ghc', 'intero'], workDir, (failed) => {
-                if (failed) {
-                    console.log("failed")
-                    reject();
-                } else if (isStack) {
-                    this.killCurrentShell();
-                    this.openedDocument = workDir["cwd"];
-                    this.shell = sync.getShell();
-                    this.shellOutput();
-                    this.loading = false;
-                    resolve();
-                } else {
-                    sync.runCommand(`:l ${documentPath}`, (error) => {
-                        if (error) {
+            if (!this.loading) {
+                this.loading = true;
+                const intero = new InitIntero(['stack', 'ghci', '--with-ghc', 'intero'], workDir, isStack, (failed) => {
+                    if (!stackLoaded) {
+                        if (failed) {
+                            intero.killProcess();
                             reject();
-                        } else {
-                            console.log('Loaded file');
+                        } else if (isStack) {
+                            stackLoaded = true;
                             this.killCurrentShell();
-                            this.openedDocument = documentPath;
-                            this.shell = sync.getShell();
+                            this.openedDocument = workDir["cwd"];
+                            this.shell = intero.getShell();
                             this.shellOutput();
                             resolve();
-                        }
-                    });
-                } 
-            });
-            
-            /*if (!this.loading) {
-                this.loading = true;
+                        } else {
+                            stackLoaded = true;
+                            let fileLoaded = false;
+                                                        
+                            intero.runCommand(`:l ${documentPath}`, (error) => {
+                                if (!fileLoaded) {
+                                    fileLoaded = true;
 
-                const sync = new SyncSpawn(['stack', 'ghci', '--with-ghc', 'intero'], isStack ? 'Ok' : 'Type', 'Failed', workDir, (line, error) => {  
-                // File doens't compile
-                if (error) {
-                    reject(error);
-                } else if (!hasLoaded) {
-                    hasLoaded = true;
-                    console.log('Loaded GHCi');
-
-                    // Change prompt
-                    sync.runSyncCommand(":set prompt  \"λ> \"");
-
-                    // File is inside a Stack project
-                    if (isStack) {
-                        this.killCurrentShell();
-                        this.openedDocument = workDir["cwd"];
-                        this.shell = sync.getShell();
-                        this.shellOutput();
-                        this.loading = false;
-                        resolve();
-                    } else {
-                        sync.runCommand(`:l ${documentPath}`, 'Collecting', 'Failed', (line, error) => {
-                            if (error) {
-                                reject(line);
-                            } else {
-                                console.log('Loaded file');
-                                this.killCurrentShell();
-                                this.openedDocument = documentPath;
-                                this.shell = sync.getShell();
-                                this.shellOutput();
-                                resolve();
-                            }
-                        });
-                    } 
-                }            
-            });
-            }*/
+                                    if (error) {
+                                        intero.killProcess();
+                                        reject();
+                                        return;
+                                    } else {
+                                        this.killCurrentShell();
+                                        this.openedDocument = documentPath;
+                                        this.shell = intero.getShell();
+                                        this.shellOutput();
+                                        resolve();
+                                        return;
+                                    }
+                                }
+                            });
+                        } 
+                    }
+                });
+            }
         });
     }
 
@@ -168,6 +139,8 @@ export default class InteroSpawn {
             this.shell.stdin.pause();
             this.shell.kill();
         }
+
+        return Promise.resolve();
     }
 
     /**
@@ -225,14 +198,11 @@ export default class InteroSpawn {
         splitter.encoding = 'utf8';
 
         splitter.on('token', (token) => {
-            const re = /.*>.*/;
-            console.log(token);
-
             this.interoOutput = token;                       
         });
 
         splitter.on('done', () => {
-            console.log("Intero shell terminated.")
+            console.log("Intero spanw terminated.")
         });
 
         splitter.on('error', (e) => {

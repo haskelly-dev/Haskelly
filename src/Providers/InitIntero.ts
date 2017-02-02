@@ -6,19 +6,19 @@ export default class SyncSpawn {
     private shell;
     private callback;
     private spawnCallback;
+    private isStack;
 
-    public constructor(commands:Array<string>, options, callback) {
+    public constructor(commands:Array<string>, options, isStack, callback) {
         this.spawnCallback = callback;
-        console.log("callback: " + typeof(this.spawnCallback))
+        this.isStack = isStack;
         this.shell = spawn(commands[0], commands.slice(1, commands.length), options);
 
-        this.runCommand(":set prompt  \"lambda> \"", null);
-        this.runCommand(":type []", null);
+        this.runSyncCommand(":set prompt  \"lambda> \"");
 
         this.readOutput();
     }
 
-    private killProcess() {
+    public killProcess() {
         this.shell.stdin.pause();
         this.shell.kill();
     }
@@ -27,38 +27,52 @@ export default class SyncSpawn {
         const splitter = this.shell.stdout.pipe(StreamSplitter("\n"));
         splitter.encoding = 'utf8';
         let stackOutput = "";
+        let intent = 0;
 
         splitter.on('token', (line) => {
-            if (line.indexOf('lambda>') > 0) {
-                this.analyseInitOutput(stackOutput);
-            } else {
-                stackOutput += line;
-            }
+            stackOutput += line;
         });
 
-
+        const endSplitter = this.shell.stdout.pipe(StreamSplitter("lambda>"));
+        endSplitter.on('token', (line) => {
+            this.analyseInitOutput(stackOutput, intent);
+            intent++;
+        });
+ 
         const errSplitter = this.shell.stderr.pipe(StreamSplitter("\n"));
         errSplitter.on('token', (line) => {
             stackOutput += line;
         });
     }
 
-    private analyseInitOutput(output) {
+    private analyseInitOutput(output, intent) {
         const regErrors = /([^\r\n]+):(\d+):(\d+):(?: error:)?\r?\n([\s\S]+?)(?:\r?\n\r?\n|\r?\n[\S]+|$)/gi;
         let matchErrors = this.removeDuplicates(this.allMatchs(output, regErrors));
         
         const regWarnings = /([^\r\n]+):(\d+):(\d+): Warning:(?: \[.*\])?\r?\n?([\s\S]+?)(?:\r?\n\r?\n|\r?\n[\S]+|$)/gi;
         let matchWarnings = this.removeDuplicates(this.allMatchs(output, regWarnings));
 
-        //console.log(matchErrors, matchWarnings);
-
-        // console.log(output);
         if (output.indexOf('Failed') > 0) {
-             console.log(output);
-             this.spawnCallback(true);
+            this.killProcess();
+            if (this.isStack) {
+                this.spawnCallback(true);
+            } else {
+                if (intent === 0) {
+                    this.spawnCallback(true);
+                } else {
+                    this.callback(true);
+                }
+            }
         } else {
-            console.log("success")
-            this.spawnCallback(false);
+            if (this.isStack) {
+                this.spawnCallback(false);
+            } else {
+                if (intent === 0) {
+                    this.spawnCallback(false);
+                } else {
+                    this.callback(false);
+                }
+            }
         }
     }
 
@@ -88,6 +102,10 @@ export default class SyncSpawn {
 
     public runCommand(command, callback) {
         this.callback = callback;
+        this.shell.stdin.write(command + '\n');
+    }
+
+    public runSyncCommand(command) {
         this.shell.stdin.write(command + '\n');
     }
 
