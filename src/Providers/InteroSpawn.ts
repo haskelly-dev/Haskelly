@@ -197,7 +197,7 @@ export default class InteroSpawn {
         });
 
         splitter.on('done', () => {
-            console.log("Intero spanw terminated.")
+            console.log("Intero spawn terminated.")
         });
 
         splitter.on('error', (e) => {
