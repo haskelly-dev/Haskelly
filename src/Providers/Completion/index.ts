@@ -29,6 +29,7 @@ class CompletionProvider implements vscode.CompletionItemProvider {
             InteroSpawn.getInstance().requestCompletions(filePath, position, word)
             .then((suggestions:Array<vscode.CompletionItem>) => {
                 let filteredSuggestions = [];
+                
                 // No snippets
                 if (this.snippets.length == 0) {
                     filteredSuggestions = suggestions;

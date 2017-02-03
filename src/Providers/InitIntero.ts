@@ -46,12 +46,6 @@ export default class SyncSpawn {
     }
 
     private analyseInitOutput(output, intent) {
-        const regErrors = /([^\r\n]+):(\d+):(\d+):(?: error:)?\r?\n([\s\S]+?)(?:\r?\n\r?\n|\r?\n[\S]+|$)/gi;
-        let matchErrors = this.removeDuplicates(this.allMatchs(output, regErrors));
-        
-        const regWarnings = /([^\r\n]+):(\d+):(\d+): Warning:(?: \[.*\])?\r?\n?([\s\S]+?)(?:\r?\n\r?\n|\r?\n[\S]+|$)/gi;
-        let matchWarnings = this.removeDuplicates(this.allMatchs(output, regWarnings));
-
         if (output.indexOf('Failed') > 0) {
             this.killProcess();
             if (this.isStack) {
@@ -74,30 +68,6 @@ export default class SyncSpawn {
                 }
             }
         }
-    }
-
-    private removeDuplicates(matches: RegExpExecArray[]): RegExpExecArray[] {
-        const matchToKey = (m: RegExpExecArray) => m[0].trim();
-
-        //List all matches and accumulate them in one object (hash key : match)
-        let matchesSetObject = matches.reduce((accu, m) => { 
-            accu[matchToKey(m)] = m; 
-            return accu; 
-        }, {});
-
-        //Get all values
-        return Object.keys(matchesSetObject).map(key => matchesSetObject[key]);
-    }
-
-     private allMatchs(text: string, regexp: RegExp): RegExpExecArray[] {
-        const matches: RegExpExecArray[] = [];
-        let match: RegExpExecArray;
-
-        while ((match = regexp.exec(text)) != null) {
-            matches.push(match);
-        }
-
-        return matches;
     }
 
     public runCommand(command, callback) {

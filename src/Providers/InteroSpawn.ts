@@ -16,7 +16,6 @@ export default class InteroSpawn {
     private openedDocument:string;
     private loading:boolean;
 
-
     private constructor() {
         if (InteroSpawn._instance) {
             throw new Error("Error: Instantiation failed: Use SingletonClass.getInstance() instead of new.");

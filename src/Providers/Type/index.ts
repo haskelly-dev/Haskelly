@@ -14,8 +14,6 @@ class TypeProvider implements vscode.HoverProvider {
                 resolve(hover);  
             });
         })
-
-
     }
 }
 
