@@ -43,27 +43,33 @@
     "commands": [
       {
         "command": "editor.runHaskell",
-        "title": "Run file"
+        "title": "Run File",
+        "category": "Haskell"
       },
       {
         "command": "editor.runQuickCheck",
-        "title": "QuickCheck"
+        "title": "Quick Check",
+        "category": "Haskell"
       },
       {
         "command": "editor.ghci",
-        "title": "Load GHCi"
+        "title": "Load GHCi",
+        "category": "Haskell"
       },
       {
         "command": "editor.stackTest",
-        "title": "Stack test"
+        "title": "Stack Test",
+        "category": "Haskell"
       },
        {
         "command": "editor.stackBuild",
-        "title": "Stack build"
+        "title": "Stack Build",
+        "category": "Haskell"
       },
       {
         "command": "editor.stackRun",
-        "title": "Stack run"
+        "title": "Stack Run",
+        "category": "Haskell"
       }
     ],
     "languages": [
