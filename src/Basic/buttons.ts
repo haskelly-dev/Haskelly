@@ -40,33 +40,33 @@ function showButtons(context, buttonsConfig, isStack) {
 
         if (isStack) {
             if (buttonsConfig['stackTest'] === true ||  buttonsConfig['stackTest'] === undefined) {
-                buttons.push(['Stack test', 'editor.stackTest']);
+                buttons.push(['Stack Test', 'editor.stackTest']);
             }
 
             if (buttonsConfig['stackBuild'] === true ||  buttonsConfig['stackBuild'] === undefined) {
-                buttons.push(['Stack build', 'editor.stackBuild']);
+                buttons.push(['Stack Build', 'editor.stackBuild']);
             }
 
             if (buttonsConfig['stackRun'] === true ||  buttonsConfig['stackRun'] === undefined) {
-                buttons.push(['Stack run', 'editor.stackRun']);
+                buttons.push(['Stack Run', 'editor.stackRun']);
             }
         } else {
             if (buttonsConfig['runfile'] === true ||  buttonsConfig['runfile'] === undefined) {
-                buttons.push(['Run file', 'editor.runHaskell']);
+                buttons.push(['Run File', 'editor.runHaskell']);
             }
 
             if (buttonsConfig['quickcheck'] === true ||  buttonsConfig['quickcheck'] === undefined) {
-                buttons.push(['QuickCheck', 'editor.runQuickCheck']);
+                buttons.push(['Quick Check', 'editor.runQuickCheck']);
             }
         }
 
         createButtons(context, buttons);
     } else {
         if (isStack) {
-            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Stack build', 'editor.stackBuild'],
-            ['Stack run', 'editor.stackRun'], ['Stack test', 'editor.stackTest']]);
+            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Stack Build', 'editor.stackBuild'],
+            ['Stack Run', 'editor.stackRun'], ['Stack Test', 'editor.stackTest']]);
         } else {
-            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run file', 'editor.runHaskell'], ['QuickCheck', 'editor.runQuickCheck']]);
+            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run File', 'editor.runHaskell'], ['Quick Check', 'editor.runQuickCheck']]);
         }
     }
 }
