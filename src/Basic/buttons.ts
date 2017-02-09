@@ -56,7 +56,7 @@ function showButtons(context, buttonsConfig, isStack) {
             }
 
             if (buttonsConfig['quickcheck'] === true ||  buttonsConfig['quickcheck'] === undefined) {
-                buttons.push(['Quick Check', 'editor.runQuickCheck']);
+                buttons.push(['QuickCheck', 'editor.runQuickCheck']);
             }
         }
 
@@ -66,7 +66,7 @@ function showButtons(context, buttonsConfig, isStack) {
             createButtons(context, [['Load GHCi', 'editor.ghci'], ['Stack Build', 'editor.stackBuild'],
             ['Stack Run', 'editor.stackRun'], ['Stack Test', 'editor.stackTest']]);
         } else {
-            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run File', 'editor.runHaskell'], ['Quick Check', 'editor.runQuickCheck']]);
+            createButtons(context, [['Load GHCi', 'editor.ghci'], ['Run File', 'editor.runHaskell'], ['QuickCheck', 'editor.runQuickCheck']]);
         }
     }
 }
