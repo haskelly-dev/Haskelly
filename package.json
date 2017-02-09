@@ -48,7 +48,7 @@
       },
       {
         "command": "editor.runQuickCheck",
-        "title": "Quick Check",
+        "title": "QuickCheck",
         "category": "Haskell"
       },
       {
