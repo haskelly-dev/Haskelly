@@ -13,23 +13,23 @@ function loadGHCi(extPath, src) {
     const term = vscode.window.createTerminal('Haskell GHCi');
     const folder = path.dirname(src);
     const file = path.basename(src);
-    term.sendText(`cd ${folder}`)
+    term.sendText(`cd "${folder}"`);
     term.show();
     term.sendText(`stack ghci`);
-    term.sendText(`:load ${file}`)
+    term.sendText(`:load ${file}`);
 }
 
 /* Run Haskell */
 function runHaskell(extPath, src) {
     const term = vscode.window.createTerminal('Haskell Run');
     term.show();
-    term.sendText(`stack runhaskell ${src}`);
+    term.sendText(`stack runhaskell "${src}"`);
 }
 
 /* Stack Build */
 function stackBuild(stackWd) {
     const term = vscode.window.createTerminal('Stack Build');
-    term.sendText(`cd ${stackWd}`);
+    term.sendText(`cd "${stackWd}"`);
     term.sendText(`stack build --fast`);
     term.show();
 }
@@ -37,7 +37,7 @@ function stackBuild(stackWd) {
 /* Stack Run */
 function stackRun(stackWd) {
     const term = vscode.window.createTerminal('Stack Run');
-    term.sendText(`cd ${stackWd}`);
+    term.sendText(`cd "${stackWd}"`);
     term.sendText(`stack run`);
     term.show();
 }
@@ -45,7 +45,7 @@ function stackRun(stackWd) {
 /* Stack test */
 function stackTest(stackWd) {
     const term = vscode.window.createTerminal('Stack Run');
-    term.sendText(`cd ${stackWd}`);
+    term.sendText(`cd "${stackWd}"`);
     term.sendText(`stack test`);
     term.show();
 }
