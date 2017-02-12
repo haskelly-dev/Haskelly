@@ -66,6 +66,7 @@ export default class InteroSpawn {
                             reject();
                         } else if (isStack) {
                             stackLoaded = true;
+                            this.loading = false;
                             this.killCurrentShell();
                             this.openedDocument = workDir["cwd"];
                             this.shell = intero.getShell();
@@ -78,6 +79,7 @@ export default class InteroSpawn {
                             intero.runCommand(`:l ${documentPath}`, (error) => {
                                 if (!fileLoaded) {
                                     fileLoaded = true;
+                                    this.loading = false;
 
                                     if (error) {
                                         intero.killProcess();
@@ -142,7 +144,7 @@ export default class InteroSpawn {
      */
     public requestCompletions(filePath:string, position:vscode.Position, word:String) {
         return new Promise((resolve, reject) => {
-            if (this.shell) {
+            if (this.shell && !this.loading) {
                 this.requestingCompletion = true;
 
                 this.shell.stdin.write(`:complete-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
@@ -167,7 +169,7 @@ export default class InteroSpawn {
 
     public requestType(filePath:string, position:vscode.Position, word:String): Promise<vscode.Hover> {
         return new Promise((resolve, reject) => {
-            if (this.shell) {
+            if (this.shell && !this.loading) {
                 this.requestingType = true;
                 this.interoOutput = undefined;
 
@@ -175,7 +177,7 @@ export default class InteroSpawn {
 
                 setTimeout(() => {
                     if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
-                        resolve(new vscode.Hover({ language: 'haskell', value: this.interoOutput.trim() }));
+                        resolve(new vscode.Hover({ language: 'haskell', value: this.interoOutput.trim().replace(/\s+/g, ' ') }));
                     } else {
                         resolve(new vscode.Hover('Type not available.'));
                     }
