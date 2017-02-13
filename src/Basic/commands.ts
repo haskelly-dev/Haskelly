@@ -15,8 +15,7 @@ function loadGHCi(extPath, src) {
     const file = path.basename(src);
     term.sendText(`cd "${folder}"`);
     term.show();
-    term.sendText(`stack ghci`);
-    term.sendText(`:load ${file}`);
+    term.sendText(`stack ghci --ghci-options ${file}`);
 }
 
 /* Run Haskell */

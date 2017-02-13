@@ -162,7 +162,6 @@ export default class InteroSpawn {
                 } else {
                     resolve([]);
                 }
-                
             }
         });
     }
