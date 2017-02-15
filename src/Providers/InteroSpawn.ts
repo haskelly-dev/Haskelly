@@ -43,12 +43,14 @@ export default class InteroSpawn {
             this.loadIntero(isStack, workDir, filePath)
             .then(result => {
                 console.log('Intero loaded correctly');
-                this.loading = false;
                 resolve();
             })
             .catch(error => {
                 console.log('Intero failed to load');
                 reject(error);                
+            })
+            .then(() => {
+                this.loading = false;
             });
         });
     }
@@ -66,7 +68,6 @@ export default class InteroSpawn {
                             reject();
                         } else if (isStack) {
                             stackLoaded = true;
-                            this.loading = false;
                             this.killCurrentShell();
                             this.openedDocument = workDir["cwd"];
                             this.shell = intero.getShell();
@@ -79,7 +80,6 @@ export default class InteroSpawn {
                             intero.runCommand(`:l ${documentPath}`, (error) => {
                                 if (!fileLoaded) {
                                     fileLoaded = true;
-                                    this.loading = false;
 
                                     if (error) {
                                         intero.killProcess();
