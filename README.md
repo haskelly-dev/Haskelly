@@ -2,7 +2,7 @@
 
 [Release notes](https://github.com/haskelly-dev/Haskelly/Haskelly/releases)  | [Roadmap](https://trello.com/b/vsMlLU4h/haskelly-features) | [Demo Video](https://www.youtube.com/watch?v=r3x64iz5xDk)
 
-Haskelly is a VS Code extension that provides complete support for casual and expert Haskell development. This includes:
+Haskelly is a VS Code extension that provides complete support for casual and expert Haskell development.
 
 ## Features
 
