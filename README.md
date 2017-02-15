@@ -7,13 +7,13 @@
 ## Features
 
 * __Code highlight__
-  - for [.hs](https://github.com/textmate/haskell.tmbundle) (thanks to textmate).
-  - for [.cabal](https://github.com/JustusAdam/language-haskell/blob/master/syntaxes/cabal.tmLanguage) (thanks to Justus Adam).
+  - Haskell [.hs](https://github.com/textmate/haskell.tmbundle) (thanks to textmate).
+  - Cabal [.cabal](https://github.com/JustusAdam/language-haskell/blob/master/syntaxes/cabal.tmLanguage) (thanks to Justus Adam).
 
 
 * __Code snippets__
-  - for structures : `data`, `newtype`, etc.
-  - for popular functions : `map`, `fold`, etc.
+  - Structures : `data`, `newtype`, etc.
+  - Ppopular functions : `map`, `fold`, etc.
 
 
 * __Type hovers__
@@ -21,14 +21,14 @@
 
 
 * __Code completion__ :
-    - local functions and constants
-    - standard library
-    - imported modules
+    - Local functions and constants
+    - Standard library
+    - Imported modules
     
     ![completion](resources/completion.gif)
 
 
-* __integrated REPL, BUILD, TEST and RUN commands__
+* __Integrated REPL, Build, Test and Run commands__
   - repl with `GHCi`
   - build with `stack`
   - run with `runHaskell`
@@ -37,19 +37,19 @@
 
 ## Installation
 
-  * Install the [Haskelly](https://marketplace.visualstudio.com/items?itemName=UCL.haskelly) visual studio code extension
+  * Install the [Haskelly](https://marketplace.visualstudio.com/items?itemName=UCL.haskelly) VS Code extension.
 
-  * Install [Stack](https://www.haskellstack.org), add it to your path.
+  * Install [Stack](https://www.haskellstack.org) and add it to your PATH.
 
     ```shell
     curl -sSL https://get.haskellstack.org/ | sh
     ```
 
-  * Install [Intero](https://github.com/commercialhaskell/intero) (code completion, error reporting), [QuickCheck](https://hackage.haskell.org/package/QuickCheck) (test suite) and [stack-run](https://hackage.haskell.org/package/stack-run):
+  * Install [Intero](https://github.com/commercialhaskell/intero) (code completion and type information), [QuickCheck](https://hackage.haskell.org/package/QuickCheck) (test suite) and [stack-run](https://hackage.haskell.org/package/stack-run):
 
     ```shell
-    stack install intero QuickCheck stack-run  # to install it globally
-    stack build intero QuickCheck stack-run # to install it locally
+    stack install intero QuickCheck stack-run  # for a global installation
+    stack build intero QuickCheck stack-run # for a local installation
     ```
 
 ## Configuration
