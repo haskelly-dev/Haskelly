@@ -37,16 +37,20 @@
 
 ## Installation
 
-* Install the [Haskelly](https://marketplace.visualstudio.com/items?itemName=UCL.haskelly) visual studio code extension
-* Install [Stack](https://www.haskellstack.org), add it to your path.
-  ```shell
-  curl -sSL https://get.haskellstack.org/ | sh
-  ```
-* Install [Intero](https://github.com/commercialhaskell/intero) (code completion, error reporting), [QuickCheck](https://hackage.haskell.org/package/QuickCheck) (test suite) and [stack-run](https://hackage.haskell.org/package/stack-run):
-  ```shell
-  stack install intero QuickCheck stack-run  # to install it globally
-  stack build intero QuickCheck stack-run # to install it locally
-  ```
+  * Install the [Haskelly](https://marketplace.visualstudio.com/items?itemName=UCL.haskelly) visual studio code extension
+
+  * Install [Stack](https://www.haskellstack.org), add it to your path.
+
+    ```shell
+    curl -sSL https://get.haskellstack.org/ | sh
+    ```
+
+  * Install [Intero](https://github.com/commercialhaskell/intero) (code completion, error reporting), [QuickCheck](https://hackage.haskell.org/package/QuickCheck) (test suite) and [stack-run](https://hackage.haskell.org/package/stack-run):
+
+    ```shell
+    stack install intero QuickCheck stack-run  # to install it globally
+    stack build intero QuickCheck stack-run # to install it locally
+    ```
 
 ## Configuration
 
