@@ -64,7 +64,7 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 * `haskelly.buttons.stackRun`: set to `false` to hide the `Stack run` button in the bottom bar
 * `haskelly.buttons.stackTest`: set to `false` to hide the `Stack test` button in the bottom bar
 * `haskelly.snippets.important` set to `true` to hide code completion for which there's a snippet.
-* `haskelly.snippets.custom` add your custom snippets following the structure of this [file](https://github.com/haskelly-dev/Haskelly/Haskelly/tree/master/languages/snippets/haskell.json).
+* `haskelly.snippets.custom` add your custom snippets following the structure of this [file](https://github.com/haskelly-dev/Haskelly/tree/master/languages/snippets/haskell.json).
 
 
 ## Road map
@@ -77,14 +77,14 @@ Haskelly is fully customizable. Just add any of these properties in the preferen
 If you'd like to contribute to Haskelly, this is what you can do:
 
 * Bugs: This extension is in alpha, so some bugs might be present. We would really appreciate if you
-could post any issue on the Github repository [issues section](https://github.com/haskelly-dev/Haskelly/Haskelly/issues) or contact us at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback).
+could post any issue on the Github repository [issues section](https://github.com/haskelly-dev/Haskelly/issues) or contact us at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback).
 * Ideas and feature requests: We want to get everyone's opinion on what we're building so feel free to use the two mentioned channels for any comment or suggestion.
 * Documentation: Found a typo or strangely worded sentences? Submit a PR!
 * Code: Contribute bug fixes, features or design changes.
 
 ## Release notes
 
-Check out the release notes [here](https://github.com/haskelly-dev/Haskelly/Haskelly/releases).
+Check out the release notes [here](https://github.com/haskelly-dev/Haskelly/releases).
 
 ## Intero
 
