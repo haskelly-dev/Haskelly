@@ -17,7 +17,7 @@ Haskelly is a VS Code extension that provides complete support for casual and ex
 
 
 * __Type hovers__
-    ![hover](resources/hover.gif)
+    - ![hover](resources/hover.gif)
 
 
 * __Code completion__ :
