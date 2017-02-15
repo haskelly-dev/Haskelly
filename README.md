@@ -1,95 +1,83 @@
 # Haskelly
 
-Haskelly is a VS Code extension that provides complete support for casual and expert Haskell development. This includes:
-* Code highlight
-* Code snippets
-* Type hovers
-* Code completion
-* Running Haskell inside the editor using either GHCi, runHaskell or Stack build
-* Testing all the prop functions in a file with QuickCheck or Stack test
+[Release notes](https://github.com/haskelly-dev/Haskelly/releases)  | [Roadmap](https://trello.com/b/vsMlLU4h/haskelly-features) | [Demo Video](https://www.youtube.com/watch?v=r3x64iz5xDk)
 
+`Haskelly` is a [Visual Studio Code](https://code.visualstudio.com/) extension that supports Haskell development.
 
 ## Features
 
-### Code highlight
-Proper code highlight for Haskell code based on [Haskell TextMate](https://github.com/textmate/haskell.tmbundle) and for Cabal files thanks to [Justus Adam](https://github.com/JustusAdam/language-haskell/blob/master/syntaxes/cabal.tmLanguage).
-
-### Code snippets
-Snippets for the most popular functions such as `map` or `fold` and other structures like `data` or `newtype`. 
-For the tokens which have a snippets, Haskelly will show both the suggestion and the snippet. If you want to disable this behaviour and force Haskelly to only provide the snippet, set the configuration `haskelly.snippets.important` to `true`. Go to the [Extension Settings](## Extension Settings) section to learn how to add your own snippets.
-
-### Type hovers
-Hover on top of an identifier and Haskelly will tell you what's its type.
-
-![hover](resources/hover.gif) 
-
-### Code completion
-Intelligent code completion which takes into account functions and constants defined in the opened file as well as the Haskell standard library and any imported modules.
-
-![completion](resources/completion.gif)
-
-### Running Haskell
-The extension allows three ways of executing Haskell using the integrated terminal inside VS Code:
-* GHCi: you can call all the functions declared in the file providing the arguments. The extension calls `stack ghci` in the background.
-
-* Run file: looks for a main function and executes it. The extension uses `stack runhaskell` under the hood.
-
-* Stack run: runs the Stack project defined in the root folder. The extension runs `stack run` which uses the [stack-run](https://hackage.haskell.org/package/stack-run) package.
-
-![bulding](resources/build.gif)
-
-### Testing Haskell
-Easily run [QuickCheck](https://hackage.haskell.org/package/QuickCheck) on all the functions that start with the prefix `prop_` in the currently opened file. If working in a Stack project, Haskelly will run `stack test`.
-
-## Demo 
-
-Watch a demo [here](https://www.youtube.com/watch?v=r3x64iz5xDk).
-
-## Requirements
-* [Stack](https://www.haskellstack.org). If you don't know about it, Stack is the best Haskell package manager. If you still use Cabal, check out Stack. After installing Stack and adding it to your `PATH`, run `$ stack setup`. This will install the GHC (Glasgow Haskell Compiler) and GHCi.
-
-* Stack packages (installed locally if working inside a Stack project):
-    * Intero package for code completion. To install it globally: `$ stack install intero` or `$ stack build intero` if working on a Stack project.
-    * QuickCheck package for running `QuickCheck`. To install it: `$ stack install QuickCheck`.
-    * stack-run package for running `stack run`. To install it: `$ stack install stack-run`.
+* __Code highlight__
+  - Haskell [.hs](https://github.com/textmate/haskell.tmbundle) (thanks to textmate).
+  - Cabal [.cabal](https://github.com/JustusAdam/language-haskell/blob/master/syntaxes/cabal.tmLanguage) (thanks to Justus Adam).
 
 
-## Extension Settings
-
-Haskelly is fully customizable. Just add any of these properties in the preferences file (Code -> Preferences -> Workspace Settings (settings.json))
-* `haskelly.codeCompletion`: set to `false` to disable code completion
-* `haskelly.buttons.ghci`: set to `false` to hide the `GHCi` button in the bottom bar
-* `haskelly.buttons.runfile`: set to `false` to hide the `Run file` button in the bottom bar
-* `haskelly.buttons.quickcheck`: set to `false` to hide the `QuickCheck` button in the bottom bar
-* `haskelly.buttons.stackRun`: set to `false` to hide the `Stack run` button in the bottom bar
-* `haskelly.buttons.stackTest`: set to `false` to hide the `Stack test` button in the bottom bar
-* `haskelly.snippets.important` set to `true` to hide code completion for which there's a snippet.
-* `haskelly.snippets.custom` add your custom snippets following the structure of this [file](https://github.com/haskelly-dev/Haskelly/Haskelly/tree/master/languages/snippets/haskell.json).
+* __Code snippets__
+  - Structures : `data`, `newtype`, etc.
+  - Ppopular functions : `map`, `fold`, etc.
 
 
-## Road map
+* __Type hovers__
+    - ![hover](resources/hover.gif)
 
- Check out the next features and development of Haskelly in this [public board](https://trello.com/b/vsMlLU4h/haskelly-features).
+
+* __Code completion__ :
+    - Local functions and constants
+    - Standard library
+    - Imported modules
+    
+    ![completion](resources/completion.gif)
+
+
+* __Integrated REPL, Build, Test and Run commands__
+  - repl with `GHCi`
+  - build with `stack`
+  - run with `runHaskell`
+  - test current file `prop_*` properties with `QuickCheck`
+  - run full test suite with `Stack test`
+
+## Installation
+
+  * Install the [Haskelly](https://marketplace.visualstudio.com/items?itemName=UCL.haskelly) VS Code extension.
+
+  * Install [Stack](https://www.haskellstack.org) and add it to your PATH.
+
+    ```shell
+    curl -sSL https://get.haskellstack.org/ | sh
+    ```
+
+  * Install [Intero](https://github.com/commercialhaskell/intero) (code completion and type information), [QuickCheck](https://hackage.haskell.org/package/QuickCheck) (test suite) and [stack-run](https://hackage.haskell.org/package/stack-run):
+
+    ```shell
+    stack install intero QuickCheck stack-run  # for a global installation
+    stack build intero QuickCheck stack-run # for a local installation
+    ```
+
+## Configuration
+
+Haskelly is customizable
+(see `Code` > `Preferences` > `Workspace Settings`).
+
+|param                          | description              |
+|----------------------------   |--------------------------|
+| `haskelly.codeCompletion`     | Set to `false` to disable code completion|
+| `haskelly.buttons.ghci`       | Set to `false` to hide the `GHCi` button in the bottom bar|
+| `haskelly.buttons.runfile`    | Set to `false` to hide the `Run file` button in the bottom bar|
+| `haskelly.buttons.quickcheck` | Set to `false` to hide the `QuickCheck` button in the bottom bar|
+| `haskelly.buttons.stackRun`   | Set to `false` to hide the `Stack run` button in the bottom bar|
+| `haskelly.buttons.stackTest`  | Set to `false` to hide the `Stack test` button in the bottom bar|
+| `haskelly.snippets.important` | Set to `true` to hide code completion for which there's already a snippet|
+| `haskelly.snippets.custom`    | Add your custom snippets following the structure of this [file](https://github.com/haskelly-dev/Haskelly/tree/master/languages/snippets/haskell.json)|
 
 
 ## Contributing
 
 If you'd like to contribute to Haskelly, this is what you can do:
 
-* Bugs: This extension is in alpha, so some bugs might be present. We would really appreciate if you
-could post any issue on the Github repository [issues section](https://github.com/haskelly-dev/Haskelly/Haskelly/issues) or contact us at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback).
-* Ideas and feature requests: We want to get everyone's opinion on what we're building so feel free to use the two mentioned channels for any comment or suggestion.
-* Documentation: Found a typo or strangely worded sentences? Submit a PR!
-* Code: Contribute bug fixes, features or design changes.
+* __Bugs__: This extension is in alpha, so some bugs might be present. We would really appreciate if you
+could post any issue on the Github repository [issues section](https://github.com/haskelly-dev/Haskelly/issues) or contact us at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback).
+* __Ideas and feature requests__: We want to get everyone's opinion on what we're building so feel free to use the two mentioned channels for any comment or suggestion.
+* __Documentation__: Found a typo or strangely worded sentences? Submit a PR!
+* __Code__: Contribute bug fixes, features or design changes.
 
-## Release notes
 
-Check out the release notes [here](https://github.com/haskelly-dev/Haskelly/Haskelly/releases).
-
-## Intero
-
-Haskelly uses the [Intero](https://github.com/commercialhaskell/intero) package in order to provide code completion and type hovers.
-
-## License
-
-[GNU 3](https://github.com/haskelly-dev/Haskelly/blob/master/License.txt)
+## License: [GNU 3](https://github.com/haskelly-dev/Haskelly/blob/master/License.txt)
