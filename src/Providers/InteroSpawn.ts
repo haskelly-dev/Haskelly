@@ -154,7 +154,7 @@ export default class InteroSpawn {
                         const completionItems:Array<vscode.CompletionItem> = [];
                         suggestions.forEach(suggestion => {
                             if (suggestion) {
-                                completionItems.push(new vscode.CompletionItem(suggestion));
+                                completionItems.push(new vscode.CompletionItem(suggestion.trim().replace(/\s+/g, ' ')));
                             }
                         });
                         resolve(completionItems);
