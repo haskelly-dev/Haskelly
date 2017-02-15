@@ -24,6 +24,7 @@
     - local functions and constants
     - standard library
     - imported modules
+    
     ![completion](resources/completion.gif)
 
 
