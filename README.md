@@ -32,7 +32,7 @@
   - repl with `GHCi`
   - build with `stack`
   - run with `runHaskell`
-  - test current file `prop_*` with `QuickCheck`
+  - test current file `prop_*` properties with `QuickCheck`
   - run full test suite with `Stack test`
 
 ## Installation
