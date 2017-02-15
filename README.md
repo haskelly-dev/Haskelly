@@ -1,6 +1,6 @@
 # Haskelly
 
-[Release notes](https://github.com/haskelly-dev/Haskelly/Haskelly/releases)  | [Roadmap](https://trello.com/b/vsMlLU4h/haskelly-features) | [Demo Video](https://www.youtube.com/watch?v=r3x64iz5xDk)
+[Release notes](https://github.com/haskelly-dev/Haskelly/releases)  | [Roadmap](https://trello.com/b/vsMlLU4h/haskelly-features) | [Demo Video](https://www.youtube.com/watch?v=r3x64iz5xDk)
 
 `Haskelly` is a [Visual Studio Code](https://code.visualstudio.com/) extension that supports Haskell development.
 
@@ -66,7 +66,7 @@ Haskelly is customizable
 | `haskelly.buttons.stackRun`   | Set to `false` to hide the `Stack run` button in the bottom bar|
 | `haskelly.buttons.stackTest`  | Set to `false` to hide the `Stack test` button in the bottom bar|
 | `haskelly.snippets.important` | Set to `true` to hide code completion for which there's already a snippet|
-| `haskelly.snippets.custom`    | Add your custom snippets following the structure of this [file](https://github.com/haskelly-dev/Haskelly/Haskelly/tree/master/languages/snippets/haskell.json)|
+| `haskelly.snippets.custom`    | Add your custom snippets following the structure of this [file](https://github.com/haskelly-dev/Haskelly/tree/master/languages/snippets/haskell.json)|
 
 
 ## Contributing
@@ -74,7 +74,7 @@ Haskelly is customizable
 If you'd like to contribute to Haskelly, this is what you can do:
 
 * __Bugs__: This extension is in alpha, so some bugs might be present. We would really appreciate if you
-could post any issue on the Github repository [issues section](https://github.com/haskelly-dev/Haskelly/Haskelly/issues) or contact us at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback).
+could post any issue on the Github repository [issues section](https://github.com/haskelly-dev/Haskelly/issues) or contact us at: [zcabmse@ucl.ac.uk](mailto:zcabmse@ucl.ac.uk?Subject=Haskelly%20feedback).
 * __Ideas and feature requests__: We want to get everyone's opinion on what we're building so feel free to use the two mentioned channels for any comment or suggestion.
 * __Documentation__: Found a typo or strangely worded sentences? Submit a PR!
 * __Code__: Contribute bug fixes, features or design changes.
