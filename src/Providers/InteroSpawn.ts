@@ -147,7 +147,7 @@ export default class InteroSpawn {
             if (this.shell && !this.loading) {
                 this.requestingCompletion = true;
 
-                this.shell.stdin.write(`:complete-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
+                this.shell.stdin.write(`:complete-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
                 if (this.interoOutput) {
                     setTimeout(() => {
                         const suggestions = this.interoOutput.split('\n');
@@ -172,7 +172,7 @@ export default class InteroSpawn {
                 this.requestingType = true;
                 this.interoOutput = undefined;
 
-                this.shell.stdin.write(`:type-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}" \n`);
+                this.shell.stdin.write(`:type-at ${filePath} ${position.line+1} ${position.character} ${position.line + word.length} ${position.character} "${word}"\n`);
 
                 setTimeout(() => {
                     if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {

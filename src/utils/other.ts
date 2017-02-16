@@ -15,6 +15,27 @@ export function getWord(position:vscode.Position, text:String) {
     return word;
 }
 
+function cleanWord(word: string) {
+    let cleanWord = word;
+    const first = cleanWord[0];
+    const last = cleanWord[cleanWord.length - 1];
+
+    if (first === '"' || first === '(') {
+        cleanWord = cleanWord.substring(1);
+    }
+    
+    if (last === '"' || last === ')') {
+        cleanWord = cleanWord.slice(0, cleanWord.length - 1);
+    }
+
+    if (first === '\'' || last === '\'') {
+        cleanWord = cleanWord.slice(0, cleanWord.length - 1);
+        cleanWord = cleanWord.substring(1);
+    }
+
+    return cleanWord;
+}
+
 export function getNearWord(position:vscode.Position, text:String) {
     const lines = text.split('\n');
     const line = lines[position.line];
@@ -22,7 +43,7 @@ export function getNearWord(position:vscode.Position, text:String) {
 
     // Charaters before
     for (let i = position.character - 1; i >= 0; i--) {
-        if (line[i] === ' ' || line[i] === '(') {
+        if (line[i] === ' ') {
             break;
         }
         word = `${line[i]}${word}`;
@@ -30,11 +51,11 @@ export function getNearWord(position:vscode.Position, text:String) {
 
     // Characters after
     for (let i = position.character; i >= 0; i++) {
-        if (line[i] === ' ' || i > line.length || line[i] === ')' || line[i] === undefined) {
+        if (line[i] === ' ' || i > line.length || line[i] === undefined) {
             break;
         }
         word = `${word}${line[i]}`;
     }
-
-    return word;
+    
+    return cleanWord(word);
 }
