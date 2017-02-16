@@ -7,14 +7,14 @@ import { normalizePath } from '../utils/document';
 const StreamSplitter = require('stream-splitter');
 
 export default class InteroSpawn {
-    private static _instance:InteroSpawn = new InteroSpawn();
+    private static _instance: InteroSpawn = new InteroSpawn();
 
     private shell;
     private requestingCompletion;
     private requestingType;
-    private interoOutput:string;
-    private openedDocument:string;
-    private loading:boolean;
+    private interoOutput: String;
+    private openedDocument: String;
+    private loading: boolean;
 
     private constructor() {
         if (InteroSpawn._instance) {
@@ -24,7 +24,7 @@ export default class InteroSpawn {
         this.listenChanges();
     }
 
-    public static getInstance():InteroSpawn {
+    public static getInstance(): InteroSpawn {
         return InteroSpawn._instance;
     }
 
@@ -32,7 +32,7 @@ export default class InteroSpawn {
      * Initialize Spawn process with Stack and Intero
      */
 
-    public tryNewIntero(documentPath) {
+    public tryNewIntero(documentPath: String) {
         return new Promise((resolve, reject) => {
             // Load GHCi in temp shell
             const filePath = normalizePath(documentPath);
@@ -55,7 +55,7 @@ export default class InteroSpawn {
         });
     }
 
-    public loadIntero(isStack:boolean, workDir:Object, documentPath:string) {
+    public loadIntero(isStack: boolean, workDir: Object, documentPath: String) {
         return new Promise((resolve, reject) => {
             let stackLoaded;
 
@@ -114,7 +114,7 @@ export default class InteroSpawn {
             }
         });
 
-        vscode.window.onDidChangeActiveTextEditor((editor:vscode.TextEditor) => {
+        vscode.window.onDidChangeActiveTextEditor((editor: vscode.TextEditor) => {
             if (editor && editor.document.languageId === 'haskell') {
                 const stackDir = getWorkDir(editor.document.uri.fsPath)["cwd"];
 
@@ -142,12 +142,13 @@ export default class InteroSpawn {
     /**
      * Intero requests
      */
-    public requestCompletions(filePath:string, position:vscode.Position, word:String) {
+    public requestCompletions(filePath: String, position: vscode.Position, word: String) {
         return new Promise((resolve, reject) => {
             if (this.shell && !this.loading) {
                 this.requestingCompletion = true;
 
                 this.shell.stdin.write(`:complete-at ${filePath} ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
+                
                 if (this.interoOutput) {
                     setTimeout(() => {
                         const suggestions = this.interoOutput.split('\n');
@@ -166,7 +167,7 @@ export default class InteroSpawn {
         });
     }
 
-    public requestType(filePath:string, position:vscode.Position, word:String): Promise<vscode.Hover> {
+    public requestType(filePath: String, position: vscode.Position, word: String): Promise<vscode.Hover> {
         return new Promise((resolve, reject) => {
             if (this.shell && !this.loading) {
                 this.requestingType = true;

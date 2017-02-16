@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export function getWord(position:vscode.Position, text:String) {
+export function getWord(position: vscode.Position, text: String) {
     const lines = text.split('\n');
     const line = lines[position.line];
     let word = '';
@@ -15,7 +15,7 @@ export function getWord(position:vscode.Position, text:String) {
     return word;
 }
 
-function cleanWord(word: string) {
+function cleanWord(word: String) {
     let cleanWord = word;
     const first = cleanWord[0];
     const last = cleanWord[cleanWord.length - 1];
@@ -36,7 +36,7 @@ function cleanWord(word: string) {
     return cleanWord;
 }
 
-export function getNearWord(position:vscode.Position, text:String) {
+export function getNearWord(position: vscode.Position, text: String) {
     const lines = text.split('\n');
     const line = lines[position.line];
     let word = '';

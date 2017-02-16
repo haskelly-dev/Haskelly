@@ -4,11 +4,11 @@ const StreamSplitter = require('stream-splitter');
 
 export default class SyncSpawn {
     private shell;
-    private positiveOutput:string;
-    private negativeOutput:string;
+    private positiveOutput:String;
+    private negativeOutput:String;
     private callback;
 
-    public constructor(commands:Array<string>, positiveOutput:string, negativeOutput:string, options, callback) {
+    public constructor(commands: Array<string>, positiveOutput: String, negativeOutput: String, options, callback) {
         this.positiveOutput = positiveOutput
         this.negativeOutput = negativeOutput;
 
