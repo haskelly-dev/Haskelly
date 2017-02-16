@@ -28,7 +28,7 @@ function cleanWord(word: String) {
         cleanWord = cleanWord.slice(0, cleanWord.length - 1);
     }
 
-    if (first === '\'' || last === '\'') {
+    if (first === '\'' && last === '\'') {
         cleanWord = cleanWord.slice(0, cleanWord.length - 1);
         cleanWord = cleanWord.substring(1);
     }
