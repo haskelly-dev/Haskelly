@@ -17,16 +17,32 @@ export function getWord(position: vscode.Position, text: String) {
 
 function cleanWord(word: String) {
     let cleanWord = word;
-    const first = cleanWord[0];
-    const last = cleanWord[cleanWord.length - 1];
+    let first = cleanWord[0];
+    let last = cleanWord[cleanWord.length - 1];
 
-    if (first === '"' || first === '(') {
-        cleanWord = cleanWord.substring(1);
-    }
+    // Helps fix situations like: (Implication a c))) when hovering on c
+    while (1) {
+        if (first === '"' || first === '(') {
+            cleanWord = cleanWord.substring(1);
+
+            first = cleanWord[0];
+            last = cleanWord[cleanWord.length - 1];
+
+            continue;
+        }
     
-    if (last === '"' || last === ')') {
-        cleanWord = cleanWord.slice(0, cleanWord.length - 1);
+        if (last === '"' || last === ')') {
+            cleanWord = cleanWord.slice(0, cleanWord.length - 1);
+
+            first = cleanWord[0];
+            last = cleanWord[cleanWord.length - 1];
+
+            continue;
+        }
+
+        break;
     }
+
 
     if (first === '\'' && last === '\'') {
         cleanWord = cleanWord.slice(0, cleanWord.length - 1);

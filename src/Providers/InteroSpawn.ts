@@ -173,7 +173,7 @@ export default class InteroSpawn {
                 this.requestingType = true;
                 this.interoOutput = undefined;
 
-                this.shell.stdin.write(`:type-at ${filePath} ${position.line+1} ${position.character} ${position.line + word.length} ${position.character} "${word}"\n`);
+                this.shell.stdin.write(`:type-at ${filePath} ${position.line + 1} ${position.character} ${position.line + 1} ${position.character + word.length} "${word}"\n`);
 
                 setTimeout(() => {
                     if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
