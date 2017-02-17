@@ -46,7 +46,7 @@ function activate(context) {
             const snippets = JSON.parse(data);
             const mergedSnippets = __assign({}, snippets, config['snippets']['custom']);
             // Modify the snippets file
-            fs.writeFile(snippetsFilePath, JSON.stringify(mergedSnippets), function (err) {
+            fs.writeFile(snippetsFilePath, JSON.stringify(mergedSnippets, null, 4), function (err) {
                 if (err) {
                     console.log(err);
                 }

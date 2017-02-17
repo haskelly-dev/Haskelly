@@ -51,7 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
             };
 
             // Modify the snippets file
-            fs.writeFile(snippetsFilePath, JSON.stringify(mergedSnippets), function(err) {
+            fs.writeFile(snippetsFilePath, JSON.stringify(mergedSnippets, null, 4), function(err) {
                 if (err) {
                     console.log(err);
                 }
