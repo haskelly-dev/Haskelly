@@ -15,10 +15,12 @@ export function getWord(position: vscode.Position, text: String) {
     return word;
 }
 
-function cleanWord(word: String) {
+function cleanWord(word: String, start: number, end: number) {
     let cleanWord = word;
     let first = cleanWord[0];
     let last = cleanWord[cleanWord.length - 1];
+    let newStart = start;
+    let newEnd = end;
 
     // Helps fix situations like: (Implication a c))) when hovering on c
     while (1) {
@@ -27,6 +29,7 @@ function cleanWord(word: String) {
 
             first = cleanWord[0];
             last = cleanWord[cleanWord.length - 1];
+            newStart++;
 
             continue;
         }
@@ -36,6 +39,7 @@ function cleanWord(word: String) {
 
             first = cleanWord[0];
             last = cleanWord[cleanWord.length - 1];
+            newEnd--;
 
             continue;
         }
@@ -47,15 +51,19 @@ function cleanWord(word: String) {
     if (first === '\'' && last === '\'') {
         cleanWord = cleanWord.slice(0, cleanWord.length - 1);
         cleanWord = cleanWord.substring(1);
+        newStart++;
+        newEnd--;
     }
 
-    return cleanWord;
+    return { word:cleanWord, start: newStart, end: newEnd };
 }
 
 export function getNearWord(position: vscode.Position, text: String) {
     const lines = text.split('\n');
     const line = lines[position.line];
     let word = '';
+    let start = position.character;
+    let end = position.character;
 
     // Charaters before
     for (let i = position.character - 1; i >= 0; i--) {
@@ -63,6 +71,7 @@ export function getNearWord(position: vscode.Position, text: String) {
             break;
         }
         word = `${line[i]}${word}`;
+        start--;
     }
 
     // Characters after
@@ -71,7 +80,8 @@ export function getNearWord(position: vscode.Position, text: String) {
             break;
         }
         word = `${word}${line[i]}`;
+        end++;
     }
     
-    return cleanWord(word);
+    return cleanWord(word, start, end);
 }

@@ -6,10 +6,10 @@ import { normalizePath } from '../../utils/document';
 class TypeProvider implements vscode.HoverProvider {
     public provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.Hover> {
         return new Promise((resolve, reject) => {
-            const word = getNearWord(position, document.getText());
+            const wordInfo = getNearWord(position, document.getText());
             let filePath = normalizePath(document.uri.fsPath);
 
-            InteroSpawn.getInstance().requestType(filePath, position, word)
+            InteroSpawn.getInstance().requestType(filePath, position, wordInfo)
             .then(hover => {
                 resolve(hover);  
             });

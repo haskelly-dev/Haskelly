@@ -167,13 +167,18 @@ export default class InteroSpawn {
         });
     }
 
-    public requestType(filePath: String, position: vscode.Position, word: String): Promise<vscode.Hover> {
+    public requestType(filePath: String, position: vscode.Position, wordInfo: Object): Promise<vscode.Hover> {
         return new Promise((resolve, reject) => {
             if (this.shell && !this.loading) {
                 this.requestingType = true;
                 this.interoOutput = undefined;
+                const word = wordInfo['word'];
+                const start = wordInfo['start'];
+                const end = wordInfo['end'];
 
-                this.shell.stdin.write(`:type-at ${filePath} ${position.line + 1} ${position.character} ${position.line + 1} ${position.character + word.length} "${word}"\n`);
+                console.log(`:type-at ${filePath} ${position.line + 1} ${start} ${position.line + 1} ${end} "${word}"\n`);
+
+                this.shell.stdin.write(`:type-at ${filePath} ${position.line + 1} ${start} ${position.line + 1} ${end} "${word}"\n`);
 
                 setTimeout(() => {
                     if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
