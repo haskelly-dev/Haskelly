@@ -80,7 +80,8 @@
           "haskell"
         ],
         "extensions": [
-          ".hs"
+          ".hs",
+          ".lhs"
         ],
         "configuration": "./languages/configurations/haskell.json"
       },
