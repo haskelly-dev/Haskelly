@@ -176,8 +176,6 @@ export default class InteroSpawn {
                 const start = wordInfo['start'];
                 const end = wordInfo['end'];
 
-                console.log(`:type-at ${filePath} ${position.line + 1} ${start} ${position.line + 1} ${end} "${word}"\n`);
-
                 this.shell.stdin.write(`:type-at ${filePath} ${position.line + 1} ${start} ${position.line + 1} ${end} "${word}"\n`);
 
                 setTimeout(() => {

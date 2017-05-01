@@ -24,7 +24,7 @@ function cleanWord(word: String, start: number, end: number) {
 
     // Helps fix situations like: (Implication a c))) when hovering on c
     while (1) {
-        if (first === '"' || first === '(') {
+        if (first === '"' || first === '(' || first === '[') {
             cleanWord = cleanWord.substring(1);
 
             first = cleanWord[0];
@@ -34,7 +34,7 @@ function cleanWord(word: String, start: number, end: number) {
             continue;
         }
     
-        if (last === '"' || last === ')') {
+        if (last === '"' || last === ')' || last === ']') {
             cleanWord = cleanWord.slice(0, cleanWord.length - 1);
 
             first = cleanWord[0];
