@@ -2,7 +2,7 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.4.20",
+  "version": "0.4.21",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
@@ -97,18 +97,6 @@
         "configuration": "./languages/configurations/cabal.json"
       }
     ],
-    "grammars": [
-      {
-        "language": "haskell",
-        "scopeName": "source.haskell",
-        "path": "./languages/syntaxes/haskell.tmLanguage"
-      },
-      {
-        "language": "cabal",
-        "scopeName": "source.cabal",
-        "path": "./languages/syntaxes/cabal.tmLanguage"
-      }
-    ],
     "snippets": [
       {
         "language": "haskell",
@@ -180,6 +168,9 @@
     "@types/node": "^6.0.40",
     "@types/mocha": "^2.2.32"
   },
+  "extensionDependencies": [
+    "justusadam.language-haskell"
+  ],
   "dependencies": {
     "stream-splitter": "^0.3.2",
     "uuid": "^3.0.1"

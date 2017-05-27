@@ -7,9 +7,7 @@
 ## Features
 
 * __Code highlight__
-  - Haskell [.hs](https://github.com/textmate/haskell.tmbundle) (thanks to textmate).
-  - Cabal [.cabal](https://github.com/JustusAdam/language-haskell/blob/master/syntaxes/cabal.tmLanguage) (thanks to Justus Adam).
-
+  - Haskell (`.hs` and `.hs) and Cabal via automatic devendency on [Haskell Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell).
 
 * __Code snippets__
   - Structures : `data`, `newtype`, etc.

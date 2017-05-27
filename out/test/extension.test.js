@@ -3,7 +3,6 @@
 // Please refer to their documentation on https://mochajs.org/ for help.
 //
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // The module 'assert' provides assertion methods from node
 const assert = require("assert");
 // Defines a Mocha test suite to group tests of similar kind together
