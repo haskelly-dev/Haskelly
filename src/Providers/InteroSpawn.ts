@@ -77,7 +77,7 @@ export default class InteroSpawn {
                             stackLoaded = true;
                             let fileLoaded = false;
                                                         
-                            intero.runCommand(`:l "${documentPath..replace(/\\/,"\\\\")}"`, (error) => {
+                            intero.runCommand(`:l "${documentPath..replace(/\\/g,"\\\\")}"`, (error) => {
                                 if (!fileLoaded) {
                                     fileLoaded = true;
 
@@ -147,7 +147,7 @@ export default class InteroSpawn {
             if (this.shell && !this.loading) {
                 this.requestingCompletion = true;
 
-                this.shell.stdin.write(`:complete-at "${filePath.replace(/\\/,"\\\\")}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
+                this.shell.stdin.write(`:complete-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
                 
                 if (this.interoOutput) {
                     setTimeout(() => {
@@ -176,7 +176,7 @@ export default class InteroSpawn {
                 const start = wordInfo['start'];
                 const end = wordInfo['end'];
 
-                this.shell.stdin.write(`:type-at "${filePath.replace(/\\/,"\\\\")}" ${position.line + 1} ${start} ${position.line + 1} ${end} "${word}"\n`);
+                this.shell.stdin.write(`:type-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start} ${position.line + 1} ${end} "${word}"\n`);
 
                 setTimeout(() => {
                     if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
