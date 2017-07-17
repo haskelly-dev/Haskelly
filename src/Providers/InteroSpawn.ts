@@ -77,7 +77,7 @@ export default class InteroSpawn {
                             stackLoaded = true;
                             let fileLoaded = false;
                                                         
-                            intero.runCommand(`:l "${documentPath..replace(/\\/g,"\\\\")}"`, (error) => {
+                            intero.runCommand(`:l "${documentPath.replace(/\\/g,"\\\\")}"`, (error) => {
                                 if (!fileLoaded) {
                                     fileLoaded = true;
 
