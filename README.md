@@ -7,7 +7,7 @@
 ## Features
 
 * __Code highlight__
-  - Haskell (`.hs` and `.hs) and Cabal via automatic devendency on [Haskell Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell).
+  - Haskell (`.hs` and `.lhs`) and Cabal via automatic devendency on [Haskell Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell).
 
 * __Code snippets__
   - Structures : `data`, `newtype`, etc.
