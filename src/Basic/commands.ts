@@ -7,10 +7,28 @@ const fs = require('fs');
 const path = require('path');
 const uuidV4 = require('uuid/v4');
 
+let reuseTerminal = vscode.workspace.getConfiguration('haskelly')['exec']['reuseTerminal'];
+let terminal : vscode.Terminal;
+
+function getTerminal(name) {
+    console.log(reuseTerminal)
+    if (reuseTerminal) {
+        if (terminal) {
+            terminal.dispose();
+        } 
+
+        terminal = vscode.window.createTerminal(name);
+        
+        return terminal;
+    } else {
+        return vscode.window.createTerminal(name);
+    }
+}
+
 
 /* GHCi */
 function loadGHCi(extPath, src) {
-    const term = vscode.window.createTerminal('Haskell GHCi');
+    const term = getTerminal('Haskell GHCi');
     const folder = path.dirname(src);
     const file = path.basename(src);
     term.sendText(`cd "${folder}"`);
@@ -20,14 +38,14 @@ function loadGHCi(extPath, src) {
 
 /* Run Haskell */
 function runHaskell(extPath, src) {
-    const term = vscode.window.createTerminal('Haskell Run');
+    const term = getTerminal('Haskell Run');
     term.show();
     term.sendText(`stack runhaskell "${src}"`);
 }
 
 /* Stack Build */
 function stackBuild(stackWd) {
-    const term = vscode.window.createTerminal('Stack Build');
+    const term = getTerminal('Stack Build');
     term.sendText(`cd "${stackWd}"`);
     term.sendText(`stack build --fast`);
     term.show();
@@ -35,7 +53,7 @@ function stackBuild(stackWd) {
 
 /* Stack Run */
 function stackRun(stackWd) {
-    const term = vscode.window.createTerminal('Stack Run');
+    const term = getTerminal('Stack Run');
     term.sendText(`cd "${stackWd}"`);
     term.sendText(`stack run`);
     term.show();
@@ -43,7 +61,7 @@ function stackRun(stackWd) {
 
 /* Stack test */
 function stackTest(stackWd) {
-    const term = vscode.window.createTerminal('Stack Run');
+    const term = getTerminal('Stack Run');
     term.sendText(`cd "${stackWd}"`);
     term.sendText(`stack test`);
     term.show();
