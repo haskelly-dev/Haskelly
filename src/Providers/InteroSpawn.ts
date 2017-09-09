@@ -31,7 +31,6 @@ export default class InteroSpawn {
     /**
      * Initialize Spawn process with Stack and Intero
      */
-
     public tryNewIntero(documentPath: String) {
         return new Promise((resolve, reject) => {
             // Load GHCi in temp shell
@@ -39,7 +38,7 @@ export default class InteroSpawn {
             const workDir = getWorkDir(filePath);
             const isStack = workDir["cwd"] !== undefined;
        
-            console.log("Trying new Intero from document", filePath);
+            console.log(`Trying new Intero for document ${filePath} and workDir ${workDir["cwd"]}`);
             this.loadIntero(isStack, workDir, filePath)
             .then(result => {
                 console.log('Intero loaded correctly');
