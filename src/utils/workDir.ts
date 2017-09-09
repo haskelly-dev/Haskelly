@@ -4,7 +4,7 @@ import { dirname, resolve } from 'path';
 export function getWorkDir(filepath) {
      try {
         const path = execSync("stack query", { cwd: dirname(filepath) }).toString();
-        const re = /.*path:\s([^\n\s]*)\s.*/
+        const re = /.*path:\s*(.*?)\s*?\n/
         var extract = re.exec(path)[1];
 
         // Windows
