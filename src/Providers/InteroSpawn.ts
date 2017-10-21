@@ -175,7 +175,7 @@ export default class InteroSpawn {
                 const start = wordInfo['start'];
                 const end = wordInfo['end'];
 
-                this.shell.stdin.write(`:type-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start} ${position.line + 1} ${end} "${word}"\n`);
+                this.shell.stdin.write(`:type-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"\n`);
 
                 setTimeout(() => {
                     if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
