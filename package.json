@@ -2,7 +2,7 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.4.26",
+  "version": "0.4.27",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
