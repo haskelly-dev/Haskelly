@@ -18,11 +18,15 @@
     - ![hover](resources/hover.gif)
 
 
+* __Jump to definition__
+  - Jump to symbol definitions/declarations
+
+
 * __Code completion__ :
     - Local functions and constants
     - Standard library
     - Imported modules
-    
+
     ![completion](resources/completion.gif)
 
 
