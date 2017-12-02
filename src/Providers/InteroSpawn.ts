@@ -166,46 +166,45 @@ export default class InteroSpawn {
         });
     }
 
-    public requestType(filePath: String, position: vscode.Position, wordInfo: Object): Promise<vscode.Hover> {
-        return new Promise((resolve, reject) => {
-            if (this.shell && !this.loading) {
-                this.requestingType = true;
-                this.interoOutput = undefined;
-                const word = wordInfo['word'];
-                const start = wordInfo['start'];
-                const end = wordInfo['end'];
+    public async requestType(filePath: String, position: vscode.Position, wordInfo: Object): Promise<vscode.Hover> {
+        const word = wordInfo['word'];
+        const start = wordInfo['start'];
+        const end = wordInfo['end'];
 
-                this.shell.stdin.write(`:type-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"\n`);
+        const getTypeDefCommand = `:type-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
 
-                setTimeout(() => {
-                    if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
-                        resolve(new vscode.Hover({ language: 'haskell', value: this.interoOutput.trim().replace(/\s+/g, ' ') }));
-                    } else {
-                        resolve(new vscode.Hover('Type not available.'));
-                    }
-                }, 50);
-            }
-        });
+        try {
+            const output = await this.executeCommandOnIntero(getTypeDefCommand);
+            return new vscode.Hover({language: 'haskell', value: output});
+        } catch (e) {
+            return new vscode.Hover('Type not available.');
+        }
     }
 
-    public requestDefinition(filePath: String, position: vscode.Position, wordInfo: Object): Promise<String> {
+    public requestDefinition(filePath: String, position: vscode.Position, wordInfo: Object): Promise<string> {
+        const word = wordInfo['word'];
+        const start = wordInfo['start'];
+        const end = wordInfo['end'];
+
+        const locateDefinitionCommand = `:loc-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
+
+        return this.executeCommandOnIntero(locateDefinitionCommand);
+    }
+
+    private executeCommandOnIntero(command: string): Promise<string> {
+        if (!this.shell || this.loading) return Promise.resolve('');
+
+        this.interoOutput = undefined;
+        this.shell.stdin.write(`${command}\n`);
+
         return new Promise((resolve, reject) => {
-            if (this.shell && !this.loading) {
-                this.interoOutput = undefined;
-                const word = wordInfo['word'];
-                const start = wordInfo['start'];
-                const end = wordInfo['end'];
-
-                this.shell.stdin.write(`:loc-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"\n`);
-
-                setTimeout(() => {
-                    if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
-                        resolve(this.interoOutput.trim().replace(/\s+/g, ' '));
-                    } else {
-                        reject(new Error('Definition not available'));
-                    }
-                }, 50);
-            }
+            setTimeout(() => {
+                if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
+                    resolve(this.interoOutput.trim().replace(/\s+/g, ' '));
+                } else {
+                    reject(new Error('Command output not available'));
+                }
+            }, 50);
         });
     }
 
