@@ -4,6 +4,7 @@ import InitIntero from './InitIntero';
 
 import { getWorkDir } from '../utils/workDir'
 import { normalizePath } from '../utils/document';
+import { delay } from '../utils/promise';
 const StreamSplitter = require('stream-splitter');
 
 export default class InteroSpawn {
@@ -76,7 +77,7 @@ export default class InteroSpawn {
                             stackLoaded = true;
                             let fileLoaded = false;
 
-                            intero.runCommand(`:l "${documentPath.replace(/\\/g,"\\\\")}"`, (error) => {
+                            intero.runCommand(`:l "${this.normaliseFilePath(documentPath)}"`, (error) => {
                                 if (!fileLoaded) {
                                     fileLoaded = true;
 
@@ -146,7 +147,7 @@ export default class InteroSpawn {
             if (this.shell && !this.loading) {
                 this.requestingCompletion = true;
 
-                this.shell.stdin.write(`:complete-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
+                this.shell.stdin.write(`:complete-at "${this.normaliseFilePath(filePath)}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
 
                 if (this.interoOutput) {
                     setTimeout(() => {
@@ -171,7 +172,7 @@ export default class InteroSpawn {
         const start = wordInfo['start'];
         const end = wordInfo['end'];
 
-        const getTypeDefCommand = `:type-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
+        const getTypeDefCommand = `:type-at "${this.normaliseFilePath(filePath)}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
 
         try {
             const output = await this.executeCommandOnIntero(getTypeDefCommand);
@@ -186,26 +187,28 @@ export default class InteroSpawn {
         const start = wordInfo['start'];
         const end = wordInfo['end'];
 
-        const locateDefinitionCommand = `:loc-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
+        const locateDefinitionCommand = `:loc-at "${this.normaliseFilePath(filePath)}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
 
         return this.executeCommandOnIntero(locateDefinitionCommand);
     }
 
-    private executeCommandOnIntero(command: string): Promise<string> {
-        if (!this.shell || this.loading) return Promise.resolve('');
+    private normaliseFilePath(filePath: String): string {
+        return filePath.replace(/\\/g, "\\\\");
+    }
+
+    private async executeCommandOnIntero(command: string): Promise<string> {
+        if (!this.shell || this.loading) return '';
 
         this.interoOutput = undefined;
         this.shell.stdin.write(`${command}\n`);
 
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
-                    resolve(this.interoOutput.trim().replace(/\s+/g, ' '));
-                } else {
-                    reject(new Error('Command output not available'));
-                }
-            }, 50);
-        });
+        await delay(50);
+
+        if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
+            return this.interoOutput.trim().replace(/\s+/g, ' ');
+        } else {
+            throw new Error('Command output not available');
+        }
     }
 
     /**
