@@ -3,7 +3,7 @@ import SyncSpawn from '../utils/syncSpawn';
 import InitIntero from './InitIntero';
 
 import { getWorkDir } from '../utils/workDir'
-import { normalizePath } from '../utils/document'; 
+import { normalizePath } from '../utils/document';
 const StreamSplitter = require('stream-splitter');
 
 export default class InteroSpawn {
@@ -37,7 +37,7 @@ export default class InteroSpawn {
             const filePath = normalizePath(documentPath);
             const workDir = getWorkDir(filePath);
             const isStack = workDir["cwd"] !== undefined;
-       
+
             console.log(`Trying new Intero for document ${filePath} and workDir ${workDir["cwd"]}`);
             this.loadIntero(isStack, workDir, filePath)
             .then(result => {
@@ -46,7 +46,7 @@ export default class InteroSpawn {
             })
             .catch(error => {
                 console.log('Intero failed to load');
-                reject(error);                
+                reject(error);
             })
             .then(() => {
                 this.loading = false;
@@ -75,7 +75,7 @@ export default class InteroSpawn {
                         } else {
                             stackLoaded = true;
                             let fileLoaded = false;
-                                                        
+
                             intero.runCommand(`:l "${documentPath.replace(/\\/g,"\\\\")}"`, (error) => {
                                 if (!fileLoaded) {
                                     fileLoaded = true;
@@ -94,7 +94,7 @@ export default class InteroSpawn {
                                     }
                                 }
                             });
-                        } 
+                        }
                     }
                 });
             }
@@ -147,7 +147,7 @@ export default class InteroSpawn {
                 this.requestingCompletion = true;
 
                 this.shell.stdin.write(`:complete-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
-                
+
                 if (this.interoOutput) {
                     setTimeout(() => {
                         const suggestions = this.interoOutput.split('\n');
@@ -188,6 +188,27 @@ export default class InteroSpawn {
         });
     }
 
+    public requestDefinition(filePath: String, position: vscode.Position, wordInfo: Object): Promise<String> {
+        return new Promise((resolve, reject) => {
+            if (this.shell && !this.loading) {
+                this.interoOutput = undefined;
+                const word = wordInfo['word'];
+                const start = wordInfo['start'];
+                const end = wordInfo['end'];
+
+                this.shell.stdin.write(`:loc-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"\n`);
+
+                setTimeout(() => {
+                    if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
+                        resolve(this.interoOutput.trim().replace(/\s+/g, ' '));
+                    } else {
+                        reject(new Error('Definition not available'));
+                    }
+                }, 50);
+            }
+        });
+    }
+
     /**
      *  Intero output parser
      */
@@ -196,7 +217,7 @@ export default class InteroSpawn {
         splitter.encoding = 'utf8';
 
         splitter.on('token', (token) => {
-            this.interoOutput = token;                       
+            this.interoOutput = token;
         });
 
         splitter.on('done', () => {
