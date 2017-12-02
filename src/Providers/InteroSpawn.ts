@@ -4,6 +4,7 @@ import InitIntero from './InitIntero';
 
 import { getWorkDir } from '../utils/workDir'
 import { normalizePath } from '../utils/document';
+import { WordInfo } from '../utils/other';
 import { delay } from '../utils/promise';
 const StreamSplitter = require('stream-splitter');
 
@@ -167,7 +168,7 @@ export default class InteroSpawn {
         });
     }
 
-    public async requestType(filePath: String, position: vscode.Position, wordInfo: Object): Promise<vscode.Hover> {
+    public async requestType(filePath: String, position: vscode.Position, wordInfo: WordInfo): Promise<vscode.Hover> {
         const word = wordInfo['word'];
         const start = wordInfo['start'];
         const end = wordInfo['end'];
@@ -182,7 +183,7 @@ export default class InteroSpawn {
         }
     }
 
-    public requestDefinition(filePath: String, position: vscode.Position, wordInfo: Object): Promise<string> {
+    public requestDefinition(filePath: String, position: vscode.Position, wordInfo: WordInfo): Promise<string> {
         const word = wordInfo['word'];
         const start = wordInfo['start'];
         const end = wordInfo['end'];

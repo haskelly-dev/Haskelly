@@ -1,5 +1,11 @@
 import * as vscode from 'vscode';
 
+export type WordInfo = {
+    word: string,
+    start: number,
+    end: number
+};
+
 export function getWord(position: vscode.Position, text: String) {
     const lines = text.split('\n');
     const line = lines[position.line];
@@ -15,7 +21,7 @@ export function getWord(position: vscode.Position, text: String) {
     return word;
 }
 
-function cleanWord(word: String, start: number, end: number) {
+function cleanWord(word: string, start: number, end: number) {
     let cleanWord = word;
     let first = cleanWord[0];
     let last = cleanWord[cleanWord.length - 1];
@@ -33,7 +39,7 @@ function cleanWord(word: String, start: number, end: number) {
 
             continue;
         }
-    
+
         if (last === '"' || last === ')' || last === ']') {
             cleanWord = cleanWord.slice(0, cleanWord.length - 1);
 
@@ -58,7 +64,7 @@ function cleanWord(word: String, start: number, end: number) {
     return { word:cleanWord, start: newStart, end: newEnd };
 }
 
-export function getNearWord(position: vscode.Position, text: String) {
+export function getNearWord(position: vscode.Position, text: String): WordInfo {
     const lines = text.split('\n');
     const line = lines[position.line];
     let word = '';
@@ -82,6 +88,6 @@ export function getNearWord(position: vscode.Position, text: String) {
         word = `${word}${line[i]}`;
         end++;
     }
-    
+
     return cleanWord(word, start, end);
 }
