@@ -4,7 +4,7 @@ import { getNearWord } from '../../utils/other';
 import { normalizePath } from '../../utils/document';
 import InteroLocationDecoder from '../InteroLocationDecoder';
 
-export default class HaskellDefinitionProvider implements vscode.DefinitionProvider {
+export default class HaskellReferenceProvider implements vscode.ReferenceProvider {
     private interoSpawn: InteroSpawn;
     private interoLocationDecoder: InteroLocationDecoder;
 
@@ -13,11 +13,17 @@ export default class HaskellDefinitionProvider implements vscode.DefinitionProvi
         this.interoLocationDecoder = new InteroLocationDecoder();
     }
 
-    public async provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Location> {
+    public async provideReferences(
+        document: vscode.TextDocument,
+        position: vscode.Position,
+        options: { includeDeclaration: boolean },
+        token: vscode.CancellationToken
+    ): Promise<vscode.Location[]> {
         const wordInfo = getNearWord(position, document.getText());
         const filePath = normalizePath(document.uri.fsPath);
 
-        const definitionLocation = await this.interoSpawn.requestDefinition(filePath, position, wordInfo);
-        return this.interoLocationDecoder.decode(definitionLocation);
+        const definitionLocations = await this.interoSpawn.requestReferences(filePath, position, wordInfo);
+        return definitionLocations.split(' ')
+            .map(location => this.interoLocationDecoder.decode(location));
     }
 }
