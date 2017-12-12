@@ -50,7 +50,8 @@ class CompletionProvider implements vscode.CompletionItemProvider {
 
     public provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Thenable<vscode.CompletionItem[]> {
         return new Promise((resolve, reject) => {
-           this.getCompletionsAtPosition(position, document).then((completions) => {
+           this.getCompletionsAtPosition(position, document)
+           .then((completions: vscode.CompletionItem[]) => {
                 resolve(completions);
             }).catch(e => console.error(e));
         });   

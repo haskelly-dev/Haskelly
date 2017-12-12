@@ -16,6 +16,8 @@ export function activate(context: vscode.ExtensionContext) {
     const config = vscode.workspace.getConfiguration('haskelly');
     const documentPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath 
                         : vscode.workspace.textDocuments[0].uri.fsPath;
+
+    console.log('Hello')
     
     /* Init commands */
     initCommands(context);
