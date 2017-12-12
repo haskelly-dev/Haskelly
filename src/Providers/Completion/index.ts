@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { spawn } from 'child_process';
 import InteroSpawn from '../InteroSpawn';
 import { getWord } from '../../utils/other';
-import { normalizePath } from '../../utils/document'; 
+import { normalizePath } from '../../utils/document';
 const fs = require('fs');
 
 class CompletionProvider implements vscode.CompletionItemProvider {
@@ -20,16 +20,16 @@ class CompletionProvider implements vscode.CompletionItemProvider {
         }
     }
 
-    private getCompletionsAtPosition(position, document) {
+    private getCompletionsAtPosition(position, document): Promise<vscode.CompletionItem[]> {
         return new Promise((resolve, reject) => {
             const word = getWord(position, document.getText());
             let filePath = normalizePath(document.uri.fsPath);
-       
+
             // Request completions
             InteroSpawn.getInstance().requestCompletions(filePath, position, word)
             .then((suggestions:Array<vscode.CompletionItem>) => {
                 let filteredSuggestions = [];
-                
+
                 // No snippets
                 if (this.snippets.length == 0) {
                     filteredSuggestions = suggestions;
@@ -44,7 +44,7 @@ class CompletionProvider implements vscode.CompletionItemProvider {
 
                 resolve(filteredSuggestions);
             })
-            .catch(err => reject(err));            
+            .catch(err => reject(err));
         });
     }
 
@@ -54,7 +54,7 @@ class CompletionProvider implements vscode.CompletionItemProvider {
            .then((completions: vscode.CompletionItem[]) => {
                 resolve(completions);
             }).catch(e => console.error(e));
-        });   
+        });
     }
 }
 

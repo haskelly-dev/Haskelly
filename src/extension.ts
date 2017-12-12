@@ -9,16 +9,15 @@ import initButtons from './Basic/buttons';
 
 import InteroSpawn from './Providers/InteroSpawn';
 import CompletionProvider from './Providers/Completion/index';
+import HaskellDefinitionProvider from './Providers/Definition';
 import TypeProvider from './Providers/Type/index';
 
 
 export function activate(context: vscode.ExtensionContext) {
     const config = vscode.workspace.getConfiguration('haskelly');
-    const documentPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath 
+    const documentPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath
                         : vscode.workspace.textDocuments[0].uri.fsPath;
 
-    console.log('Hello')
-    
     /* Init commands */
     initCommands(context);
 
@@ -40,6 +39,9 @@ export function activate(context: vscode.ExtensionContext) {
     } else {
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new CompletionProvider(context), '.', '\"'));
     }
+
+    /* Definition */
+    context.subscriptions.push(vscode.languages.registerDefinitionProvider(sel, new HaskellDefinitionProvider(InteroSpawn.getInstance())));
 
     /* Custom snippets */
     const snippetsFilePath = `${context.extensionPath}/languages/snippets/haskell.json`;

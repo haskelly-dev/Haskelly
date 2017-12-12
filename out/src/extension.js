@@ -8,12 +8,12 @@ const commands_1 = require("./Basic/commands");
 const buttons_1 = require("./Basic/buttons");
 const InteroSpawn_1 = require("./Providers/InteroSpawn");
 const index_1 = require("./Providers/Completion/index");
+const Definition_1 = require("./Providers/Definition");
 const index_2 = require("./Providers/Type/index");
 function activate(context) {
     const config = vscode.workspace.getConfiguration('haskelly');
     const documentPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath
         : vscode.workspace.textDocuments[0].uri.fsPath;
-    console.log('Hello');
     /* Init commands */
     commands_1.default(context);
     /* Init bottom buttons */
@@ -31,6 +31,8 @@ function activate(context) {
     else {
         context.subscriptions.push(vscode.languages.registerCompletionItemProvider(sel, new index_1.default(context), '.', '\"'));
     }
+    /* Definition */
+    context.subscriptions.push(vscode.languages.registerDefinitionProvider(sel, new Definition_1.default(InteroSpawn_1.default.getInstance())));
     /* Custom snippets */
     const snippetsFilePath = `${context.extensionPath}/languages/snippets/haskell.json`;
     fs.readFile(snippetsFilePath, 'utf8', (err, data) => {

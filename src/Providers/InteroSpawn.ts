@@ -3,7 +3,9 @@ import SyncSpawn from '../utils/syncSpawn';
 import InitIntero from './InitIntero';
 
 import { getWorkDir } from '../utils/workDir'
-import { normalizePath } from '../utils/document'; 
+import { normalizePath } from '../utils/document';
+import { WordInfo } from '../utils/other';
+import { delay } from '../utils/promise';
 const StreamSplitter = require('stream-splitter');
 
 export default class InteroSpawn {
@@ -37,7 +39,7 @@ export default class InteroSpawn {
             const filePath = normalizePath(documentPath);
             const workDir = getWorkDir(filePath);
             const isStack = workDir["cwd"] !== undefined;
-       
+
             console.log(`Trying new Intero for document ${filePath} and workDir ${workDir["cwd"]}`);
             this.loadIntero(isStack, workDir, filePath)
             .then(result => {
@@ -46,7 +48,7 @@ export default class InteroSpawn {
             })
             .catch(error => {
                 console.log('Intero failed to load');
-                reject(error);                
+                reject(error);
             })
             .then(() => {
                 this.loading = false;
@@ -75,8 +77,8 @@ export default class InteroSpawn {
                         } else {
                             stackLoaded = true;
                             let fileLoaded = false;
-                                                        
-                            intero.runCommand(`:l "${documentPath.replace(/\\/g,"\\\\")}"`, (error) => {
+
+                            intero.runCommand(`:l "${this.normaliseFilePath(documentPath)}"`, (error) => {
                                 if (!fileLoaded) {
                                     fileLoaded = true;
 
@@ -94,7 +96,7 @@ export default class InteroSpawn {
                                     }
                                 }
                             });
-                        } 
+                        }
                     }
                 });
             }
@@ -146,8 +148,8 @@ export default class InteroSpawn {
             if (this.shell && !this.loading) {
                 this.requestingCompletion = true;
 
-                this.shell.stdin.write(`:complete-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
-                
+                this.shell.stdin.write(`:complete-at "${this.normaliseFilePath(filePath)}" ${position.line} ${position.character} ${position.line} ${position.character} "${word}"\n`);
+
                 if (this.interoOutput) {
                     setTimeout(() => {
                         const suggestions = this.interoOutput.split('\n');
@@ -166,26 +168,48 @@ export default class InteroSpawn {
         });
     }
 
-    public requestType(filePath: String, position: vscode.Position, wordInfo: Object): Promise<vscode.Hover> {
-        return new Promise((resolve, reject) => {
-            if (this.shell && !this.loading) {
-                this.requestingType = true;
-                this.interoOutput = undefined;
-                const word = wordInfo['word'];
-                const start = wordInfo['start'];
-                const end = wordInfo['end'];
+    public async requestType(filePath: String, position: vscode.Position, wordInfo: WordInfo): Promise<vscode.Hover> {
+        const word = wordInfo['word'];
+        const start = wordInfo['start'];
+        const end = wordInfo['end'];
 
-                this.shell.stdin.write(`:type-at "${filePath.replace(/\\/g,"\\\\")}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"\n`);
+        const getTypeDefCommand = `:type-at "${this.normaliseFilePath(filePath)}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
 
-                setTimeout(() => {
-                    if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
-                        resolve(new vscode.Hover({ language: 'haskell', value: this.interoOutput.trim().replace(/\s+/g, ' ') }));
-                    } else {
-                        resolve(new vscode.Hover('Type not available.'));
-                    }
-                }, 50);
-            }
-        });
+        try {
+            const output = await this.executeCommandOnIntero(getTypeDefCommand);
+            return new vscode.Hover({language: 'haskell', value: output});
+        } catch (e) {
+            return new vscode.Hover('Type not available.');
+        }
+    }
+
+    public requestDefinition(filePath: String, position: vscode.Position, wordInfo: WordInfo): Promise<string> {
+        const word = wordInfo['word'];
+        const start = wordInfo['start'];
+        const end = wordInfo['end'];
+
+        const locateDefinitionCommand = `:loc-at "${this.normaliseFilePath(filePath)}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
+
+        return this.executeCommandOnIntero(locateDefinitionCommand);
+    }
+
+    private normaliseFilePath(filePath: String): string {
+        return filePath.replace(/\\/g, "\\\\");
+    }
+
+    private async executeCommandOnIntero(command: string): Promise<string> {
+        if (!this.shell || this.loading) return '';
+
+        this.interoOutput = undefined;
+        this.shell.stdin.write(`${command}\n`);
+
+        await delay(50);
+
+        if (this.interoOutput !== ' ' && this.interoOutput !== undefined) {
+            return this.interoOutput.trim().replace(/\s+/g, ' ');
+        } else {
+            throw new Error('Command output not available');
+        }
     }
 
     /**
@@ -196,7 +220,7 @@ export default class InteroSpawn {
         splitter.encoding = 'utf8';
 
         splitter.on('token', (token) => {
-            this.interoOutput = token;                       
+            this.interoOutput = token;
         });
 
         splitter.on('done', () => {
