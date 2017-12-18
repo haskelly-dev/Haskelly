@@ -2,7 +2,7 @@
   "name": "haskelly",
   "displayName": "Haskelly",
   "description": "Complete support for casual and expert Haskell development.",
-  "version": "0.4.27",
+  "version": "0.4.28",
   "icon": "resources/icon.png",
   "publisher": "UCL",
   "repository": {
@@ -10,7 +10,7 @@
     "url": "https://github.com/haskelly-dev/Haskelly"
   },
   "bugs": {
-        "url": "https://github.com/haskelly-dev/Haskelly/issues"
+    "url": "https://github.com/haskelly-dev/Haskelly/issues"
   },
   "galleryBanner": {
     "color": "#8F4D8B",
@@ -61,7 +61,7 @@
         "title": "Stack Test",
         "category": "Haskell"
       },
-       {
+      {
         "command": "editor.stackBuild",
         "title": "Stack Build",
         "category": "Haskell"
@@ -167,17 +167,17 @@
     "test": "node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^2.0.3",
-    "vscode": "^1.0.0",
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^6.0.94",
     "mocha": "^2.3.3",
-    "@types/node": "^6.0.40",
-    "@types/mocha": "^2.2.32"
+    "typescript": "^2.6.2",
+    "vscode": "^1.1.10"
   },
   "extensionDependencies": [
     "justusadam.language-haskell"
   ],
   "dependencies": {
     "stream-splitter": "^0.3.2",
-    "uuid": "^3.0.1"
+    "uuid": "^3.1.0"
   }
 }
