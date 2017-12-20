@@ -13,7 +13,6 @@ class TypeProvider implements vscode.HoverProvider {
             // check if there is no selection
             if (editor.selection.isEmpty || !editor.selection.contains(position)) {
                 const wordInfo = getNearWord(position, document.getText());
-
                 InteroSpawn.getInstance().requestType(filePath, position, wordInfo)
                 .then(hover => {
                     resolve(hover);  
