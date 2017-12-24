@@ -10,6 +10,7 @@ import initButtons from './Basic/buttons';
 import InteroSpawn from './Providers/InteroSpawn';
 import CompletionProvider from './Providers/Completion/index';
 import HaskellDefinitionProvider from './Providers/Definition';
+import HaskellReferenceProvider from './Providers/Reference';
 import TypeProvider from './Providers/Type/index';
 
 
@@ -42,6 +43,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     /* Definition */
     context.subscriptions.push(vscode.languages.registerDefinitionProvider(sel, new HaskellDefinitionProvider(InteroSpawn.getInstance())));
+
+    /* Reference */
+    context.subscriptions.push(vscode.languages.registerReferenceProvider(sel, new HaskellReferenceProvider(InteroSpawn.getInstance())));
 
     /* Custom snippets */
     const snippetsFilePath = `${context.extensionPath}/languages/snippets/haskell.json`;

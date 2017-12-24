@@ -168,29 +168,31 @@ export default class InteroSpawn {
         });
     }
 
-    public async requestType(filePath: String, position: vscode.Position, wordInfo: WordInfo): Promise<vscode.Hover> {
-        const word = wordInfo['word'];
-        const start = wordInfo['start'];
-        const end = wordInfo['end'];
-
-        const getTypeDefCommand = `:type-at "${this.normaliseFilePath(filePath)}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
-
+    public async requestType(filePath: string, position: vscode.Position, wordInfo: WordInfo): Promise<vscode.Hover> {
         try {
-            const output = await this.executeCommandOnIntero(getTypeDefCommand);
+            const command = this.buildCommand('type-at', filePath, position, wordInfo);
+            const output = await this.executeCommandOnIntero(command);
             return new vscode.Hover({language: 'haskell', value: output});
         } catch (e) {
             return new vscode.Hover('Type not available.');
         }
     }
 
-    public requestDefinition(filePath: String, position: vscode.Position, wordInfo: WordInfo): Promise<string> {
+    public requestDefinition(filePath: string, position: vscode.Position, wordInfo: WordInfo): Promise<string> {
+        const command = this.buildCommand('loc-at', filePath, position, wordInfo);
+        return this.executeCommandOnIntero(command);
+    }
+
+    public requestReferences(filePath: string, position: vscode.Position, wordInfo: WordInfo): Promise<string> {
+        const command = this.buildCommand('uses', filePath, position, wordInfo);
+        return this.executeCommandOnIntero(command);
+    }
+
+    private buildCommand(commandSign: string, filePath: string, position: vscode.Position, wordInfo: WordInfo): string {
         const word = wordInfo['word'];
         const start = wordInfo['start'];
         const end = wordInfo['end'];
-
-        const locateDefinitionCommand = `:loc-at "${this.normaliseFilePath(filePath)}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
-
-        return this.executeCommandOnIntero(locateDefinitionCommand);
+        return `:${commandSign} "${this.normaliseFilePath(filePath)}" ${position.line + 1} ${start + 1} ${position.line + 1} ${end + 1} "${word}"`;
     }
 
     private normaliseFilePath(filePath: String): string {

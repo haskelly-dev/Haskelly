@@ -22,6 +22,10 @@
   - Jump to symbol definitions/declarations
 
 
+* __Find references__
+  - Find references within a module or depending modules. See limitations on [#62](https://github.com/haskelly-dev/Haskelly/issues/62)
+
+
 * __Code completion__ :
     - Local functions and constants
     - Standard library
