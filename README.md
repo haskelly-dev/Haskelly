@@ -7,11 +7,11 @@
 ## Features
 
 * __Code highlight__
-  - Haskell (`.hs` and `.lhs`) and Cabal via automatic devendency on [Haskell Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell).
+  - Haskell (`.hs` and `.lhs`) and Cabal via automatic dependency on [Haskell Syntax Highlighting](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell).
 
 * __Code snippets__
   - Structures : `data`, `newtype`, etc.
-  - Ppopular functions : `map`, `fold`, etc.
+  - Popular functions : `map`, `fold`, etc.
 
 
 * __Type hovers__
