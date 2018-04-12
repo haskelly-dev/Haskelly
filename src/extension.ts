@@ -29,7 +29,10 @@ export function activate(context: vscode.ExtensionContext) {
     InteroSpawn.getInstance().tryNewIntero(documentPath)
     .catch(error => console.log(error));
 
-    const sel:vscode.DocumentSelector = 'haskell';
+    const sel:vscode.DocumentSelector = [
+        { language: 'haskell', scheme: 'file' },
+        { language: 'haskell', scheme: 'untitled' }
+    ];
 
     /* Type hover */
     context.subscriptions.push(vscode.languages.registerHoverProvider(sel, new TypeProvider()));
