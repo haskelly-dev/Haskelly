@@ -45,7 +45,7 @@
 
   * Install the [Haskelly](https://marketplace.visualstudio.com/items?itemName=UCL.haskelly) VS Code extension.
 
-  * Install [Stack](https://www.haskellstack.org) and add it to your PATH.
+  * Install [Stack](https://www.haskellstack.org) and add it to your PATH. Note that Stack folder naming conventions must be followed for it to work correctly, i.e. capitalizing folder names.
 
     ```shell
     curl -sSL https://get.haskellstack.org/ | sh
@@ -63,17 +63,21 @@
 Haskelly is customizable
 (see `Code` > `Preferences` > `Workspace Settings`).
 
-|param                          | description              |
-|----------------------------   |--------------------------|
-| `haskelly.codeCompletion`     | Set to `false` to disable code completion|
-| `haskelly.buttons.ghci`       | Set to `false` to hide the `GHCi` button in the bottom bar|
-| `haskelly.buttons.runfile`    | Set to `false` to hide the `Run file` button in the bottom bar|
-| `haskelly.buttons.quickcheck` | Set to `false` to hide the `QuickCheck` button in the bottom bar|
-| `haskelly.buttons.stackRun`   | Set to `false` to hide the `Stack run` button in the bottom bar|
-| `haskelly.buttons.stackTest`  | Set to `false` to hide the `Stack test` button in the bottom bar|
-| `haskelly.snippets.important` | Set to `true` to hide code completion for which there's already a snippet|
-| `haskelly.snippets.custom`    | Add your custom snippets following the structure of this [file](https://github.com/haskelly-dev/Haskelly/tree/master/languages/snippets/haskell.json)|
-
+| Parameter                     | Description                                     | Default  |
+|----------------------------   |-------------------------------------------------|----------|
+| `haskelly.codeCompletion`     | Code completion enabled                         | `true`   |  
+| `haskelly.buttons.ghci`       | `GHCi` button shows in the bottom bar           | `true`   |
+| `haskelly.buttons.runfile`    | `Run file` button shows in the bottom bar       | `true`   |
+| `haskelly.buttons.quickcheck` | `QuickCheck` button shows in the bottom bar     | `true`   |
+| `haskelly.buttons.stackBuild` | `Stack build` button shows in the bottom bar    | `true`   |
+| `haskelly.buttons.stackBuildParams` | Parameters passed to `stack build` command| `--fast` |
+| `haskelly.buttons.stackRun`   | `Stack run` button shows in the bottom bar      | `true`   |
+| `haskelly.buttons.stackRunParams` | Parameters passed to `stack run` command    | `null`   |
+| `haskelly.buttons.stackTest`  | `Stack test` button shows in the bottom bar     | `true`   |
+| `haskelly.buttons.stackTestParams` | Parameters passed to `stack test` command  | `null`   |
+| `haskelly.snippets.important` | Hide code completion for which there's already a snippet | `false` |
+| `haskelly.snippets.custom`    | Add your custom snippets following the structure of this [file](https://github.com/haskelly-dev/Haskelly/tree/master/languages/snippets/haskell.json)| `null` |
+| `haskelly.exec.reuseTerminal` | Reuse the currently opened terminal to run Stack commands | false |
 
 ## Contributing
 
