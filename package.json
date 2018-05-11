@@ -132,15 +132,30 @@
           "default": true,
           "description": "Show the Stack run button."
         },
+        "haskelly.buttons.stackRunParams": {
+          "type": "string",
+          "default": "",
+          "description": "Additional parameters passed to stack run command."
+        },
         "haskelly.buttons.stackBuild": {
           "type": "boolean",
           "default": true,
           "description": "Show the Stack build button."
         },
+        "haskelly.buttons.stackBuildParams": {
+          "type": "string",
+          "default": "--fast",
+          "description": "Additional parameters passed to stack build command."
+        },
         "haskelly.buttons.stackTest": {
           "type": "boolean",
           "default": true,
           "description": "Show the Stack test button."
+        },
+        "haskelly.buttons.stackTestParams": {
+          "type": "string",
+          "default": "",
+          "description": "Additional parameters passed to stack test command."
         },
         "haskelly.exec.reuseTerminal": {
           "type": "boolean",

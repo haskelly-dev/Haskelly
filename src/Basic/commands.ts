@@ -8,10 +8,11 @@ const path = require('path');
 const uuidV4 = require('uuid/v4');
 
 let reuseTerminal = vscode.workspace.getConfiguration('haskelly')['exec']['reuseTerminal'];
+let commandsParams = vscode.workspace.getConfiguration('haskelly')['buttons'];
+
 let terminal : vscode.Terminal;
 
 function getTerminal(name) {
-    console.log(reuseTerminal)
     if (reuseTerminal) {
         if (terminal) {
             terminal.dispose();
@@ -47,7 +48,7 @@ function runHaskell(extPath, src) {
 function stackBuild(stackWd) {
     const term = getTerminal('Stack Build');
     term.sendText(`cd "${stackWd}"`);
-    term.sendText(`stack build --fast`);
+    term.sendText(`stack build ${commandsParams.stackBuildParams || ""}`);
     term.show();
 }
 
@@ -55,7 +56,7 @@ function stackBuild(stackWd) {
 function stackRun(stackWd) {
     const term = getTerminal('Stack Run');
     term.sendText(`cd "${stackWd}"`);
-    term.sendText(`stack run`);
+    term.sendText(`stack run ${commandsParams.stackRunParams || ""}`);
     term.show();
 }
 
@@ -63,7 +64,7 @@ function stackRun(stackWd) {
 function stackTest(stackWd) {
     const term = getTerminal('Stack Run');
     term.sendText(`cd "${stackWd}"`);
-    term.sendText(`stack test`);
+    term.sendText(`stack test ${commandsParams.stackTestParams || ""}`);
     term.show();
 }
 
