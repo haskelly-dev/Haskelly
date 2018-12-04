@@ -144,7 +144,7 @@ export function testHaskellFile(filePath, stackWd) {
                     if (err) reject(err);
                     console.log('QuickCheking...');
                     
-                    shell(`stack runhaskell ${newPath}`, {}).then(std => {
+                    shell(`stack runhaskell "${newPath}"`, {}).then(std => {
                         console.log(std[0]);
                         fs.unlinkSync(newPath);
                         resolve(parseStdout(std[0]));
