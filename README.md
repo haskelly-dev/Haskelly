@@ -57,6 +57,9 @@
     stack install intero QuickCheck stack-run  # for a global installation
     stack build intero QuickCheck stack-run # for a local installation
     ```
+### Note
+
+If you failed to install `stack-run`, please refer https://github.com/yamadapc/stack-run/issues/17#issuecomment-427545735
 
 ## Configuration
 
