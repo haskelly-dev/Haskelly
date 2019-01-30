@@ -156,7 +156,7 @@ function removeMainFunction(data) {
             }
         }
     }
-    
+
     if (decl_start !== undefined && decl_end === undefined) {
     	decl_end = dataArray.length;
     }
@@ -176,24 +176,27 @@ export function testHaskellFile(filePath, stackWd) {
 
         // Not Stack project
         if (stackWd === undefined) {
-            fs.createReadStream(filePath).pipe(fs.createWriteStream(newPath));
-            fs.readFile(newPath, 'utf-8', (err, data) => {
-                if (err) reject(err);
-
-                const newValue = '{-# LANGUAGE TemplateHaskell #-}\nimport Test.QuickCheck.All\n' + removeMainFunction(data)
-                    + '\nreturn []\nrunTests = $quickCheckAll\nmain = runTests';
-
-                fs.writeFile(newPath, newValue, 'utf-8', err => {
+            let writer = fs.createWriteStream(newPath);
+            fs.createReadStream(filePath).pipe(writer);
+            writer.once('finish', () => {
+                fs.readFile(newPath, 'utf-8', (err, data) => {
                     if (err) reject(err);
-                    console.log('QuickCheking...');
-                    
-                    shell(`stack runhaskell "${newPath}"`, {}).then(std => {
-                        console.log(std[0]);
-                        fs.unlinkSync(newPath);
-                        resolve(parseStdout(std[0]));
-                    }).catch(error => {
-                        fs.unlinkSync(newPath);
-                        reject(error);
+
+                    const newValue = '{-# LANGUAGE TemplateHaskell #-}\nimport Test.QuickCheck.All\n' + removeMainFunction(data)
+                        + '\nreturn []\nrunTests = $quickCheckAll\nmain = runTests';
+
+                    fs.writeFile(newPath, newValue, 'utf-8', err => {
+                        if (err) reject(err);
+                        console.log('QuickCheking...');
+                        
+                        shell(`stack runhaskell "${newPath}"`, {}).then(std => {
+                            console.log(std[0]);
+                            fs.unlinkSync(newPath);
+                            resolve(parseStdout(std[0]));
+                        }).catch(error => {
+                            fs.unlinkSync(newPath);
+                            reject(error);
+                        });
                     });
                 });
             });
