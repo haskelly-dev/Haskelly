@@ -105,26 +105,69 @@ function shell(command, options) {
     });
 }
 
-function removeMainFunction(data) {
-    const dataArray = data.toString().split('\n');
+function removeMultilineComments(data) {
+    return data.replace(/{-[\s\S]*?-}/g, (comment) => {
+        return comment.replace(/\S/g, ' ');
+    });
+}
 
-    let start;
-    let end;
+function removeMainFunction(data) {
+    const decl_regex = /^main\s*::.*$/m;
+    const def_regex = /^main\s*=.*$/m;
+    const comment_regex = /^\s*--.*$/m;
+    const other_regex = /^\S+.*$/m;
+    const dataArray = removeMultilineComments(data).split('\n');
+
+    let decl_start;
+    let decl_end;
+    let def_start;
+    let def_end;
+
     for (let i = 0; i < dataArray.length; i++) {
-        if (dataArray[i].slice(0, 6) === 'main =') {
-            start = i;
-            end = i;
-        } else if (start !== undefined) {
-            if (dataArray[i] === '') {
-                break;
-            } else {
-                end++;
-            }   
+    	//main type signature
+    	if (decl_regex.test(dataArray[i])) {
+        	if (def_start !== undefined && def_end === undefined) {
+            	def_end = i;
+            }
+            if (decl_start === undefined) {
+                decl_start = i;
+            }
+        }
+        //main definition
+        else if (def_regex.test(dataArray[i])) {
+        	if (decl_start !== undefined && decl_end === undefined) {
+        		decl_end = i;
+            }
+        	if (def_start === undefined) {
+        		def_start = i;
+            }
+        }
+        //skip comments
+        else if (comment_regex.test(dataArray[i])) {
+        	//do nothing
+        }
+        //different expression/declaration
+        else if (other_regex.test(dataArray[i])) {
+        	if (decl_start !== undefined && decl_end === undefined) {
+            	decl_end = i;
+            }
+            if (def_start !== undefined && def_end === undefined) {
+            	def_end = i;
+            }
         }
     }
+    
+    if (decl_start !== undefined && decl_end === undefined) {
+    	decl_end = dataArray.length;
+    }
+    if (def_start !== undefined && def_end === undefined) {
+    	def_end = dataArray.length;
+    }
 
-    dataArray.splice(start, end - start + 1);
-    return dataArray.join('\n');
+    return dataArray.filter((value, index, arr) => {
+    	return (decl_start === undefined || index < decl_start || index >= decl_end) &&
+        	   (def_start === undefined || index < def_start || index >= def_end);
+    }).join('\n');
 }
 
 export function testHaskellFile(filePath, stackWd) {
