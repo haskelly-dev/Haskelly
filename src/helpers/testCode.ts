@@ -126,8 +126,8 @@ function removeMainFunction(data) {
     for (let i = 0; i < dataArray.length; i++) {
     	//main type signature
     	if (decl_regex.test(dataArray[i])) {
-        	if (def_start !== undefined && def_end === undefined) {
-            	def_end = i;
+            if (def_start !== undefined && def_end === undefined) {
+                def_end = i;
             }
             if (decl_start === undefined) {
                 decl_start = i;
@@ -135,11 +135,11 @@ function removeMainFunction(data) {
         }
         //main definition
         else if (def_regex.test(dataArray[i])) {
-        	if (decl_start !== undefined && decl_end === undefined) {
-        		decl_end = i;
+            if (decl_start !== undefined && decl_end === undefined) {
+                decl_end = i;
             }
-        	if (def_start === undefined) {
-        		def_start = i;
+            if (def_start === undefined) {
+                def_start = i;
             }
         }
         //skip comments
@@ -148,25 +148,25 @@ function removeMainFunction(data) {
         }
         //different expression/declaration
         else if (other_regex.test(dataArray[i])) {
-        	if (decl_start !== undefined && decl_end === undefined) {
-            	decl_end = i;
+            if (decl_start !== undefined && decl_end === undefined) {
+                decl_end = i;
             }
             if (def_start !== undefined && def_end === undefined) {
-            	def_end = i;
+                def_end = i;
             }
         }
     }
 
     if (decl_start !== undefined && decl_end === undefined) {
-    	decl_end = dataArray.length;
+        decl_end = dataArray.length;
     }
     if (def_start !== undefined && def_end === undefined) {
-    	def_end = dataArray.length;
+        def_end = dataArray.length;
     }
 
     return dataArray.filter((value, index, arr) => {
-    	return (decl_start === undefined || index < decl_start || index >= decl_end) &&
-        	   (def_start === undefined || index < def_start || index >= def_end);
+        return (decl_start === undefined || index < decl_start || index >= decl_end) &&
+               (def_start === undefined || index < def_start || index >= def_end);
     }).join('\n');
 }
 
