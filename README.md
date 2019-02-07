@@ -54,8 +54,8 @@
   * Install [Intero](https://github.com/commercialhaskell/intero) (code completion and type information), [QuickCheck](https://hackage.haskell.org/package/QuickCheck) (test suite) and [stack-run](https://hackage.haskell.org/package/stack-run):
 
     ```shell
-    stack install intero QuickCheck stack-run  # for a global installation
-    stack build intero QuickCheck stack-run # for a local installation
+    stack --resolver=lts-9 install intero QuickCheck stack-run  # for a global installation
+    stack --resolver=lts-9 build intero QuickCheck stack-run # for a local installation
     ```
 ### Note
 
