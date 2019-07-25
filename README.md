@@ -51,7 +51,7 @@
     curl -sSL https://get.haskellstack.org/ | sh
     ```
 
-  * Install [Intero](https://github.com/commercialhaskell/intero) (code completion and type information), [QuickCheck](https://hackage.haskell.org/package/QuickCheck) (test suite) and [stack-run](https://hackage.haskell.org/package/stack-run):
+  * Install [Intero](https://github.com/commercialhaskell/intero) (code completion and type information), and [QuickCheck](https://hackage.haskell.org/package/QuickCheck) (test suite) 
 
     ```shell
     stack install intero QuickCheck  # for a global installation
